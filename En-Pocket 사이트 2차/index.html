@@ -6,6 +6,10 @@
     <title>엔포켓 | 건국대학교 전력 사용량 확인 서비스</title>
     <meta name="description" content="건국대학교 사회환경공학부 에코 스마트 시티 프로젝트의 일환인 엔포켓 서비스입니다.">
     
+    <!-- [TRACKING CODE START] -->
+    <!-- 사용자 추적 코드를 여기에 삽입하세요 -->
+    <!-- [TRACKING CODE END] -->
+
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -136,6 +140,10 @@
                         <span>건국대 중앙환경동아리(CES)와 함께하기</span>
                     </a>
                 </div>
+                
+                <p class="text-xs text-slate-400 mt-6 border-t border-slate-100 pt-4 inline-block">
+                    * 예측 근거: 2025년 월간 에너지 소비 패턴 및 2026년 실측 증감률 반영 모델
+                </p>
             </div>
         </header>
 
@@ -281,9 +289,12 @@
                 <i class="fa-solid fa-coins text-6xl text-yellow-400 mb-6 animate-bounce"></i>
                 <h1 class="text-4xl md:text-5xl font-black mb-6">코인 지급 캠페인 활동</h1>
                 <p class="text-lg text-slate-300 leading-relaxed">에너지를 아끼는 작은 습관이 가치 있는 보상으로 돌아옵니다.</p>
-                <div class="mt-8">
-                    <button onclick="openApplyModal()" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-slate-900 font-black px-8 py-4 rounded-full shadow-lg hover:scale-105 transition transform flex items-center gap-2 mx-auto">
+                <div class="mt-8 flex justify-center gap-4">
+                    <button onclick="openApplyModal()" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-slate-900 font-black px-8 py-4 rounded-full shadow-lg hover:scale-105 transition transform flex items-center gap-2">
                         <i class="fa-solid fa-paper-plane"></i> 지금 바로 캠페인 참여하기
+                    </button>
+                    <button onclick="openCancelModal()" class="bg-white text-slate-700 font-bold px-8 py-4 rounded-full shadow-lg hover:bg-slate-100 transition transform border border-slate-200">
+                        <i class="fa-solid fa-trash"></i> 참여 취소하기
                     </button>
                 </div>
             </div>
@@ -485,6 +496,7 @@
             {n:"건축관", c:"study", u:31330, g:11.6, d:"학습/연구", s:"빈 강의실 소등"},
             {n:"행정관", c:"admin", u:68260, g:13.8, d:"행정/지원", s:"대기전력 차단"},
             {n:"일우헌", c:"living", u:7090, g:14.7, d:"거주 시설", s:"개별 전열기구 관리"},
+            {n:"생명과학관 부속동", c:"study", u:48110, g:6.6, d:"학습/연구", s:"빈 강의실 소등"},
             {n:"학생회관", c:"study", u:63950, g:8.8, d:"학습/연구", s:"빈 강의실 소등"},
             {n:"법학전문대학원", c:"study", u:48760, g:6.9, d:"학습/연구", s:"빈 강의실 소등"},
             {n:"경영관", c:"study", u:55400, g:9.9, d:"학습/연구", s:"빈 강의실 소등"},
@@ -839,7 +851,7 @@
             alert("관리자: 데이터 업데이트 완료 (시뮬레이션)");
         }
 
-        function getIcon(n) { if(n.includes("기숙사"))return "fa-bed"; if(n.includes("도서관"))return "fa-book-open"; if(n.includes("과학")||n.includes("동물")||n.includes("수의")||n.includes("생명"))return "fa-flask"; if(n.includes("공학"))return "fa-microchip"; return "fa-building-columns"; }
+        function getIcon(n) { if(n.includes("기숙사"))return "fa-bed"; if(n.includes("도서관"))return "fa-book-open"; if(n.includes("과학")||n.includes("동물")||n.includes("수의")||n.includes("생명"))return "fa-flask"; if(n.includes("공학")||n.includes("건축")||n.includes("창의"))return "fa-microchip"; return "fa-building-columns"; }
         function populateDropdown() { const s=document.getElementById('globalSearch'); [...buildingDB].sort((a,b)=>a.name.localeCompare(b.name)).forEach(b=>{const o=document.createElement('option');o.value=b.name;o.text=b.name;s.appendChild(o)}); }
         
         function scrollToBuilding(n){ 
@@ -865,3 +877,4 @@
     </script>
 </body>
 </html>
+
