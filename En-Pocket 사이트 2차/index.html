@@ -6,10 +6,6 @@
     <title>엔포켓 | 건국대학교 전력 사용량 확인 서비스</title>
     <meta name="description" content="건국대학교 사회환경공학부 에코 스마트 시티 프로젝트의 일환인 엔포켓 서비스입니다.">
     
-    <!-- [TRACKING CODE START] -->
-    <!-- 사용자 추적 코드를 여기에 삽입하세요 -->
-    <!-- [TRACKING CODE END] -->
-
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -21,7 +17,7 @@
     <style>
         body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; color: #1e293b; overflow-x: hidden; }
         
-        /* Brand Colors */
+        /* Design Tokens */
         .text-mint { color: #2dd4bf; } 
         .bg-mint { background-color: #2dd4bf; }
         .border-mint { border-color: #2dd4bf; }
@@ -31,12 +27,11 @@
         .gradient-text { background: linear-gradient(135deg, #036b3f 0%, #2dd4bf 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .gradient-coin { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Interactions */
         .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
         .transition-all { transition: all 0.3s ease; }
         .battle-bar-fill { transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        /* Search Highlight Animation */
+        /* Highlight Animation */
         @keyframes highlight-pulse {
             0% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.7); border-color: #2dd4bf; transform: scale(1); }
             50% { box-shadow: 0 0 0 10px rgba(45, 212, 191, 0); border-color: #2dd4bf; transform: scale(1.02); }
@@ -380,6 +375,7 @@
                 <p>Representative: Lee Jeong-hoon | Project Period: 2025.07 - 2025.11</p>
                 <p>Data Source: Campus Facility Management Team (Jan 2025-2026)</p>
                 <p class="mt-4 text-xs">활동 및 캠페인 문의: <span class="text-ku font-bold">010-3728-4610</span> (이정훈 대표)</p>
+                <p class="mt-2 text-xs text-slate-400">해당 자료는 건국대학교 시설팀으로부터 제공받은 자료를 사용하였습니다.</p>
             </div>
             
             <p class="text-xs text-slate-400 border-t border-slate-100 inline-block pt-4">
@@ -496,7 +492,6 @@
             {n:"건축관", c:"study", u:31330, g:11.6, d:"학습/연구", s:"빈 강의실 소등"},
             {n:"행정관", c:"admin", u:68260, g:13.8, d:"행정/지원", s:"대기전력 차단"},
             {n:"일우헌", c:"living", u:7090, g:14.7, d:"거주 시설", s:"개별 전열기구 관리"},
-            {n:"생명과학관 부속동", c:"study", u:48110, g:6.6, d:"학습/연구", s:"빈 강의실 소등"},
             {n:"학생회관", c:"study", u:63950, g:8.8, d:"학습/연구", s:"빈 강의실 소등"},
             {n:"법학전문대학원", c:"study", u:48760, g:6.9, d:"학습/연구", s:"빈 강의실 소등"},
             {n:"경영관", c:"study", u:55400, g:9.9, d:"학습/연구", s:"빈 강의실 소등"},
@@ -791,7 +786,7 @@
                 else {
                     let msg = "=== 신청자 명단 ===\n";
                     applicants.forEach((a,i) => {
-                        msg += `${i+1}. [${a.building}] ${a.name} (${a.major}, ${a.id})\n`;
+                        msg += `${i+1}. [${a.building}] ${a.name} (${a.major}, ${a.id}, ${a.team}명, ${a.phone})\n`;
                     });
                     alert(msg);
                 }
@@ -877,4 +872,3 @@
     </script>
 </body>
 </html>
-
