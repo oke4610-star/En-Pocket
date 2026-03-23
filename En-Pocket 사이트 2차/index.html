@@ -6,6 +6,10 @@
     <title>엔포켓 | 건국대학교 전력 사용량 확인 서비스</title>
     <meta name="description" content="건국대학교 사회환경공학부 에코 스마트 시티 프로젝트의 일환인 엔포켓 서비스입니다.">
     
+    <!-- [TRACKING CODE START] -->
+    <!-- 사용자 추적 코드를 여기에 삽입하세요 -->
+    <!-- [TRACKING CODE END] -->
+
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -27,9 +31,10 @@
         .gradient-text { background: linear-gradient(135deg, #036b3f 0%, #2dd4bf 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .gradient-coin { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
+        /* Interactions */
         .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
         .transition-all { transition: all 0.3s ease; }
-        .battle-bar-fill { transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .battle-bar-fill { transition: width 1.5s ease-out; }
         
         /* Highlight Animation */
         @keyframes highlight-pulse {
@@ -106,7 +111,7 @@
     <!-- ================= PAGE 1: DASHBOARD ================= -->
     <main id="page-dashboard">
         <div class="bg-slate-900 text-slate-400 text-xs py-2 text-center" id="systemStatus">
-            <i class="fa-solid fa-database mr-2"></i> 데이터 기준: 2026년 <span class="text-white font-bold" id="currentMonthDisplay">1월</span> (전년 동월 대비 분석)
+            <i class="fa-solid fa-database mr-2"></i> 데이터 기준: 2026년 <span class="text-white font-bold" id="currentMonthDisplay">2월</span> (전년 동월 대비 분석)
         </div>
 
         <header class="relative bg-white pt-16 pb-12 px-4 overflow-hidden text-center">
@@ -233,7 +238,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900">건물별 에너지 리포트</h2>
-                        <p class="text-slate-500 text-sm mt-1">카드를 클릭하여 <span class="text-mint font-bold">상세 분석 및 2월 예측</span>을 확인하세요.</p>
+                        <p class="text-slate-500 text-sm mt-1">카드를 클릭하여 <span class="text-mint font-bold">상세 분석 및 3월 예측</span>을 확인하세요.</p>
                     </div>
                     <div class="flex p-1 bg-slate-100 rounded-lg">
                         <button onclick="filterGrid('all')" class="filter-btn active px-4 py-2 text-sm font-medium rounded-md hover:bg-white shadow-sm transition">전체</button>
@@ -284,7 +289,7 @@
                 <i class="fa-solid fa-coins text-6xl text-yellow-400 mb-6 animate-bounce"></i>
                 <h1 class="text-4xl md:text-5xl font-black mb-6">코인 지급 캠페인 활동</h1>
                 <p class="text-lg text-slate-300 leading-relaxed">에너지를 아끼는 작은 습관이 가치 있는 보상으로 돌아옵니다.</p>
-                <div class="mt-8 flex justify-center gap-4">
+                <div class="mt-8 flex justify-center gap-4 flex-wrap">
                     <button onclick="openApplyModal()" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-slate-900 font-black px-8 py-4 rounded-full shadow-lg hover:scale-105 transition transform flex items-center gap-2">
                         <i class="fa-solid fa-paper-plane"></i> 지금 바로 캠페인 참여하기
                     </button>
@@ -318,7 +323,6 @@
                     </div>
                     <div class="text-center group">
                         <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center text-3xl text-yellow-600 mx-auto mb-4 group-hover:bg-yellow-200 transition shadow-sm">
-                            <!-- Quantitative Measurement Illustration -->
                             <i class="fa-solid fa-chart-pie bounce-slow"></i>
                         </div>
                         <h3 class="font-bold mb-2">3. 정량적 성과 측정</h3>
@@ -334,17 +338,17 @@
                 </div>
 
                 <div class="mt-20 max-w-4xl mx-auto bg-slate-50 rounded-2xl p-10 border border-slate-200 shadow-inner text-center">
-                    <h3 class="text-2xl font-bold mb-8">💰 월간 코인 지급 정책 (총 150코인 한도)</h3>
+                    <h3 class="text-2xl font-bold mb-8">💰 월간 코인 지급 정책 (총 100코인 한도)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-white p-6 rounded-xl border-2 border-yellow-400 shadow-md">
                             <i class="fa-solid fa-crown text-3xl text-yellow-500 mb-2"></i>
                             <h4 class="font-bold">1위팀 (1팀)</h4>
-                            <p class="text-3xl font-black gradient-coin mt-2">30 코인</p>
+                            <p class="text-3xl font-black gradient-coin mt-2">50 코인</p>
                         </div>
                         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                             <i class="fa-solid fa-medal text-3xl text-slate-300 mb-2"></i>
                             <h4 class="font-bold">2위팀 (1팀)</h4>
-                            <p class="text-2xl font-black text-slate-700 mt-2">20 코인</p>
+                            <p class="text-2xl font-black text-slate-700 mt-2">30 코인</p>
                         </div>
                         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                             <i class="fa-solid fa-award text-3xl text-amber-600 mb-2"></i>
@@ -362,7 +366,6 @@
     <footer class="bg-white border-t border-slate-200 py-16 text-center relative z-20">
         <div class="max-w-4xl mx-auto px-4 space-y-6">
             <div class="flex items-center justify-center gap-2">
-                <!-- Clean Mint Logo -->
                 <div class="w-10 h-10 flex items-center justify-center">
                     <i class="fa-solid fa-bolt text-3xl text-mint drop-shadow-sm"></i>
                 </div>
@@ -383,7 +386,6 @@
             </p>
             
             <div class="pt-6 flex justify-center gap-4">
-                <!-- Fixed Admin Buttons -->
                 <button onclick="adminLogin()" class="text-slate-300 hover:text-slate-500 transition p-4 rounded-full hover:bg-slate-50 relative z-50 focus:outline-none cursor-pointer" title="관리자 전용">
                     <i class="fa-solid fa-lock text-xl"></i>
                 </button>
@@ -398,17 +400,17 @@
     <input type="file" id="excelInput" accept=".xlsx, .csv" class="hidden" onchange="handleFileUpload(event)">
 
     <!-- Detail Modal -->
-    <div id="detailModal" class="modal fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onclick="closeModal()">
+    <div id="detailModal" class="modal fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onclick="closeModal(event)">
         <div class="modal-content bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden" onclick="event.stopPropagation()">
             <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
                 <h3 id="modalTitle" class="text-lg font-bold">건물 상세 분석</h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="closeModal(event)" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            <div class="flex border-b border-slate-200">
-                <button onclick="switchTab('short')" id="tabShort" class="tab-btn active flex-1 py-3 text-center transition-colors">📊 2월 예측 & 추이</button>
-                <button onclick="switchTab('long')" id="tabLong" class="tab-btn flex-1 py-3 text-center transition-colors">📅 2025 연간 패턴</button>
+            <div class="flex border-b border-slate-200 overflow-x-auto">
+                <button onclick="switchTab('short')" id="tabShort" class="tab-btn active flex-1 py-3 px-2 text-center transition-colors whitespace-nowrap text-sm sm:text-base">📊 <span id="nextMonthName">3월</span> 단기 예측</button>
+                <button onclick="switchTab('long')" id="tabLong" class="tab-btn flex-1 py-3 px-2 text-center transition-colors whitespace-nowrap text-sm sm:text-base">📅 2025 연간 패턴</button>
             </div>
-            <div class="p-6">
+            <div class="p-4 sm:p-6 overflow-y-auto max-h-[70vh]">
                 <div id="contentShort" class="block">
                     <div class="h-64 w-full mb-6"><canvas id="chartShort"></canvas></div>
                     <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-sm leading-relaxed" id="modalPredictionShort"></div>
@@ -465,69 +467,48 @@
     <script>
         // --- Global State ---
         let applicants = [];
-        let currentMonthIndex = 0;
-        let displayMonth = "1월";
-        let nextMonth = "2월";
+        let currentMonthIndex = 1; // 1 = 2월 (Feb)
+        let displayMonth = "2월";
+        let nextMonth = "3월";
         let currentBuilding = null; 
 
-        // --- Data Logic (Full 28 Filtered Buildings) ---
-        // Generating annual pattern based on 2025 Jan data
-        function generateAnnualData(janValue, cat) {
-            let ratios = cat==='living' ? [1.0,0.95,0.85,0.75,0.70,0.80,1.1,1.15,0.85,0.75,0.9,0.98] :
-                         cat==='study'  ? [1.0,0.90,1.10,1.05,1.00,1.15,1.25,1.15,1.05,1.00,1.05,0.95] :
-                                          [1.0,0.95,0.90,0.85,0.85,0.95,1.10,1.10,0.90,0.85,0.90,0.95];
-            return ratios.map(r => Math.floor(janValue * r));
-        }
-
-        // Updated Data based on user request (Exact List, No 2024, Correct Eng Rate)
-        // Fixed: Growth Rate is preserved, Value is preserved
-        const buildingList = [
-            {n:"교육과학관", c:"study", u:20600, g:10.8, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"공학관", c:"study", u:235790, g:14.6, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"인문학관", c:"study", u:26380, g:2.1, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"언어교육원", c:"study", u:15690, g:-0.4, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"창의관", c:"study", u:28400, g:2.0, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"입학정보관", c:"admin", u:135200, g:12.9, d:"행정/지원", s:"대기전력 차단"},
-            {n:"실내체육관", c:"study", u:8960, g:0.9, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"건축관", c:"study", u:31330, g:11.6, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"행정관", c:"admin", u:68260, g:13.8, d:"행정/지원", s:"대기전력 차단"},
-            {n:"일우헌", c:"living", u:7090, g:14.7, d:"거주 시설", s:"개별 전열기구 관리"},
-            {n:"학생회관", c:"study", u:63950, g:8.8, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"법학전문대학원", c:"study", u:48760, g:6.9, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"경영관", c:"study", u:55400, g:9.9, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"상허기념도서관", c:"study", u:179500, g:16.0, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"공예관", c:"study", u:17860, g:7.3, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"과학관", c:"study", u:124300, g:9.6, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"새천년관", c:"admin", u:155580, g:10.3, d:"행정/지원", s:"대기전력 차단"},
-            {n:"수의학관", c:"study", u:122000, g:22.8, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"KU기술혁신관", c:"admin", u:39600, g:10.0, d:"행정/지원", s:"대기전력 차단"},
-            {n:"생명과학관", c:"study", u:139100, g:14.5, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"산학협동관", c:"admin", u:154330, g:26.3, d:"행정/지원", s:"대기전력 차단"},
-            {n:"상허연구관", c:"study", u:51200, g:9.4, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"KULHOUSE", c:"living", u:782041, g:13.0, d:"거주 시설", s:"개별 전열기구 관리"},
-            {n:"예술디자인대학", c:"study", u:65408, g:9.0, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"의학생명과학관", c:"study", u:186516, g:-13.3, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"동물생명과학관", c:"study", u:112800, g:9.3, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"부동산학관", c:"study", u:24720, g:8.4, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"신공학관", c:"study", u:328000, g:18.8, d:"학습/연구", s:"빈 강의실 소등"}
+        // Updated 2026 Feb Data Provided by User
+        const rawBuildingList = [
+            { n: "교육과학관", c: "study", u26_jan: 20600, u26_feb: 26500, growth: -3.6, d: "학습/연구", s: "빈 강의실 소등", history25: [18600, 27490, 22520, 17960, 18640, 22570, 25070, 26029, 28233, 15968, 28760, 24590], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "공학관", c: "study", u26_jan: 235790, u26_feb: 164240, growth: -5.0, d: "학습/연구", s: "빈 강의실 소등", history25: [205799, 172800, 190800, 164600, 217800, 225000, 297400, 454813, 227584, 199074, 171414, 199880], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "인문학관", c: "study", u26_jan: 26380, u26_feb: 24200, growth: -8.3, d: "학습/연구", s: "빈 강의실 소등", history25: [25850, 26400, 26000, 22650, 23400, 22350, 20100, 21040, 21585, 19596, 27092, 28100], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "언어교육원", c: "study", u26_jan: 15690, u26_feb: 13755, growth: -1.4, d: "학습/연구", s: "빈 강의실 소등", history25: [15750, 13950, 13500, 10800, 9000, 10800, 13050, 8740, 10635, 9350, 12302, 13690], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "창의관", c: "study", u26_jan: 28400, u26_feb: 29780, growth: -9.5, d: "학습/연구", s: "빈 강의실 소등", history25: [27840, 32920, 24640, 16320, 14720, 15040, 16000, 41449, 33474, 13948, 33384, 25580], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "입학정보관", c: "admin", u26_jan: 135200, u26_feb: 105700, growth: -7.5, d: "행정/지원", s: "대기전력 차단", history25: [119700, 114300, 100600, 94500, 105300, 101600, 132300, 97132, 115277, 92150, 98260, 121200], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+            { n: "실내체육관", c: "study", u26_jan: 8960, u26_feb: 8070, growth: -5.9, d: "학습/연구", s: "빈 강의실 소등", history25: [8880, 8580, 9120, 7860, 9700, 10140, 8960, 11123, 10947, 7620, 6878, 11400], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "건축관", c: "study", u26_jan: 31330, u26_feb: 25120, growth: -1.4, d: "학습/연구", s: "빈 강의실 소등", history25: [28080, 25470, 30310, 30150, 29880, 34008, 26190, 20842, 32410, 28952, 41025, 38700], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "행정관", c: "admin", u26_jan: 68260, u26_feb: 65900, growth: 1.7, d: "행정/지원", s: "대기전력 차단", history25: [60000, 64800, 42000, 27600, 27000, 36400, 49200, 51400, 82783, 32928, 27120, 68700], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+            { n: "일우헌", c: "living", u26_jan: 7090, u26_feb: 6750, growth: -2.2, d: "거주 시설", s: "개별 전열기구 관리", history25: [6180, 6900, 5400, 0, 0, 0, 15370, 39340, 33298, 16380, 34159, 5930], winFactor: "적극적인 개별 전열기구 관리 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 개별 전열기구 관리 필요" },
+            { n: "학생회관", c: "study", u26_jan: 63950, u26_feb: 61200, growth: -1.9, d: "학습/연구", s: "빈 강의실 소등", history25: [58800, 62400, 56800, 49200, 57200, 62200, 62800, 56320, 65390, 47012, 47936, 67100], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "법학전문대학원", c: "study", u26_jan: 48760, u26_feb: 41500, growth: -2.6, d: "학습/연구", s: "빈 강의실 소등", history25: [45600, 42600, 38400, 39000, 40200, 39600, 43200, 39520, 40201, 39600, 45966, 48000], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "경영관", c: "study", u26_jan: 55400, u26_feb: 45870, growth: -5.6, d: "학습/연구", s: "빈 강의실 소등", history25: [50400, 48600, 44800, 40400, 39600, 38400, 43200, 30242, 41651, 34828, 46624, 53200], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "상허기념도서관", c: "study", u26_jan: 179500, u26_feb: 138600, growth: -6.1, d: "학습/연구", s: "빈 강의실 소등", history25: [154800, 147600, 117179, 115200, 147600, 256400, 302400, 369738, 319965, 148400, 115001, 193890], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "공예관", c: "study", u26_jan: 17860, u26_feb: 17900, growth: -7.5, d: "학습/연구", s: "빈 강의실 소등", history25: [16650, 19350, 15750, 15750, 13950, 18450, 17100, 17800, 12795, 10050, 23194, 24960], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "과학관", c: "study", u26_jan: 124300, u26_feb: 99900, growth: -4.3, d: "학습/연구", s: "빈 강의실 소등", history25: [113400, 104400, 102600, 84600, 117000, 141200, 158400, 178700, 142035, 114200, 119144, 108879], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "새천년관", c: "admin", u26_jan: 155580, u26_feb: 118000, growth: -10.6, d: "행정/지원", s: "대기전력 차단", history25: [141000, 132000, 131000, 107779, 116035, 123000, 161000, 60713, 58418, 122000, 81042, 145000], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+            { n: "수의학관", c: "study", u26_jan: 122000, u26_feb: 90190, growth: -4.1, d: "학습/연구", s: "빈 강의실 소등", history25: [99360, 94080, 74360, 66240, 76800, 85760, 106080, 100516, 118704, 72960, 100622, 98750], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "KU기술혁신관", c: "admin", u26_jan: 39600, u26_feb: 31500, growth: -6.2, d: "행정/지원", s: "대기전력 차단", history25: [36000, 33600, 34800, 33600, 36000, 36800, 33600, 34870, 26233, 26800, 36416, 36900], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+            { n: "생명과학관", c: "study", u26_jan: 139100, u26_feb: 107300, growth: -9.5, d: "학습/연구", s: "빈 강의실 소등", history25: [121500, 118500, 115000, 109500, 115500, 120500, 150500, 150023, 141687, 122220, 136134, 118700], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "산학협동관", c: "admin", u26_jan: 154330, u26_feb: 121000, growth: -1.1, d: "행정/지원", s: "대기전력 차단", history25: [122165, 122400, 114400, 120000, 104000, 160000, 120000, 133892, 156689, 119048, 108963, 130060], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+            { n: "상허연구관", c: "study", u26_jan: 51200, u26_feb: 44800, growth: -1.8, d: "학습/연구", s: "빈 강의실 소등", history25: [46800, 45600, 52800, 49200, 53400, 51600, 48000, 40192, 61277, 41456, 55276, 52370], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "KULHOUSE", c: "living", u26_jan: 782041, u26_feb: 584172, growth: -10.9, d: "거주 시설", s: "개별 전열기구 관리", history25: [691945, 655954, 551943, 333945, 320857, 469985, 528129, 491880, 500365, 443422, 452325, 761891], winFactor: "적극적인 개별 전열기구 관리 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 개별 전열기구 관리 필요" },
+            { n: "예술디자인대학", c: "study", u26_jan: 65408, u26_feb: 50800, growth: -3.8, d: "학습/연구", s: "빈 강의실 소등", history25: [60000, 52800, 67200, 64800, 57800, 69600, 55200, 46380, 69534, 60000, 83428, 83740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "의학생명과학관", c: "study", u26_jan: 186516, u26_feb: 163026, growth: -9.8, d: "학습/연구", s: "빈 강의실 소등", history25: [215136, 180792, 213606, 225612, 279270, 346170, 432134, 452592, 341694, 250650, 169470, 176832], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "동물생명과학관", c: "study", u26_jan: 112800, u26_feb: 94000, growth: -2.1, d: "학습/연구", s: "빈 강의실 소등", history25: [103200, 96000, 93200, 100800, 95600, 103200, 112800, 94270, 113103, 97477, 99536, 116740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "부동산학관", c: "study", u26_jan: 24720, u26_feb: 20100, growth: 0.8, d: "학습/연구", s: "빈 강의실 소등", history25: [22800, 19950, 22050, 21750, 24300, 27000, 25553, 19500, 30886, 21366, 40715, 23090], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "신공학관", c: "study", u26_jan: 328000, u26_feb: 215000, growth: -12.6, d: "학습/연구", s: "빈 강의실 소등", history25: [276000, 246000, 276000, 252000, 298994, 315000, 387000, 301900, 373822, 301020, 262235, 276900], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" }
         ];
 
-        let buildingDB = buildingList.map(b => {
-            // b.u = 2026 Jan Real
-            // b.g = Growth (Fixed from data)
-            // 2025 Jan = b.u / (1 + b.g/100)
-            let u25 = Math.floor(b.u / (1 + b.g/100));
-            
+        let buildingDB = rawBuildingList.map(b => {
             return {
                 ...b,
                 name: b.n, cat: b.c, desc: b.d, solution: b.s,
-                u26_jan: b.u,
-                u25_jan: u25,
-                growth: b.g, // Locked growth rate
-                // Generate 2025 annual history starting from u25
-                history25: generateAnnualData(u25, b.c),
-                winFactor: "적극적인 " + b.s + " 캠페인 실천",
-                loseFactor: "전년 대비 사용량 증가, " + b.s + " 필요"
+                uCurr: b.u26_feb // Map to uCurr for existing logic
             };
         });
 
@@ -540,7 +521,7 @@
             refreshDashboard();
             switchPage('dashboard');
             
-            // Populate Dropdowns
+            // Populate Dropdowns for Apply/Cancel
             const appBuildingSelect = document.getElementById('appBuilding');
             const cancelBuildingSelect = document.getElementById('cancelBuilding');
             
@@ -555,12 +536,27 @@
 
         // --- Core Functions ---
         function switchPage(p) {
-            document.getElementById('page-dashboard').classList.toggle('hidden-page', p!=='dashboard');
-            document.getElementById('page-campaign').classList.toggle('hidden-page', p!=='campaign');
-            document.getElementById('nav-dashboard-links').classList.toggle('hidden', p!=='dashboard');
-            document.getElementById('nav-campaign-links').classList.toggle('hidden', p!=='campaign');
-            document.getElementById('nav-dashboard-menu').classList.toggle('hidden', p!=='dashboard');
-            if(window.innerWidth >= 768 && p==='dashboard') document.getElementById('nav-dashboard-menu').classList.add('md:flex');
+            const dashboard = document.getElementById('page-dashboard');
+            const campaign = document.getElementById('page-campaign');
+            const navDashboard = document.getElementById('nav-dashboard-links');
+            const navCampaign = document.getElementById('nav-campaign-links');
+            const navSearch = document.getElementById('nav-dashboard-menu');
+
+            if (p === 'dashboard') {
+                dashboard.classList.remove('hidden-page');
+                campaign.classList.add('hidden-page');
+                navDashboard.classList.remove('hidden');
+                navCampaign.classList.add('hidden');
+                navSearch.classList.remove('hidden');
+                navSearch.classList.add('md:flex');
+            } else {
+                dashboard.classList.add('hidden-page');
+                campaign.classList.remove('hidden-page');
+                navDashboard.classList.add('hidden');
+                navCampaign.classList.remove('hidden');
+                navSearch.classList.add('hidden');
+                navSearch.classList.remove('md:flex');
+            }
             window.scrollTo(0,0);
         }
 
@@ -569,6 +565,8 @@
             updateBattle();
             updateBestWorst();
             document.getElementById('currentMonthDisplay').innerText = displayMonth;
+            document.getElementById('nextMonthName').innerText = nextMonth;
+            document.getElementById('battleMonthText').innerText = `2026.${(currentMonthIndex+1).toString().padStart(2,'0')} 기준 라이벌 매치`;
         }
 
         function updateBestWorst() {
@@ -580,7 +578,7 @@
                 document.getElementById('bestBuildingName').innerText = best.name;
                 document.getElementById('bestBuildingDesc').innerText = `${displayMonth} 증감률 ${best.growth}% (최저)`;
                 document.getElementById('worstBuildingName').innerText = worst.name;
-                document.getElementById('worstBuildingDesc').innerText = `${displayMonth} 증감률 +${worst.growth}% (최고)`;
+                document.getElementById('worstBuildingDesc').innerText = `${displayMonth} 증감률 ${worst.growth > 0 ? '+' : ''}${worst.growth}% (최고)`;
             }
         }
 
@@ -636,16 +634,15 @@
             const grid = document.getElementById('buildingsGrid');
             grid.innerHTML = '';
             data.forEach((b) => {
-                const increase = b.u26_jan - b.u25_jan;
-                const u25_val = b.u25_jan || 0;
-                const u26_val = b.u26_jan || 0;
-                
-                const coffeeCups = Math.max(0, Math.floor(((u26_val - u25_val)*120)/2000));
-                const co2 = Math.max(0, (increase * 0.424).toFixed(1));
+                const historyVal = b.history25[currentMonthIndex];
+                const diff = b.uCurr - historyVal;
+                const coffeeCups = Math.floor((Math.abs(diff) * 120) / 2000);
+                const co2 = (diff * 0.424).toFixed(1);
+                const coffeeTag = diff > 0 ? '초과 낭비!' : diff < 0 ? '세이브!' : '';
+                const co2Text = `${diff > 0 ? '+' : ''}${co2}`;
                 
                 const div = document.createElement('div');
                 div.className = "bg-white rounded-2xl p-6 border border-slate-200 shadow-sm card-hover flex flex-col cursor-pointer group";
-                // Only card click opens modal
                 div.onclick = () => openModal(b.name);
                 div.dataset.id = b.name; 
                 div.innerHTML = `
@@ -657,16 +654,16 @@
                         <div class="text-lg font-bold ${b.growth>0?'text-red-500':'text-emerald-500'}">${b.growth>0?'+':''}${b.growth}%</div>
                     </div>
                     <div class="bg-slate-50 rounded-lg p-3 mb-4 text-sm font-sans">
-                        <div class="flex justify-between"><span>25년 ${displayMonth}</span><span class="font-bold text-slate-600 font-sans">${u25_val.toLocaleString()}</span></div>
-                        <div class="flex justify-between text-mint mt-1"><span>26년 ${displayMonth}</span><span class="font-bold font-sans">${u26_val.toLocaleString()}</span></div>
+                        <div class="flex justify-between"><span>25년 ${displayMonth}</span><span class="font-bold text-slate-600 font-sans">${historyVal.toLocaleString()}</span></div>
+                        <div class="flex justify-between text-mint mt-1"><span>26년 ${displayMonth}</span><span class="font-bold font-sans">${b.uCurr.toLocaleString()}</span></div>
                     </div>
-                    <div class="mb-4 bg-orange-50 p-3 rounded-lg border border-orange-100 text-xs text-orange-800 leading-tight flex flex-col gap-1" onclick="openModal('${b.name}')">
-                        <div class="flex items-center gap-2 font-bold"><i class="fa-solid fa-mug-hot"></i> 증가분 = 아메리카노 ${coffeeCups.toLocaleString()}잔 값!</div>
-                        <div class="flex items-center gap-2 text-slate-500"><i class="fa-solid fa-cloud"></i> 탄소 증가: ${co2} kg-CO2</div>
+                    <div class="mb-4 bg-orange-50 p-3 rounded-lg border border-orange-100 text-xs text-orange-800 leading-tight flex flex-col gap-1">
+                        <div class="flex items-center gap-2 font-bold"><i class="fa-solid fa-mug-hot"></i> 증감분 = 아메리카노 ${coffeeCups.toLocaleString()}잔 값! ${coffeeTag}</div>
+                        <div class="flex items-center gap-2 text-slate-500"><i class="fa-solid fa-cloud"></i> 탄소 증감분: ${co2Text} kg-CO2</div>
                     </div>
                     <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between items-center">
-                        <span class="text-xs text-slate-400 font-medium group-hover:text-mint transition" onclick="openModal('${b.name}')">상세 분석 &rarr;</span>
-                        <button onclick="goToCampaign(event, '${b.name}')" class="text-xs bg-mint text-white px-3 py-1 rounded-full font-bold hover:bg-teal-600 transition">⚡ 코인 캠페인 참여</button>
+                        <span class="text-xs text-slate-400 font-medium group-hover:text-mint transition">상세 분석 &rarr;</span>
+                        <button onclick="goToCampaign(event, '${b.name}')" class="text-xs bg-mint text-white px-3 py-1 rounded-full font-bold hover:bg-teal-600 transition shadow">⚡ 코인 캠페인 참여</button>
                     </div>
                 `;
                 grid.appendChild(div);
@@ -693,7 +690,6 @@
                 "에너지 다이어트, 나부터 시작합니다."
             ];
             
-            // Randomized strategies
             const strategies = [
                 `${b.solution} 캠페인과 함께 CES 주관 '빈 강의실 소등 릴레이'에 참여해보세요!`,
                 `${b.solution} 실천으로 대기전력을 차단하고 탄소 발자국을 줄여보세요.`,
@@ -723,7 +719,8 @@
             document.getElementById('detailModal').classList.add('active');
             switchTab('short');
         }
-        function closeModal() { document.getElementById('detailModal').classList.remove('active'); }
+        function closeModal(e) { document.getElementById('detailModal').classList.remove('active'); }
+        
         function switchTab(t) {
             const isShort = t==='short';
             document.getElementById('tabShort').classList.toggle('active', isShort);
@@ -735,41 +732,41 @@
             if(chartInstance) chartInstance.destroy();
             
             if(isShort) {
-                // Short Term: 25 Jan, 26 Jan, 25 Feb, 26 Feb(Pred)
-                const jan25 = selectedB.u25_jan;
-                const jan26 = selectedB.u26_jan;
+                // Short Term: 25 Feb, 26 Feb, 25 Mar, 26 Mar(Pred)
+                const histCurr = selectedB.history25[1]; // 25 Feb
+                const histNext = selectedB.history25[2]; // 25 Mar
+                const currVal = selectedB.uCurr;         // 26 Feb
                 
-                // Feb Data (Simulated based on history)
-                const feb25 = selectedB.history25[1];
-                
-                // Prediction Logic for Feb 26: 25_Feb * (1 + growth/100)
-                // Using fixed growth rate (g) for prediction
+                // Prediction Logic for 26 Mar: 25_Mar * (1 + growth/100)
                 const growthRate = selectedB.growth / 100;
-                const predFeb26 = Math.floor((feb25 || 0) * (1 + growthRate)) || 0;
+                const predNext = Math.floor((histNext || 0) * (1 + growthRate)) || 0;
 
                 chartInstance = new Chart(ctx, { type:'bar', data:{
-                    labels: ['25년 1월', '26년 1월', '25년 2월', '26년 2월(예)'],
+                    labels: [`25년 ${displayMonth}`, `26년 ${displayMonth}`, `25년 ${nextMonth}`, `26년 ${nextMonth}(예측)`],
                     datasets:[{
                         label:'전력 사용량 (kWh)',
-                        data: [jan25, jan26, feb25, predFeb26],
+                        data: [histCurr, currVal, histNext, predNext],
                         backgroundColor: ['#94a3b8', '#2dd4bf', '#94a3b8', '#3b82f6'],
                         borderRadius: 6
                     }]
                 }, options:{ plugins:{legend:{display:false}}, responsive:true, maintainAspectRatio:false }});
-                document.getElementById('modalPredictionShort').innerHTML = `<strong>[전년 대비 추세]</strong> 작년 1월 대비 올해 증가율(${selectedB.growth}%)을 반영할 때, 2026년 2월 예상치는 <strong>${predFeb26.toLocaleString()} kWh</strong>입니다.`;
+                
+                document.getElementById('modalPredictionShort').innerHTML = `<strong>[전년 대비 추세]</strong> 작년 2월 대비 올해 증감률(${selectedB.growth}%)을 반영할 때, 2026년 3월 예상치는 <strong>${predNext.toLocaleString()} kWh</strong>입니다.`;
             } else {
-                // Annual Pattern: 2025 (Full Year) & 2026 (Jan Only)
+                // Annual Pattern: 2025 (Full Year) & 2026 (Jan, Feb Both Visible)
                 const data26 = Array(12).fill(null);
-                data26[0] = selectedB.u26_jan; // Only Jan
+                data26[0] = selectedB.u26_jan; // 26 Jan
+                data26[1] = selectedB.uCurr;   // 26 Feb (Current)
 
                 chartInstance = new Chart(ctx, { type:'line', data:{
                     labels:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
                     datasets:[
-                        {label:'2025년 실측', data:selectedB.history25, borderColor:'#cbd5e1', borderDash:[5,5], fill:false},
-                        {label:'2026년 실측', data:data26, borderColor:'#2dd4bf', backgroundColor:'#2dd4bf', pointRadius:6, spanGaps:false}
+                        {label:'2025년 실측', data:selectedB.history25, borderColor:'#cbd5e1', borderDash:[5,5], fill:false, tension:0.4},
+                        {label:'2026년 실측', data:data26, borderColor:'#2dd4bf', backgroundColor:'#2dd4bf', pointRadius:5, fill:false, spanGaps:false, tension:0.4}
                     ]
                 }, options:{ responsive:true, maintainAspectRatio:false }});
-                document.getElementById('modalAnalysisLong').innerHTML = `작년(2025)의 연간 패턴을 비교하여 건물의 계절적 특성을 분석합니다. 2026년은 1월 실측값만 표시됩니다.`;
+                
+                document.getElementById('modalAnalysisLong').innerHTML = `작년(2025)의 연간 패턴을 비교하여 건물의 계절적 특성을 분석합니다. 2026년은 1월 실측값과 2월 실측값이 선으로 연결되어 표시됩니다.`;
             }
         }
 
