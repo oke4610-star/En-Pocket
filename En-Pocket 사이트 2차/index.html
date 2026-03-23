@@ -6,7 +6,6 @@
     <title>엔포켓 | 건국대학교 전력 사용량 확인 서비스</title>
     <meta name="description" content="건국대학교 사회환경공학부 에코 스마트 시티 프로젝트의 일환인 엔포켓 서비스입니다.">
     
-    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
@@ -27,9 +26,10 @@
         .gradient-text { background: linear-gradient(135deg, #036b3f 0%, #2dd4bf 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .gradient-coin { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
+        /* Interactions */
         .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
         .transition-all { transition: all 0.3s ease; }
-        .battle-bar-fill { transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .battle-bar-fill { transition: width 1.5s ease-out; }
         
         /* Highlight Animation */
         @keyframes highlight-pulse {
@@ -69,16 +69,13 @@
 </head>
 <body class="bg-slate-50">
 
-    <!-- ================= NAV BAR ================= -->
     <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-            <!-- Logo -->
             <div class="flex items-center gap-1 cursor-pointer group" onclick="switchPage('dashboard')">
                 <i class="fa-solid fa-bolt text-3xl text-mint drop-shadow-sm group-hover:scale-110 transition-transform"></i>
                 <span class="text-xl font-black tracking-tight text-slate-900 ml-1">En-Pocket</span>
             </div>
             
-            <!-- Dashboard Menu -->
             <div id="nav-dashboard-menu" class="hidden md:flex flex-grow max-w-md mx-8 relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                 <select id="globalSearch" onchange="scrollToBuilding(this.value)" class="w-full bg-slate-100 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-teal-400 cursor-pointer text-slate-600 font-medium hover:bg-slate-200 transition">
@@ -86,7 +83,6 @@
                 </select>
             </div>
 
-            <!-- Buttons -->
             <div class="flex gap-3 text-sm font-medium items-center">
                 <div id="nav-dashboard-links" class="flex gap-4 items-center">
                     <a href="#competition" class="text-slate-500 hover:text-teal-600 transition hidden sm:block">에너지 대항전</a>
@@ -103,10 +99,9 @@
         </div>
     </nav>
 
-    <!-- ================= PAGE 1: DASHBOARD ================= -->
     <main id="page-dashboard">
         <div class="bg-slate-900 text-slate-400 text-xs py-2 text-center" id="systemStatus">
-            <i class="fa-solid fa-database mr-2"></i> 데이터 기준: 2026년 <span class="text-white font-bold" id="currentMonthDisplay">1월</span> (전년 동월 대비 분석)
+            <i class="fa-solid fa-database mr-2"></i> 데이터 기준: 2026년 <span class="text-white font-bold" id="currentMonthDisplay">2월</span> (전년 동월 대비 분석)
         </div>
 
         <header class="relative bg-white pt-16 pb-12 px-4 overflow-hidden text-center">
@@ -142,10 +137,8 @@
             </div>
         </header>
 
-        <!-- Best/Worst Section -->
         <section class="max-w-6xl mx-auto px-4 mb-12">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Best -->
                 <div class="bg-gradient-to-br from-teal-50 to-white p-6 rounded-2xl border border-teal-100 shadow-sm flex items-center gap-4 relative overflow-hidden">
                     <div class="absolute -right-4 -top-4 w-20 h-20 bg-teal-100 rounded-full opacity-50"></div>
                     <div class="w-12 h-12 bg-teal-500 rounded-full flex items-center justify-center text-white text-xl z-10"><i class="fa-solid fa-trophy"></i></div>
@@ -155,7 +148,6 @@
                         <p class="text-sm text-slate-500 mt-1" id="bestBuildingDesc">데이터 분석 중...</p>
                     </div>
                 </div>
-                <!-- Worst -->
                 <div class="bg-gradient-to-br from-red-50 to-white p-6 rounded-2xl border border-red-100 shadow-sm flex items-center gap-4 relative overflow-hidden">
                     <div class="absolute -right-4 -top-4 w-20 h-20 bg-red-100 rounded-full opacity-50"></div>
                     <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-xl z-10"><i class="fa-solid fa-triangle-exclamation"></i></div>
@@ -168,7 +160,6 @@
             </div>
         </section>
 
-        <!-- Dynamic Battle Section -->
         <section id="competition" class="py-12 bg-slate-900 text-white relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
             <div class="max-w-6xl mx-auto px-4 relative z-10">
@@ -178,7 +169,6 @@
                 </div>
                 
                 <div class="flex flex-col md:flex-row gap-8 items-stretch">
-                    <!-- Left Side -->
                     <div class="flex-1 bg-slate-800 rounded-2xl p-6 border-2 border-slate-700 relative flex flex-col transition-all duration-300" id="battleCardA">
                         <div class="flex justify-between items-center mb-4 gap-2">
                             <select id="battleSelectA" class="battle-select" onchange="updateBattle()"></select>
@@ -203,7 +193,6 @@
                         <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-slate-900 z-20">VS</div>
                     </div>
 
-                    <!-- Right Side -->
                     <div class="flex-1 bg-slate-800 rounded-2xl p-6 border-2 border-teal-500 shadow-[0_0_20px_rgba(45,212,191,0.2)] relative flex flex-col transition-all duration-300" id="battleCardB">
                         <div class="flex justify-between items-center mb-4 gap-2">
                             <select id="battleSelectB" class="battle-select" onchange="updateBattle()"></select>
@@ -227,13 +216,12 @@
             </div>
         </section>
 
-        <!-- Building Grid -->
         <section id="solution-section" class="py-12 bg-white border-t border-slate-200">
             <div class="max-w-7xl mx-auto px-4">
                 <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900">건물별 에너지 리포트</h2>
-                        <p class="text-slate-500 text-sm mt-1">카드를 클릭하여 <span class="text-mint font-bold">상세 분석 및 2월 예측</span>을 확인하세요.</p>
+                        <p class="text-slate-500 text-sm mt-1">카드를 클릭하여 <span class="text-mint font-bold">상세 분석 및 3월 예측</span>을 확인하세요.</p>
                     </div>
                     <div class="flex p-1 bg-slate-100 rounded-lg">
                         <button onclick="filterGrid('all')" class="filter-btn active px-4 py-2 text-sm font-medium rounded-md hover:bg-white shadow-sm transition">전체</button>
@@ -246,7 +234,6 @@
             </div>
         </section>
 
-        <!-- AI Consultant -->
         <section class="py-16 bg-slate-900 text-white border-t border-slate-800">
             <div class="max-w-4xl mx-auto px-4 text-center">
                 <div class="inline-block bg-teal-500/20 text-teal-300 text-xs font-bold px-3 py-1 rounded-full mb-4 border border-teal-500/50">AI Beta</div>
@@ -276,7 +263,6 @@
         </section>
     </main>
 
-    <!-- ================= PAGE 2: CAMPAIGN ================= -->
     <main id="page-campaign" class="hidden-page">
         <header class="py-20 bg-slate-900 text-white text-center overflow-hidden relative">
             <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
@@ -284,7 +270,7 @@
                 <i class="fa-solid fa-coins text-6xl text-yellow-400 mb-6 animate-bounce"></i>
                 <h1 class="text-4xl md:text-5xl font-black mb-6">코인 지급 캠페인 활동</h1>
                 <p class="text-lg text-slate-300 leading-relaxed">에너지를 아끼는 작은 습관이 가치 있는 보상으로 돌아옵니다.</p>
-                <div class="mt-8 flex justify-center gap-4">
+                <div class="mt-8 flex justify-center gap-4 flex-wrap">
                     <button onclick="openApplyModal()" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-slate-900 font-black px-8 py-4 rounded-full shadow-lg hover:scale-105 transition transform flex items-center gap-2">
                         <i class="fa-solid fa-paper-plane"></i> 지금 바로 캠페인 참여하기
                     </button>
@@ -318,7 +304,6 @@
                     </div>
                     <div class="text-center group">
                         <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center text-3xl text-yellow-600 mx-auto mb-4 group-hover:bg-yellow-200 transition shadow-sm">
-                            <!-- Quantitative Measurement Illustration -->
                             <i class="fa-solid fa-chart-pie bounce-slow"></i>
                         </div>
                         <h3 class="font-bold mb-2">3. 정량적 성과 측정</h3>
@@ -339,16 +324,16 @@
                         <div class="bg-white p-6 rounded-xl border-2 border-yellow-400 shadow-md">
                             <i class="fa-solid fa-crown text-3xl text-yellow-500 mb-2"></i>
                             <h4 class="font-bold">1위팀 (1팀)</h4>
-                            <p class="text-3xl font-black gradient-coin mt-2">30 코인</p>
+                            <p class="text-3xl font-black gradient-coin mt-2">50 코인</p>
                         </div>
                         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                             <i class="fa-solid fa-medal text-3xl text-slate-300 mb-2"></i>
-                            <h4 class="font-bold">2위팀 (1팀)</h4>
-                            <p class="text-2xl font-black text-slate-700 mt-2">20 코인</p>
+                            <h4 class="font-bold">2위팀 (2팀)</h4>
+                            <p class="text-2xl font-black text-slate-700 mt-2">30 코인</p>
                         </div>
                         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                             <i class="fa-solid fa-award text-3xl text-amber-600 mb-2"></i>
-                            <h4 class="font-bold">3위팀 (1팀)</h4>
+                            <h4 class="font-bold">3위팀 (4팀)</h4>
                             <p class="text-2xl font-black text-slate-700 mt-2">10 코인</p>
                         </div>
                     </div>
@@ -358,11 +343,9 @@
         </section>
     </main>
 
-    <!-- ================= FOOTER ================= -->
     <footer class="bg-white border-t border-slate-200 py-16 text-center relative z-20">
         <div class="max-w-4xl mx-auto px-4 space-y-6">
             <div class="flex items-center justify-center gap-2">
-                <!-- Clean Mint Logo -->
                 <div class="w-10 h-10 flex items-center justify-center">
                     <i class="fa-solid fa-bolt text-3xl text-mint drop-shadow-sm"></i>
                 </div>
@@ -379,11 +362,10 @@
             </div>
             
             <p class="text-xs text-slate-400 border-t border-slate-100 inline-block pt-4">
-                ※ 아메리카노 환산 기준: 2,000원 (교내 및 인근 카페 평균가 적용)
+                ※ 아메리카노 환산 기준: 4,500원 (교내 및 인근 카페 평균가 적용)
             </p>
             
             <div class="pt-6 flex justify-center gap-4">
-                <!-- Fixed Admin Buttons -->
                 <button onclick="adminLogin()" class="text-slate-300 hover:text-slate-500 transition p-4 rounded-full hover:bg-slate-50 relative z-50 focus:outline-none cursor-pointer" title="관리자 전용">
                     <i class="fa-solid fa-lock text-xl"></i>
                 </button>
@@ -394,21 +376,19 @@
         </div>
     </footer>
 
-    <!-- Hidden Input for Data Update -->
     <input type="file" id="excelInput" accept=".xlsx, .csv" class="hidden" onchange="handleFileUpload(event)">
 
-    <!-- Detail Modal -->
-    <div id="detailModal" class="modal fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onclick="closeModal()">
+    <div id="detailModal" class="modal fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onclick="closeModal(event)">
         <div class="modal-content bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden" onclick="event.stopPropagation()">
             <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
                 <h3 id="modalTitle" class="text-lg font-bold">건물 상세 분석</h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="closeModal(event)" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            <div class="flex border-b border-slate-200">
-                <button onclick="switchTab('short')" id="tabShort" class="tab-btn active flex-1 py-3 text-center transition-colors">📊 2월 예측 & 추이</button>
-                <button onclick="switchTab('long')" id="tabLong" class="tab-btn flex-1 py-3 text-center transition-colors">📅 2025 연간 패턴</button>
+            <div class="flex border-b border-slate-200 overflow-x-auto">
+                <button onclick="switchTab('short')" id="tabShort" class="tab-btn active flex-1 py-3 px-2 text-center transition-colors whitespace-nowrap text-sm sm:text-base">📊 <span id="nextMonthName">3월</span> 단기 예측</button>
+                <button onclick="switchTab('long')" id="tabLong" class="tab-btn flex-1 py-3 px-2 text-center transition-colors whitespace-nowrap text-sm sm:text-base">📅 연간 패턴 분석</button>
             </div>
-            <div class="p-6">
+            <div class="p-4 sm:p-6 overflow-y-auto max-h-[70vh]">
                 <div id="contentShort" class="block">
                     <div class="h-64 w-full mb-6"><canvas id="chartShort"></canvas></div>
                     <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-sm leading-relaxed" id="modalPredictionShort"></div>
@@ -421,7 +401,6 @@
         </div>
     </div>
 
-    <!-- Apply Modal -->
     <div id="applyModal" class="modal fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" style="z-index: 200;">
         <div class="modal-content bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-6 relative">
             <button onclick="closeApplyModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -441,7 +420,6 @@
         </div>
     </div>
 
-    <!-- Cancel Modal -->
     <div id="cancelModal" class="modal fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" style="z-index: 200;">
         <div class="modal-content bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-6 relative">
             <button onclick="closeCancelModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -461,414 +439,16 @@
         </div>
     </div>
 
-    <!-- ================= JAVASCRIPT ================= -->
     <script>
         // --- Global State ---
         let applicants = [];
-        let currentMonthIndex = 0;
-        let displayMonth = "1월";
-        let nextMonth = "2월";
+        let currentMonthIndex = 1; // 2월을 의미
+        let displayMonth = "2월";
+        let nextMonth = "3월";
         let currentBuilding = null; 
 
-        // --- Data Logic (Full 28 Filtered Buildings) ---
-        // Generating annual pattern based on 2025 Jan data
-        function generateAnnualData(janValue, cat) {
-            let ratios = cat==='living' ? [1.0,0.95,0.85,0.75,0.70,0.80,1.1,1.15,0.85,0.75,0.9,0.98] :
-                         cat==='study'  ? [1.0,0.90,1.10,1.05,1.00,1.15,1.25,1.15,1.05,1.00,1.05,0.95] :
-                                          [1.0,0.95,0.90,0.85,0.85,0.95,1.10,1.10,0.90,0.85,0.90,0.95];
-            return ratios.map(r => Math.floor(janValue * r));
-        }
-
-        // Updated Data based on user request (Exact List, No 2024, Correct Eng Rate)
-        // Fixed: Growth Rate is preserved, Value is preserved
-        const buildingList = [
-            {n:"교육과학관", c:"study", u:20600, g:10.8, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"공학관", c:"study", u:235790, g:14.6, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"인문학관", c:"study", u:26380, g:2.1, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"언어교육원", c:"study", u:15690, g:-0.4, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"창의관", c:"study", u:28400, g:2.0, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"입학정보관", c:"admin", u:135200, g:12.9, d:"행정/지원", s:"대기전력 차단"},
-            {n:"실내체육관", c:"study", u:8960, g:0.9, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"건축관", c:"study", u:31330, g:11.6, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"행정관", c:"admin", u:68260, g:13.8, d:"행정/지원", s:"대기전력 차단"},
-            {n:"일우헌", c:"living", u:7090, g:14.7, d:"거주 시설", s:"개별 전열기구 관리"},
-            {n:"학생회관", c:"study", u:63950, g:8.8, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"법학전문대학원", c:"study", u:48760, g:6.9, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"경영관", c:"study", u:55400, g:9.9, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"상허기념도서관", c:"study", u:179500, g:16.0, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"공예관", c:"study", u:17860, g:7.3, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"과학관", c:"study", u:124300, g:9.6, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"새천년관", c:"admin", u:155580, g:10.3, d:"행정/지원", s:"대기전력 차단"},
-            {n:"수의학관", c:"study", u:122000, g:22.8, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"KU기술혁신관", c:"admin", u:39600, g:10.0, d:"행정/지원", s:"대기전력 차단"},
-            {n:"생명과학관", c:"study", u:139100, g:14.5, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"산학협동관", c:"admin", u:154330, g:26.3, d:"행정/지원", s:"대기전력 차단"},
-            {n:"상허연구관", c:"study", u:51200, g:9.4, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"KULHOUSE", c:"living", u:782041, g:13.0, d:"거주 시설", s:"개별 전열기구 관리"},
-            {n:"예술디자인대학", c:"study", u:65408, g:9.0, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"의학생명과학관", c:"study", u:186516, g:-13.3, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"동물생명과학관", c:"study", u:112800, g:9.3, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"부동산학관", c:"study", u:24720, g:8.4, d:"학습/연구", s:"빈 강의실 소등"},
-            {n:"신공학관", c:"study", u:328000, g:18.8, d:"학습/연구", s:"빈 강의실 소등"}
-        ];
-
-        let buildingDB = buildingList.map(b => {
-            // b.u = 2026 Jan Real
-            // b.g = Growth (Fixed from data)
-            // 2025 Jan = b.u / (1 + b.g/100)
-            let u25 = Math.floor(b.u / (1 + b.g/100));
-            
-            return {
-                ...b,
-                name: b.n, cat: b.c, desc: b.d, solution: b.s,
-                u26_jan: b.u,
-                u25_jan: u25,
-                growth: b.g, // Locked growth rate
-                // Generate 2025 annual history starting from u25
-                history25: generateAnnualData(u25, b.c),
-                winFactor: "적극적인 " + b.s + " 캠페인 실천",
-                loseFactor: "전년 대비 사용량 증가, " + b.s + " 필요"
-            };
-        });
-
-        // --- Init ---
-        document.addEventListener('DOMContentLoaded', () => {
-            initBattleDropdowns();
-            populateDropdown();
-            populateAISelect();
-            updateBestWorst();
-            refreshDashboard();
-            switchPage('dashboard');
-            
-            // Populate Dropdowns
-            const appBuildingSelect = document.getElementById('appBuilding');
-            const cancelBuildingSelect = document.getElementById('cancelBuilding');
-            
-            buildingDB.forEach(b => {
-                const opt = document.createElement('option');
-                opt.value = b.name;
-                opt.text = b.name;
-                appBuildingSelect.appendChild(opt);
-                cancelBuildingSelect.appendChild(opt.cloneNode(true));
-            });
-        });
-
-        // --- Core Functions ---
-        function switchPage(p) {
-            document.getElementById('page-dashboard').classList.toggle('hidden-page', p!=='dashboard');
-            document.getElementById('page-campaign').classList.toggle('hidden-page', p!=='campaign');
-            document.getElementById('nav-dashboard-links').classList.toggle('hidden', p!=='dashboard');
-            document.getElementById('nav-campaign-links').classList.toggle('hidden', p!=='campaign');
-            document.getElementById('nav-dashboard-menu').classList.toggle('hidden', p!=='dashboard');
-            if(window.innerWidth >= 768 && p==='dashboard') document.getElementById('nav-dashboard-menu').classList.add('md:flex');
-            window.scrollTo(0,0);
-        }
-
-        function refreshDashboard() {
-            renderGrid(buildingDB);
-            updateBattle();
-            updateBestWorst();
-            document.getElementById('currentMonthDisplay').innerText = displayMonth;
-        }
-
-        function updateBestWorst() {
-            const sorted = [...buildingDB].sort((a,b)=>a.growth - b.growth);
-            const best = sorted[0];
-            const worst = sorted[sorted.length-1];
-            
-            if(document.getElementById('bestBuildingName')) {
-                document.getElementById('bestBuildingName').innerText = best.name;
-                document.getElementById('bestBuildingDesc').innerText = `${displayMonth} 증감률 ${best.growth}% (최저)`;
-                document.getElementById('worstBuildingName').innerText = worst.name;
-                document.getElementById('worstBuildingDesc').innerText = `${displayMonth} 증감률 +${worst.growth}% (최고)`;
-            }
-        }
-
-        // --- Battle Logic ---
-        function initBattleDropdowns() {
-            const sA = document.getElementById('battleSelectA');
-            const sB = document.getElementById('battleSelectB');
-            if(!sA || !sB) return;
-            sA.innerHTML=''; sB.innerHTML='';
-            buildingDB.forEach((b,i)=>{
-                sA.add(new Option(b.name, i)); sB.add(new Option(b.name, i));
-            });
-            const engIdx = buildingDB.findIndex(b=>b.name.includes("공학관"));
-            const bioIdx = buildingDB.findIndex(b=>b.name.includes("생명과학관"));
-            sA.value = engIdx >= 0 ? engIdx : 0;
-            sB.value = bioIdx >= 0 ? bioIdx : 1;
-        }
-
-        function updateBattle() {
-            const idxA = document.getElementById('battleSelectA').value;
-            const idxB = document.getElementById('battleSelectB').value;
-            if (idxA === "" || idxB === "") return;
-            renderBattleSide('A', buildingDB[idxA], buildingDB[idxB]);
-            renderBattleSide('B', buildingDB[idxB], buildingDB[idxA]);
-        }
-
-        function renderBattleSide(side, bSelf, bOpponent) {
-            const growthSelf = parseFloat(bSelf.growth);
-            const growthOpp = parseFloat(bOpponent.growth);
-            const isWin = growthSelf < growthOpp;
-            
-            document.getElementById(`icon${side}`).className = `fa-solid ${getIcon(bSelf.name)}`;
-            const growthElem = document.getElementById(`growth${side}`);
-            growthElem.innerText = `${growthSelf > 0 ? '+' : ''}${growthSelf}%`;
-            growthElem.className = `text-2xl font-bold ${isWin ? 'text-mint' : 'text-red-400'}`;
-            
-            document.getElementById(`bar${side}`).style.width = isWin ? '70%' : '30%';
-            document.getElementById(`bar${side}`).className = `battle-bar-fill h-full ${isWin ? 'bg-mint' : 'bg-blue-500'}`;
-            
-            const badge = document.getElementById(`badge${side}`);
-            if(badge) {
-                badge.style.display = isWin ? "inline-block" : "none";
-                badge.innerText = isWin ? "WINNER 👑" : "";
-            }
-            
-            document.getElementById(`battleCard${side}`).className = `flex-1 bg-slate-800 rounded-2xl p-6 border-2 flex flex-col transition-all duration-300 ${isWin ? 'border-teal-500 shadow-[0_0_20px_rgba(45,212,191,0.2)]' : 'border-slate-700'}`;
-            document.getElementById(`iconBox${side}`).className = `w-12 h-12 rounded-lg flex items-center justify-center text-2xl transition-colors duration-300 ${isWin ? 'bg-mint text-slate-900' : 'bg-blue-600'}`;
-            document.getElementById(`reason${side}`).innerHTML = isWin ? `<span class="font-bold text-mint mb-1 block">승리 요인:</span>${bSelf.winFactor}` : `<span class="font-bold text-blue-400 mb-1 block">패배 원인:</span>${bSelf.loseFactor}`;
-        }
-
-        // --- Grid Render ---
-        function renderGrid(data) {
-            const grid = document.getElementById('buildingsGrid');
-            grid.innerHTML = '';
-            data.forEach((b) => {
-                const increase = b.u26_jan - b.u25_jan;
-                const u25_val = b.u25_jan || 0;
-                const u26_val = b.u26_jan || 0;
-                
-                const coffeeCups = Math.max(0, Math.floor(((u26_val - u25_val)*120)/2000));
-                const co2 = Math.max(0, (increase * 0.424).toFixed(1));
-                
-                const div = document.createElement('div');
-                div.className = "bg-white rounded-2xl p-6 border border-slate-200 shadow-sm card-hover flex flex-col cursor-pointer group";
-                // Only card click opens modal
-                div.onclick = () => openModal(b.name);
-                div.dataset.id = b.name; 
-                div.innerHTML = `
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-mint group-hover:text-white transition"><i class="fa-solid ${getIcon(b.name)}"></i></div>
-                            <div><h3 class="font-bold text-slate-900 group-hover:text-mint transition">${b.name}</h3><span class="text-xs text-slate-400 font-medium uppercase">${b.cat}</span></div>
-                        </div>
-                        <div class="text-lg font-bold ${b.growth>0?'text-red-500':'text-emerald-500'}">${b.growth>0?'+':''}${b.growth}%</div>
-                    </div>
-                    <div class="bg-slate-50 rounded-lg p-3 mb-4 text-sm font-sans">
-                        <div class="flex justify-between"><span>25년 ${displayMonth}</span><span class="font-bold text-slate-600 font-sans">${u25_val.toLocaleString()}</span></div>
-                        <div class="flex justify-between text-mint mt-1"><span>26년 ${displayMonth}</span><span class="font-bold font-sans">${u26_val.toLocaleString()}</span></div>
-                    </div>
-                    <div class="mb-4 bg-orange-50 p-3 rounded-lg border border-orange-100 text-xs text-orange-800 leading-tight flex flex-col gap-1" onclick="openModal('${b.name}')">
-                        <div class="flex items-center gap-2 font-bold"><i class="fa-solid fa-mug-hot"></i> 증가분 = 아메리카노 ${coffeeCups.toLocaleString()}잔 값!</div>
-                        <div class="flex items-center gap-2 text-slate-500"><i class="fa-solid fa-cloud"></i> 탄소 증가: ${co2} kg-CO2</div>
-                    </div>
-                    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between items-center">
-                        <span class="text-xs text-slate-400 font-medium group-hover:text-mint transition" onclick="openModal('${b.name}')">상세 분석 &rarr;</span>
-                        <button onclick="goToCampaign(event, '${b.name}')" class="text-xs bg-mint text-white px-3 py-1 rounded-full font-bold hover:bg-teal-600 transition">⚡ 코인 캠페인 참여</button>
-                    </div>
-                `;
-                grid.appendChild(div);
-            });
-        }
-        
-        function goToCampaign(e, buildingName) {
-            e.stopPropagation(); // Prevent modal opening
-            switchPage('campaign');
-            openApplyModal(buildingName);
-        }
-
-        // --- AI ---
-        async function generateAIStrategy() {
-            const b = buildingDB[document.getElementById('aiBuildingSelect').value];
-            document.getElementById('aiLoading').classList.remove('hidden');
-            document.getElementById('aiOutput').classList.add('hidden');
-            
-            const slogans = [
-                "작은 실천이 만드는 큰 변화, En-Pocket!",
-                "지구를 위한 1분, 지금 스위치를 내려주세요.",
-                "오늘의 소등이 내일의 맑은 공기를 만듭니다.",
-                "당신의 절약이 건국대의 녹색 미래입니다.",
-                "에너지 다이어트, 나부터 시작합니다."
-            ];
-            
-            // Randomized strategies
-            const strategies = [
-                `${b.solution} 캠페인과 함께 CES 주관 '빈 강의실 소등 릴레이'에 참여해보세요!`,
-                `${b.solution} 실천으로 대기전력을 차단하고 탄소 발자국을 줄여보세요.`,
-                `사용하지 않는 플러그 뽑기, ${b.name}의 에너지 지킴이가 되어주세요.`,
-                `${b.solution} 활동을 인증하고 En-Pocket 코인을 받아가세요!`
-            ];
-            
-            setTimeout(() => {
-                const sl = slogans[Math.floor(Math.random()*slogans.length)];
-                const st = strategies[Math.floor(Math.random()*strategies.length)];
-                
-                document.getElementById('aiNudgeText').innerText = `[${b.name} 맞춤 전략] ${st}`;
-                document.getElementById('aiSloganText').innerText = `"${sl}"`;
-                document.getElementById('aiLoading').classList.add('hidden');
-                document.getElementById('aiOutput').classList.remove('hidden');
-            }, 1000);
-        }
-
-        // --- Modal & Charts ---
-        let chartInstance = null;
-        let selectedB = null;
-        
-        function openModal(name) {
-            selectedB = buildingDB.find(b => b.name === name);
-            if(!selectedB) return;
-            document.getElementById('modalTitle').innerText = `${name} 상세 분석`;
-            document.getElementById('detailModal').classList.add('active');
-            switchTab('short');
-        }
-        function closeModal() { document.getElementById('detailModal').classList.remove('active'); }
-        function switchTab(t) {
-            const isShort = t==='short';
-            document.getElementById('tabShort').classList.toggle('active', isShort);
-            document.getElementById('tabLong').classList.toggle('active', !isShort);
-            document.getElementById('contentShort').style.display = isShort?'block':'none';
-            document.getElementById('contentLong').style.display = isShort?'none':'block';
-            
-            const ctx = document.getElementById(isShort?'chartShort':'chartLong').getContext('2d');
-            if(chartInstance) chartInstance.destroy();
-            
-            if(isShort) {
-                // Short Term: 25 Jan, 26 Jan, 25 Feb, 26 Feb(Pred)
-                const jan25 = selectedB.u25_jan;
-                const jan26 = selectedB.u26_jan;
-                
-                // Feb Data (Simulated based on history)
-                const feb25 = selectedB.history25[1];
-                
-                // Prediction Logic for Feb 26: 25_Feb * (1 + growth/100)
-                // Using fixed growth rate (g) for prediction
-                const growthRate = selectedB.growth / 100;
-                const predFeb26 = Math.floor((feb25 || 0) * (1 + growthRate)) || 0;
-
-                chartInstance = new Chart(ctx, { type:'bar', data:{
-                    labels: ['25년 1월', '26년 1월', '25년 2월', '26년 2월(예)'],
-                    datasets:[{
-                        label:'전력 사용량 (kWh)',
-                        data: [jan25, jan26, feb25, predFeb26],
-                        backgroundColor: ['#94a3b8', '#2dd4bf', '#94a3b8', '#3b82f6'],
-                        borderRadius: 6
-                    }]
-                }, options:{ plugins:{legend:{display:false}}, responsive:true, maintainAspectRatio:false }});
-                document.getElementById('modalPredictionShort').innerHTML = `<strong>[전년 대비 추세]</strong> 작년 1월 대비 올해 증가율(${selectedB.growth}%)을 반영할 때, 2026년 2월 예상치는 <strong>${predFeb26.toLocaleString()} kWh</strong>입니다.`;
-            } else {
-                // Annual Pattern: 2025 (Full Year) & 2026 (Jan Only)
-                const data26 = Array(12).fill(null);
-                data26[0] = selectedB.u26_jan; // Only Jan
-
-                chartInstance = new Chart(ctx, { type:'line', data:{
-                    labels:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-                    datasets:[
-                        {label:'2025년 실측', data:selectedB.history25, borderColor:'#cbd5e1', borderDash:[5,5], fill:false},
-                        {label:'2026년 실측', data:data26, borderColor:'#2dd4bf', backgroundColor:'#2dd4bf', pointRadius:6, spanGaps:false}
-                    ]
-                }, options:{ responsive:true, maintainAspectRatio:false }});
-                document.getElementById('modalAnalysisLong').innerHTML = `작년(2025)의 연간 패턴을 비교하여 건물의 계절적 특성을 분석합니다. 2026년은 1월 실측값만 표시됩니다.`;
-            }
-        }
-
-        // --- Admin & Utils ---
-        function adminLogin() {
-            const p = prompt("관리자 비밀번호:");
-            if(p==="4610") document.getElementById('excelInput').click();
-            else if(p!==null) alert("비밀번호 불일치");
-        }
-        function viewApplicants() {
-            const p = prompt("관리자 비밀번호:");
-            if(p==="4610") {
-                if(applicants.length===0) alert("신청자 없음");
-                else {
-                    let msg = "=== 신청자 명단 ===\n";
-                    applicants.forEach((a,i) => {
-                        msg += `${i+1}. [${a.building}] ${a.name} (${a.major}, ${a.id}, ${a.team}명, ${a.phone})\n`;
-                    });
-                    alert(msg);
-                }
-            } else if(p!==null) alert("비밀번호 불일치");
-        }
-        function openApplyModal(preSelectBuilding = '') { 
-            document.getElementById('applyModal').classList.add('active'); 
-            if(preSelectBuilding) document.getElementById('appBuilding').value = preSelectBuilding;
-        }
-        function closeApplyModal() { document.getElementById('applyModal').classList.remove('active'); }
-        function openCancelModal() { document.getElementById('cancelModal').classList.add('active'); }
-        function closeCancelModal() { document.getElementById('cancelModal').classList.remove('active'); }
-        
-        function submitApplication(e) {
-            e.preventDefault();
-            const building = document.getElementById('appBuilding').value;
-            
-            // Check Duplicate
-            if(applicants.some(a => a.building === building)) {
-                alert("해당 건물은 신청이 마감된 건물입니다.");
-                return;
-            }
-
-            applicants.push({
-                building: building,
-                name: document.getElementById('appName').value,
-                major: document.getElementById('appMajor').value,
-                id: document.getElementById('appId').value,
-                team: document.getElementById('appTeamSize').value,
-                phone: document.getElementById('appPhone').value
-            });
-            alert("코인 캠페인을 참여해주셔서 감사합니다 ! 정상적으로 제출되었습니다.");
-            closeApplyModal();
-            e.target.reset();
-        }
-
-        function submitCancel() {
-            const buildingToCancel = document.getElementById('cancelBuilding').value;
-            const repName = document.getElementById('cancelName').value;
-            
-            const index = applicants.findIndex(a => a.building === buildingToCancel);
-            
-            if (index > -1) {
-                if(applicants[index].name === repName) {
-                    applicants.splice(index, 1);
-                    alert("정상적으로 취소되었습니다.");
-                    closeCancelModal();
-                } else {
-                    alert("대표자 이름이 다릅니다.");
-                }
-            } else {
-                alert("해당 건물로 신청된 내역이 없습니다.");
-            }
-        }
-
-        function handleFileUpload() {
-            alert("관리자: 데이터 업데이트 완료 (시뮬레이션)");
-        }
-
-        function getIcon(n) { if(n.includes("기숙사"))return "fa-bed"; if(n.includes("도서관"))return "fa-book-open"; if(n.includes("과학")||n.includes("동물")||n.includes("수의")||n.includes("생명"))return "fa-flask"; if(n.includes("공학")||n.includes("건축")||n.includes("창의"))return "fa-microchip"; return "fa-building-columns"; }
-        function populateDropdown() { const s=document.getElementById('globalSearch'); [...buildingDB].sort((a,b)=>a.name.localeCompare(b.name)).forEach(b=>{const o=document.createElement('option');o.value=b.name;o.text=b.name;s.appendChild(o)}); }
-        
-        function scrollToBuilding(n){ 
-            if(!n)return; 
-            switchPage('dashboard'); 
-            setTimeout(()=>{
-                const t=document.querySelector(`div[data-id="${n}"]`); 
-                if(t) {
-                    t.scrollIntoView({behavior:'smooth',block:'center'});
-                    t.classList.add('highlighted-card');
-                    setTimeout(()=>t.classList.remove('highlighted-card'), 2000);
-                }
-            },100); 
-        }
-        
-        function populateAISelect(){const s=document.getElementById('aiBuildingSelect');buildingDB.forEach((b,i)=>{const o=document.createElement('option');o.value=i;o.text=b.name;s.appendChild(o)});}
-        function filterGrid(c) { 
-            const filtered = c==='all'?buildingDB:buildingDB.filter(b=>b.cat===c);
-            renderGrid(filtered);
-            document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active','bg-white','shadow-sm'));
-            event.target.classList.add('active','bg-white','shadow-sm');
-        }
-    </script>
-</body>
-</html>
+        // --- Data Logic: 2026 1,2월 데이터 + 2025 1~12월 실제 데이터 하드코딩 ---
+        let buildingDB = [
+          { name: "교육과학관", cat: "study", u26_jan: 20600, u26_feb: 26500, growth: -3.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [18600, 27490, 22520, 17960, 18640, 22570, 25070, 26029, 28233, 15968, 28760, 24590], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "공학관", cat: "study", u26_jan: 235790, u26_feb: 164240, growth: -5.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [205799, 172800, 190800, 164600, 217800, 225000, 297400, 454813, 227584, 199074, 171414, 199880], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "인문학관", cat: "study", u26_jan: 26380, u26_feb: 24200, growth: -8.3, desc: "학습/연구", solution: "빈 강의실 소등", history25: [25850, 26400, 26000, 22650, 23400, 22350, 20100, 21040, 21585, 19596, 27092, 28100], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소
