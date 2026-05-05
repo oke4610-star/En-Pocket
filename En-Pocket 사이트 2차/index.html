@@ -508,7 +508,7 @@
             { n: "예술디자인대학", c: "study", u26_jan: 65408, u26_feb: 50800, growth: -3.8, d: "학습/연구", s: "빈 강의실 소등", history25: [60000, 52800, 67200, 64800, 57800, 69600, 55200, 46380, 69534, 60000, 83428, 83740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
             { n: "의학생명과학관", c: "study", u26_jan: 186516, u26_feb: 163026, growth: -9.8, d: "학습/연구", s: "빈 강의실 소등", history25: [215136, 180792, 213606, 225612, 279270, 346170, 432134, 452592, 341694, 250650, 169470, 176832], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
             { n: "동물생명과학관", c: "study", u26_jan: 112800, u26_feb: 94000, growth: -2.1, d: "학습/연구", s: "빈 강의실 소등", history25: [103200, 96000, 93200, 100800, 95600, 103200, 112800, 94270, 113103, 97477, 99536, 116740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-            { n: "부동산학관", c: "study", u26_jan: 24720, u26_feb: 20100, growth: 0.8, d: "학습/연구", s: "빈 강의실 소등", history25: [22800, 19950, 22050, 21750, 24300, 27000, 25553, 19500, 30886, 21366, 40715, 23090], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+            { n: "부동산학관", c: "study", u26_jan: 24720, u26_feb: 20100, growth: 0.8, d: "학습/연구", s: "빈 강의실 소등", history25: [22800, 19950, 22050, 21750, 24300, 27000, 25553, 19500, 30886, 21366, 40715, 23090], winFactor: "적극적인 빈 일실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
             { n: "신공학관", c: "study", u26_jan: 328000, u26_feb: 215000, growth: -12.6, d: "학습/연구", s: "빈 강의실 소등", history25: [276000, 246000, 276000, 252000, 298994, 315000, 387000, 301900, 373822, 301020, 262235, 276900], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" }
         ];
 
@@ -806,40 +806,40 @@
             return Number.isFinite(n) ? n : null;
         }
 
-        function extractMonthlyUsageFromSheetAoA(aoa, buildingNames) {
+        // 기존의 단순 추출 함수 대신, 올려주신 엑셀 파일 양식의 
+        // 정확한 컬럼 규칙을 반영한 맞춤형 추출 함수로 교체합니다.
+        function extractMonthlyUsageFromSheetAoA(aoa, buildingNames, targetMonth) {
             const normalizedTargets = new Map(
                 buildingNames.map(n => [normalizeBuildingName(n), n])
             );
             const result = new Map();
+            
+            // 엑셀 컬럼 분석: 26년 1월(idx 3), 2월(idx 7), 3월(idx 11)... 공식 적용
+            const targetColIdx = (targetMonth * 4) - 1; 
 
             for (const row of aoa) {
                 if (!Array.isArray(row)) continue;
 
-                let foundName = null;
-                let foundNameIdx = -1;
-
-                for (let i = 0; i < row.length; i++) {
-                    const cell = row[i];
-                    if (cell == null) continue;
-                    const norm = normalizeBuildingName(cell);
-                    if (normalizedTargets.has(norm)) {
-                        foundName = normalizedTargets.get(norm);
-                        foundNameIdx = i;
+                // 0번째 컬럼(A열)이 건물명입니다.
+                const cell0 = row[0];
+                if (cell0 == null) continue;
+                const norm = normalizeBuildingName(cell0);
+                
+                // 타겟 28개 건물 목록에 포함되는지 유연하게 확인
+                let matchedName = null;
+                for (let [normKey, originalName] of normalizedTargets.entries()) {
+                    if (norm.includes(normKey) || normKey.includes(norm)) {
+                        matchedName = originalName;
                         break;
                     }
                 }
 
-                if (!foundName) continue;
-
-                let value = null;
-                for (let i = 0; i < row.length; i++) {
-                    if (i === foundNameIdx) continue;
-                    const n = coerceNumber(row[i]);
-                    if (n != null) { value = n; break; }
+                if (matchedName) {
+                    const value = coerceNumber(row[targetColIdx]);
+                    if (value != null) {
+                        result.set(matchedName, value);
+                    }
                 }
-                if (value == null) continue;
-
-                result.set(foundName, value);
             }
 
             return result;
@@ -923,35 +923,53 @@
             }
         }
 
+        // 엑셀 파일 업로드 및 자동 분석 로직을 업그레이드 합니다.
         async function handleFileUpload(event) {
             try {
                 const file = event?.target?.files?.[0];
                 if (!file) return;
 
+                // 파일명에서 '(3월)' 등의 숫자를 파악하여 자동으로 할당합니다.
                 const monthFromName = parseMonthFromFilename(file.name);
-                const month = monthFromName ?? (currentMonthIndex + 1);
+                const month = monthFromName ?? 3; // 인식 실패 시 기본값을 3월로 둡니다.
                 const monthIndex = month - 1;
 
                 const buf = await file.arrayBuffer();
                 const wb = XLSX.read(buf, { type: 'array' });
-                const sheetName = wb.SheetNames?.[0];
-                const ws = sheetName ? wb.Sheets[sheetName] : null;
+                
+                // "각 대학별 전기사용량 및 요금" 시트를 우선적으로 찾습니다.
+                const targetSheetName = wb.SheetNames.find(name => name.includes("전기사용량")) || wb.SheetNames[0];
+                const ws = wb.Sheets[targetSheetName];
+                
                 if (!ws) {
                     alert("엑셀 시트를 찾지 못했습니다.");
                     return;
                 }
 
                 const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true });
-                const usageMap = extractMonthlyUsageFromSheetAoA(aoa, TARGET_BUILDINGS);
+                const usageMap = extractMonthlyUsageFromSheetAoA(aoa, TARGET_BUILDINGS, month);
 
                 let updated = 0;
                 buildingDB.forEach(b => {
                     const v = usageMap.get(b.name);
                     if (typeof v === 'number' && Number.isFinite(v)) {
                         if (!Array.isArray(b.u26)) b.u26 = Array(12).fill(null);
-                        b.u26[monthIndex] = v;
+                        b.u26[monthIndex] = v; // 배열 내 3월 자리에 데이터를 넣습니다.
+                        
                         if (monthIndex === 0) b.u26_jan = v;
                         if (monthIndex === 1) b.u26_feb = v;
+                        if (monthIndex === 2) b.u26_mar = v;
+                        
+                        // 💡 중요: 3월 데이터가 입력되면, 작년(25년) 3월 데이터와 비교하여 증감률을 자동 재계산합니다!
+                        let hasCurrentData = b.u26[monthIndex] !== null;
+                        let tMonth = hasCurrentData ? monthIndex : (b.u26[1] !== null ? 1 : 0);
+                        b.uCurr = b.u26[tMonth] ?? 0;
+                        let historyVal = b.history25[tMonth];
+                        
+                        if (hasCurrentData && historyVal > 0) {
+                            b.growth = parseFloat((((b.uCurr - historyVal) / historyVal) * 100).toFixed(1));
+                        }
+                        
                         updated++;
                     }
                 });
