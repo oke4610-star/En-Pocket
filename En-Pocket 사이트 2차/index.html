@@ -24,18 +24,26 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-        // Firebase Configuration (환경 변수에서 가져옴)
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        // 💡 여기에 발급받은 firebaseConfig를 붙여넣으세요.
+        let firebaseConfig = {};
+        
+        if (typeof __firebase_config !== 'undefined') {
+            firebaseConfig = JSON.parse(__firebase_config);
+        } else {
+            firebaseConfig = {
+                // TODO: Firebase 설정값을 여기에 입력해주세요!
+            };
+        }
+
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'en-pocket-app';
         
         let app, auth, db;
         
-        if (Object.keys(firebaseConfig).length > 0) {
+        if (firebaseConfig && Object.keys(firebaseConfig).length > 0 && firebaseConfig.apiKey) {
             app = initializeApp(firebaseConfig);
             auth = getAuth(app);
             db = getFirestore(app);
             
-            // 익명 로그인 (누구나 신청할 수 있도록)
             const initAuth = async () => {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
@@ -48,23 +56,21 @@
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     window.currentUser = user;
-                    // 실시간 데이터 동기화
                     setupRealtimeListener();
                 }
             });
+        } else {
+            console.warn("Firebase 설정값(firebaseConfig)이 누락되었습니다. 데이터베이스 연동 기능을 사용하려면 설정값을 입력해주세요.");
         }
         
-        // 데이터 베이스 경로 설정
         const getCollectionRef = () => collection(db, 'artifacts', appId, 'public', 'data', 'campaign_applicants');
         
-        // 전역 함수로 노출
         window.saveApplicationToCloud = async (applicationData) => {
             if (!db || !window.currentUser) {
-                alert("데이터베이스 연결에 실패했습니다. 관리자에게 문의해주세요.");
+                alert("데이터베이스 연결에 실패했습니다. 관리자에게 문의하거나 Firebase 설정(firebaseConfig)을 확인해주세요.");
                 return false;
             }
             try {
-                // 중복 체크 로직은 클라이언트 측 배열(window.applicants)에서 먼저 수행됨
                 await addDoc(getCollectionRef(), applicationData);
                 return true;
             } catch (e) {
@@ -75,17 +81,15 @@
 
         window.deleteApplicationFromCloud = async (building, name, campaignMonth) => {
              if (!db || !window.currentUser) {
-                alert("데이터베이스 연결에 실패했습니다. 관리자에게 문의해주세요.");
+                alert("데이터베이스 연결에 실패했습니다. 관리자에게 문의하거나 Firebase 설정(firebaseConfig)을 확인해주세요.");
                 return false;
             }
             try {
-                // Firestore 문서 ID를 찾기 위해 query 실행 (복잡한 쿼리 지양 지침에 따라 전체 로드 후 필터링)
                 const querySnapshot = await getDocs(getCollectionRef());
                 let docIdToDelete = null;
                 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    // 건물, 이름, 신청 월이 모두 일치하는 문서를 찾음
                     if (data.building === building && data.name === name && data.campaignMonth === campaignMonth) {
                         docIdToDelete = doc.id;
                     }
@@ -102,12 +106,11 @@
             }
         };
         
-        // 실시간 업데이트 리스너
         const setupRealtimeListener = () => {
              if (!db || !window.currentUser) return;
              
              onSnapshot(getCollectionRef(), (snapshot) => {
-                 window.applicants = []; // 초기화
+                 window.applicants = []; 
                  snapshot.forEach((doc) => {
                      window.applicants.push({ ...doc.data(), id_db: doc.id });
                  });
@@ -435,13 +438,20 @@
             <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
             <div class="max-w-3xl mx-auto px-4 relative z-10">
                 <i class="fa-solid fa-coins text-6xl text-yellow-400 mb-6 animate-bounce"></i>
-                <h1 class="text-3xl sm:text-4xl md:text-5xl font-black mb-6 text-wrap-keepall mobile-tight">코인 지급 캠페인 활동</h1>
-                <p class="text-base sm:text-lg text-slate-300 leading-relaxed text-wrap-keepall">에너지를 아끼는 작은 습관이 가치 있는 보상으로 돌아옵니다.</p>
-                <div class="mt-8 flex justify-center gap-4 flex-wrap">
-                    <button onclick="openApplyModal()" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-slate-900 font-black px-8 py-4 rounded-full shadow-lg hover:scale-105 transition transform flex items-center gap-2">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-black mb-4 text-wrap-keepall mobile-tight">코인 지급 캠페인 활동</h1>
+                <p class="text-base sm:text-lg text-yellow-300 font-bold mb-4 text-wrap-keepall">(돈 한푼 들이지 않고, 다음달 절감량이 가장 큰 건물을 맞추면 상품을 받을 수 있는데 안할 이유가 어딨나요?)</p>
+                <div class="inline-block bg-slate-800 text-slate-300 px-4 py-3 rounded-lg text-sm sm:text-base mb-6 border border-slate-700 shadow-lg text-left">
+                    <div class="mb-1"><span class="text-mint font-bold"><i class="fa-solid fa-check mr-1"></i> 기본 원칙:</span> 1인 1건물 참여 가능</div>
+                    <div><span class="text-pink-400 font-bold"><i class="fa-brands fa-instagram mr-1"></i> 추가 혜택:</span> CES 동아리 계정 팔로우 시 1건물 추가 참여 가능!</div>
+                </div>
+                
+                <div class="mt-4 flex justify-center gap-4 flex-wrap">
+                    <!-- 💡 네이버 폼 링크 연동 -->
+                    <button onclick="window.open('https://naver.me/xtN5mga9', '_blank')" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-slate-900 font-black px-8 py-4 rounded-full shadow-lg hover:scale-105 transition transform flex items-center gap-2">
                         <i class="fa-solid fa-paper-plane"></i> 지금 바로 캠페인 참여하기
                     </button>
-                    <button onclick="openCancelModal()" class="bg-white text-slate-700 font-bold px-8 py-4 rounded-full shadow-lg hover:bg-slate-100 transition transform border border-slate-200">
+                    <!-- 네이버 폼 연동으로 자체 폼이 불필요하므로 취소 역시 안내로 전환 -->
+                    <button onclick="alert('캠페인 참여 취소는 관리자(010-3728-4610)에게 문의해주세요.');" class="bg-white text-slate-700 font-bold px-8 py-4 rounded-full shadow-lg hover:bg-slate-100 transition transform border border-slate-200">
                         <i class="fa-solid fa-trash"></i> 참여 취소하기
                     </button>
                 </div>
@@ -571,62 +581,18 @@
         </div>
     </div>
 
-    <!-- Apply Modal -->
-    <div id="applyModal" class="modal fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" style="z-index: 200;">
-        <div class="modal-content bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-6 relative">
-            <button onclick="closeApplyModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <h3 class="text-xl font-bold mb-2 text-slate-900">캠페인 참여 신청서</h3>
-            <div class="modal-info-msg">
-                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> 신청 내역은 클라우드 저장 및 관리자에게 이메일로 전송됩니다.
-            </div>
-            <form onsubmit="submitApplication(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">희망 건물</label>
-                    <select id="appBuilding" required class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white"></select>
-                </div>
-                <div><label class="block text-sm font-bold text-slate-700 mb-1">성함</label><input type="text" id="appName" required class="w-full border border-slate-300 rounded-lg p-2 text-sm"></div>
-                <div><label class="block text-sm font-bold text-slate-700 mb-1">학과</label><input type="text" id="appMajor" required class="w-full border border-slate-300 rounded-lg p-2 text-sm"></div>
-                <div><label class="block text-sm font-bold text-slate-700 mb-1">학번</label><input type="text" id="appId" required class="w-full border border-slate-300 rounded-lg p-2 text-sm"></div>
-                <div><label class="block text-sm font-bold text-slate-700 mb-1">전화번호</label><input type="tel" id="appPhone" required class="w-full border border-slate-300 rounded-lg p-2 text-sm"></div>
-                <button type="submit" id="submitAppBtn" class="w-full bg-teal-600 text-white font-bold py-3 rounded-lg hover:bg-teal-700 transition">제출하기</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Cancel Modal -->
-    <div id="cancelModal" class="modal fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" style="z-index: 200;">
-        <div class="modal-content bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-6 relative">
-            <button onclick="closeCancelModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <h3 class="text-xl font-bold mb-4 text-red-600">캠페인 참여 취소</h3>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">취소할 건물 선택</label>
-                    <select id="cancelBuilding" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white"></select>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">대표자 이름</label>
-                    <input type="text" id="cancelName" required class="w-full border border-slate-300 rounded-lg p-2 text-sm">
-                </div>
-                <p class="text-xs text-slate-500">* 신청 시 입력한 대표자 이름과 일치해야 취소 가능합니다.</p>
-                <button onclick="submitCancel()" id="cancelAppBtn" class="w-full bg-red-500 text-white font-bold py-3 rounded-lg hover:bg-red-600 transition">신청 취소하기</button>
-            </div>
-        </div>
-    </div>
-
     <!-- ================= JAVASCRIPT ================= -->
     <script>
         // --- Global State ---
-        window.applicants = []; // Firebase 동기화를 위해 전역 객체로 이동
+        window.applicants = []; 
         let currentMonthIndex = 2; // 3월을 의미
         let displayMonth = "3월";
         let nextMonth = "4월";
         let currentBuilding = null; 
         
-        // 순위표 탭 상태 및 더보기 펼침 상태 관리
         let currentRankingType = 'current'; 
         let isRankingExpanded = false; 
 
-        // 3월 실측값 및 2025년 데이터 완벽 교체
         let buildingDB = [
           { name: "교육과학관", cat: "study", u26_jan: 20600, u26_feb: 26500, u26_mar: 21178, growth: -6.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [18600, 27490, 22520, 17960, 18640, 22570, 25070, 26029, 28233, 15968, 28760, 24590], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
           { name: "공학관", cat: "study", u26_jan: 235790, u26_feb: 164240, u26_mar: 217800, growth: 14.2, desc: "학습/연구", solution: "빈 강의실 소등", history25: [205799, 172800, 190800, 164600, 217800, 225000, 297400, 454813, 227584, 199074, 171414, 199880], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
@@ -658,93 +624,96 @@
           { name: "신공학관", cat: "study", u26_jan: 328000, u26_feb: 215000, u26_mar: 273000, growth: -1.1, desc: "학습/연구", solution: "빈 강의실 소등", history25: [276000, 246000, 276000, 252000, 298994, 315000, 387000, 301900, 373822, 301020, 262235, 276900], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" }
         ];
 
-        // u26 배열과 uCurr 연동 처리
         buildingDB = buildingDB.map(b => {
             const u26 = Array(12).fill(null);
             u26[0] = b.u26_jan;
             u26[1] = b.u26_feb;
             u26[2] = b.u26_mar;
-            return {
-                ...b,
-                u26,
-                uCurr: b.u26_mar
-            };
+            return { ...b, u26, uCurr: b.u26_mar };
         });
 
         const TARGET_BUILDINGS = buildingDB.map(b => b.name);
 
-        // --- Init ---
-        document.addEventListener('DOMContentLoaded', () => {
-            initBattleDropdowns();
-            populateDropdown();
-            populateAISelect();
-            updateBestWorst();
-            refreshDashboard();
-            switchPage('dashboard');
-            
-            // Populate Dropdowns for Apply/Cancel
-            const appBuildingSelect = document.getElementById('appBuilding');
-            const cancelBuildingSelect = document.getElementById('cancelBuilding');
-            
-            buildingDB.forEach(b => {
-                const opt = document.createElement('option');
-                opt.value = b.name;
-                opt.text = b.name;
-                appBuildingSelect.appendChild(opt);
-                cancelBuildingSelect.appendChild(opt.cloneNode(true));
+        // --- Utility Functions ---
+        function normalizeBuildingName(v) {
+            return String(v ?? '').replace(/\s+/g, '').toLowerCase();
+        }
+
+        function parseMonthFromFilename(filename) {
+            const name = String(filename ?? '');
+            const m = name.match(/(\d{1,2})\s*월/);
+            if (!m) return null;
+            const month = Number(m[1]);
+            if (!Number.isFinite(month) || month < 1 || month > 12) return null;
+            return month;
+        }
+
+        function coerceNumber(v) {
+            if (typeof v === 'number' && Number.isFinite(v)) return v;
+            const s = String(v ?? '').replace(/,/g, '').trim();
+            const n = Number(s);
+            return Number.isFinite(n) ? n : null;
+        }
+
+        function extractMonthlyUsageFromSheetAoA(aoa, buildingNames, targetMonth) {
+            const normalizedTargets = new Map(
+                buildingNames.map(n => [normalizeBuildingName(n), n])
+            );
+            const result = new Map();
+            const targetColIdx = (targetMonth * 4) - 1; 
+
+            for (const row of aoa) {
+                if (!Array.isArray(row)) continue;
+                const cell0 = row[0];
+                if (cell0 == null) continue;
+                const norm = normalizeBuildingName(cell0);
+                
+                let matchedName = null;
+                for (let [normKey, originalName] of normalizedTargets.entries()) {
+                    if (norm.includes(normKey) || normKey.includes(norm)) {
+                        matchedName = originalName;
+                        break;
+                    }
+                }
+
+                if (matchedName) {
+                    const value = coerceNumber(row[targetColIdx]);
+                    if (value != null) {
+                        result.set(matchedName, value);
+                    }
+                }
+            }
+            return result;
+        }
+
+        function getIcon(n) { 
+            if(n.includes("기숙사")) return "fa-bed"; 
+            if(n.includes("도서관")) return "fa-book-open"; 
+            if(n.includes("과학")||n.includes("동물")||n.includes("수의")||n.includes("생명")) return "fa-flask"; 
+            if(n.includes("공학")||n.includes("건축")||n.includes("창의")) return "fa-microchip"; 
+            return "fa-building-columns"; 
+        }
+
+        function populateDropdown() { 
+            const s = document.getElementById('globalSearch'); 
+            [...buildingDB].sort((a,b)=>a.name.localeCompare(b.name)).forEach(b=>{
+                const o = document.createElement('option');
+                o.value = b.name;
+                o.text = b.name;
+                s.appendChild(o);
+            }); 
+        }
+
+        function populateAISelect() {
+            const s = document.getElementById('aiBuildingSelect');
+            buildingDB.forEach((b,i)=>{
+                const o = document.createElement('option');
+                o.value = i;
+                o.text = b.name;
+                s.appendChild(o);
             });
-        });
-
-        // --- Core Functions ---
-        function switchPage(p) {
-            const dashboard = document.getElementById('page-dashboard');
-            const campaign = document.getElementById('page-campaign');
-            const navDashboard = document.getElementById('nav-dashboard-links');
-            const navCampaign = document.getElementById('nav-campaign-links');
-            const navSearch = document.getElementById('nav-dashboard-menu');
-
-            if (p === 'dashboard') {
-                dashboard.classList.remove('hidden-page');
-                campaign.classList.add('hidden-page');
-                navDashboard.classList.remove('hidden');
-                navCampaign.classList.add('hidden');
-                navSearch.classList.remove('hidden');
-                navSearch.classList.add('md:flex');
-            } else {
-                dashboard.classList.add('hidden-page');
-                campaign.classList.remove('hidden-page');
-                navDashboard.classList.add('hidden');
-                navCampaign.classList.remove('hidden');
-                navSearch.classList.add('hidden');
-                navSearch.classList.remove('md:flex');
-            }
-            window.scrollTo(0,0);
         }
 
-        function refreshDashboard() {
-            renderGrid(buildingDB);
-            updateBattle();
-            updateBestWorst();
-            showRanking('current'); // 순위표 렌더링 호출
-            document.getElementById('currentMonthDisplay').innerText = displayMonth;
-            document.getElementById('nextMonthName').innerText = nextMonth;
-            document.getElementById('battleMonthText').innerText = `2026.${(currentMonthIndex+1).toString().padStart(2,'0')} 기준 라이벌 매치`;
-        }
-
-        function updateBestWorst() {
-            const sorted = [...buildingDB].sort((a,b)=>a.growth - b.growth);
-            const best = sorted[0];
-            const worst = sorted[sorted.length-1];
-            
-            if(document.getElementById('bestBuildingName')) {
-                document.getElementById('bestBuildingName').innerText = best.name;
-                document.getElementById('bestBuildingDesc').innerText = `${displayMonth} 증감률 ${best.growth}% (최저)`;
-                document.getElementById('worstBuildingName').innerText = worst.name;
-                document.getElementById('worstBuildingDesc').innerText = `${displayMonth} 증감률 ${worst.growth > 0 ? '+' : ''}${worst.growth}% (최고)`;
-            }
-        }
-
-        // --- Battle Logic ---
         function initBattleDropdowns() {
             const sA = document.getElementById('battleSelectA');
             const sB = document.getElementById('battleSelectB');
@@ -759,132 +728,15 @@
             sB.value = bioIdx >= 0 ? bioIdx : 1;
         }
 
-        function updateBattle() {
-            const idxA = document.getElementById('battleSelectA').value;
-            const idxB = document.getElementById('battleSelectB').value;
-            if (idxA === "" || idxB === "") return;
-            renderBattleSide('A', buildingDB[idxA], buildingDB[idxB]);
-            renderBattleSide('B', buildingDB[idxB], buildingDB[idxA]);
-        }
-
-        function renderBattleSide(side, bSelf, bOpponent) {
-            const growthSelf = parseFloat(bSelf.growth);
-            const growthOpp = parseFloat(bOpponent.growth);
-            const isWin = growthSelf < growthOpp;
-            
-            document.getElementById(`icon${side}`).className = `fa-solid ${getIcon(bSelf.name)}`;
-            const growthElem = document.getElementById(`growth${side}`);
-            growthElem.innerText = `${growthSelf > 0 ? '+' : ''}${growthSelf}%`;
-            growthElem.className = `text-2xl font-bold ${isWin ? 'text-mint' : 'text-red-400'}`;
-            
-            document.getElementById(`bar${side}`).style.width = isWin ? '70%' : '30%';
-            document.getElementById(`bar${side}`).className = `battle-bar-fill h-full ${isWin ? 'bg-mint' : 'bg-blue-500'}`;
-            
-            const badge = document.getElementById(`badge${side}`);
-            if(badge) {
-                badge.style.display = isWin ? "inline-block" : "none";
-                badge.innerText = isWin ? "WINNER 👑" : "";
-            }
-            
-            document.getElementById(`battleCard${side}`).className = `flex-1 bg-slate-800 rounded-2xl p-6 border-2 flex flex-col transition-all duration-300 ${isWin ? 'border-teal-500 shadow-[0_0_20px_rgba(45,212,191,0.2)]' : 'border-slate-700'}`;
-            document.getElementById(`iconBox${side}`).className = `w-12 h-12 rounded-lg flex items-center justify-center text-2xl transition-colors duration-300 ${isWin ? 'bg-mint text-slate-900' : 'bg-blue-600'}`;
-            document.getElementById(`reason${side}`).innerHTML = isWin ? `<span class="font-bold text-mint mb-1 block">승리 요인:</span>${bSelf.winFactor}` : `<span class="font-bold text-blue-400 mb-1 block">패배 원인:</span>${bSelf.loseFactor}`;
-        }
-
-        // --- Ranking Table Logic ---
-        function getGrowthForMonth(b, monthIdx) {
-            let currentVal = b.u26[monthIdx];
-            let historyVal = b.history25[monthIdx];
-            if (currentVal == null || historyVal == null || historyVal === 0) return 0;
-            return parseFloat((((currentVal - historyVal) / historyVal) * 100).toFixed(1));
-        }
-
-        function showRanking(type, isToggle = false) {
-            // 더보기 버튼 클릭이 아닌 탭 전환일 경우, 상태를 초기화(10개만 표시)합니다.
-            if (!isToggle) {
-                currentRankingType = type;
-                isRankingExpanded = false;
-            }
-            
-            let targetMonthIdx = currentMonthIndex; // 기본: 이번 달(3월)
-            if (currentRankingType === 'prev') targetMonthIdx = currentMonthIndex - 1; // 저번 달(2월)
-            if (currentRankingType === 'prev2') targetMonthIdx = currentMonthIndex - 2; // 1월
-            
-            const btnCurrent = document.getElementById('rankBtnCurrent');
-            const btnPrev = document.getElementById('rankBtnPrev');
-            const btnPrev2 = document.getElementById('rankBtnPrev2');
-            
-            const activeClass = "px-4 py-2 text-sm font-medium rounded-md bg-slate-600 text-white shadow-sm transition whitespace-nowrap";
-            const inactiveClass = "px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white transition whitespace-nowrap";
-
-            if (btnCurrent) btnCurrent.className = currentRankingType === 'current' ? activeClass : inactiveClass;
-            if (btnPrev) btnPrev.className = currentRankingType === 'prev' ? activeClass : inactiveClass;
-            if (btnPrev2) btnPrev2.className = currentRankingType === 'prev2' ? activeClass : inactiveClass;
-
-            const rankingData = buildingDB.map(b => {
-                return {
-                    name: b.name,
-                    growth: getGrowthForMonth(b, targetMonthIdx)
-                };
-            }).sort((a, b) => a.growth - b.growth);
-
-            // ✨ TOP 10 슬라이싱 로직 적용
-            const displayData = isRankingExpanded ? rankingData : rankingData.slice(0, 10);
-
-            let html = '';
-            displayData.forEach((data, index) => {
-                let rankIcon = `${index + 1}`;
-                let textClass = 'text-slate-300';
-                
-                if (index === 0) { rankIcon = '👑 1'; textClass = 'text-yellow-400 font-bold'; }
-                else if (index === 1) { rankIcon = '🥈 2'; textClass = 'text-slate-100 font-bold'; }
-                else if (index === 2) { rankIcon = '🥉 3'; textClass = 'text-amber-600 font-bold'; }
-
-                let growthText = data.growth > 0 ? `+${data.growth}%` : `${data.growth}%`;
-                let growthColor = data.growth > 0 ? 'text-red-400' : 'text-mint';
-
-                html += `
-                    <tr class="hover:bg-slate-700/30 transition-colors">
-                        <td class="px-4 py-3 font-medium ${textClass}">${rankIcon}</td>
-                        <td class="px-4 py-3 text-white font-medium">${data.name}</td>
-                        <td class="px-4 py-3 text-right font-bold ${growthColor}">${growthText}</td>
-                    </tr>
-                `;
-            });
-            document.getElementById('rankingTableBody').innerHTML = html;
-            
-            // ✨ 더보기 버튼 텍스트 및 노출 여부 업데이트
-            const btnContainer = document.getElementById('rankingViewMoreContainer');
-            const viewMoreBtn = document.getElementById('rankingViewMoreBtn');
-            
-            if (rankingData.length <= 10) {
-                if (btnContainer) btnContainer.style.display = 'none';
-            } else {
-                if (btnContainer) btnContainer.style.display = 'block';
-                if (viewMoreBtn) {
-                    viewMoreBtn.innerHTML = isRankingExpanded ? '▲ 접기' : '▼ 11위 이하 더보기';
-                }
-            }
-        }
-
-        // 토글 버튼을 누르면 펼침 상태를 반전시키고 다시 그립니다.
-        function toggleRankingView() {
-            isRankingExpanded = !isRankingExpanded;
-            showRanking(currentRankingType, true);
-        }
-
-        // --- Grid Render ---
         function renderGrid(data) {
             const grid = document.getElementById('buildingsGrid');
             grid.innerHTML = '';
             data.forEach((b) => {
-                const historyVal = b.history25[2]; // 25년 3월
-                const u26_val = b.u26_mar; // 26년 3월
+                const historyVal = b.history25[2]; 
+                const u26_val = b.u26_mar; 
                 const diff = u26_val - historyVal;
                 
-                // 마이너스 값 허용을 위한 절대값 적용 및 2000원 단가 계산
                 const coffeeCups = Math.floor((Math.abs(diff) * 120) / 2000);
-                
                 const co2 = (diff * 0.424).toFixed(1);
                 const coffeeTag = diff > 0 ? '초과 낭비!' : (diff < 0 ? '세이브!' : '');
                 const co2Text = `${diff > 0 ? '+' : ''}${co2}`;
@@ -911,64 +763,166 @@
                     </div>
                     <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between items-center">
                         <span class="text-xs text-slate-400 font-medium group-hover:text-mint transition">상세 분석 &rarr;</span>
-                        <button onclick="goToCampaign(event, '${b.name}')" class="text-xs bg-mint text-white px-2.5 sm:px-3 py-1 rounded-full font-bold hover:bg-teal-600 transition shadow whitespace-nowrap">⚡ 코인 캠페인 참여</button>
+                        <button onclick="goToCampaign(event)" class="text-xs bg-mint text-white px-2.5 sm:px-3 py-1 rounded-full font-bold hover:bg-teal-600 transition shadow whitespace-nowrap">⚡ 코인 캠페인 참여</button>
                     </div>
                 `;
                 grid.appendChild(div);
             });
         }
-        
-        function goToCampaign(e, buildingName) {
-            e.stopPropagation(); // Prevent modal opening
-            switchPage('campaign');
-            openApplyModal(buildingName);
+
+        function renderBattleSide(side, bSelf, bOpponent) {
+            const growthSelf = parseFloat(bSelf.growth);
+            const growthOpp = parseFloat(bOpponent.growth);
+            const isWin = growthSelf < growthOpp;
+            
+            document.getElementById(`icon${side}`).className = `fa-solid ${getIcon(bSelf.name)}`;
+            const growthElem = document.getElementById(`growth${side}`);
+            growthElem.innerText = `${growthSelf > 0 ? '+' : ''}${growthSelf}%`;
+            growthElem.className = `text-2xl font-bold ${isWin ? 'text-mint' : 'text-red-400'}`;
+            
+            document.getElementById(`bar${side}`).style.width = isWin ? '70%' : '30%';
+            document.getElementById(`bar${side}`).className = `battle-bar-fill h-full ${isWin ? 'bg-mint' : 'bg-blue-500'}`;
+            
+            const badge = document.getElementById(`badge${side}`);
+            if(badge) {
+                badge.style.display = isWin ? "inline-block" : "none";
+                badge.innerText = isWin ? "WINNER 👑" : "";
+            }
+            
+            document.getElementById(`battleCard${side}`).className = `flex-1 bg-slate-800 rounded-2xl p-6 border-2 flex flex-col transition-all duration-300 ${isWin ? 'border-teal-500 shadow-[0_0_20px_rgba(45,212,191,0.2)]' : 'border-slate-700'}`;
+            document.getElementById(`iconBox${side}`).className = `w-12 h-12 rounded-lg flex items-center justify-center text-2xl transition-colors duration-300 ${isWin ? 'bg-mint text-slate-900' : 'bg-blue-600'}`;
+            document.getElementById(`reason${side}`).innerHTML = isWin ? `<span class="font-bold text-mint mb-1 block">승리 요인:</span>${bSelf.winFactor}` : `<span class="font-bold text-blue-400 mb-1 block">패배 원인:</span>${bSelf.loseFactor}`;
         }
 
-        // --- AI ---
-        async function generateAIStrategy() {
-            const b = buildingDB[document.getElementById('aiBuildingSelect').value];
-            document.getElementById('aiLoading').classList.remove('hidden');
-            document.getElementById('aiOutput').classList.add('hidden');
+        function updateBattle() {
+            const idxA = document.getElementById('battleSelectA').value;
+            const idxB = document.getElementById('battleSelectB').value;
+            if (idxA === "" || idxB === "") return;
+            renderBattleSide('A', buildingDB[idxA], buildingDB[idxB]);
+            renderBattleSide('B', buildingDB[idxB], buildingDB[idxA]);
+        }
+
+        function updateBestWorst() {
+            const sorted = [...buildingDB].sort((a,b)=>a.growth - b.growth);
+            const best = sorted[0];
+            const worst = sorted[sorted.length-1];
             
-            const slogans = [
-                "작은 실천이 만드는 큰 변화, En-Pocket!",
-                "지구를 위한 1분, 지금 스위치를 내려주세요.",
-                "오늘의 소등이 내일의 맑은 공기를 만듭니다.",
-                "당신의 절약이 건국대의 녹색 미래입니다.",
-                "에너지 다이어트, 나부터 시작합니다."
-            ];
+            if(document.getElementById('bestBuildingName')) {
+                document.getElementById('bestBuildingName').innerText = best.name;
+                document.getElementById('bestBuildingDesc').innerText = `${displayMonth} 증감률 ${best.growth}% (최저)`;
+                document.getElementById('worstBuildingName').innerText = worst.name;
+                document.getElementById('worstBuildingDesc').innerText = `${displayMonth} 증감률 ${worst.growth > 0 ? '+' : ''}${worst.growth}% (최고)`;
+            }
+        }
+
+        function getGrowthForMonth(b, monthIdx) {
+            let currentVal = b.u26[monthIdx];
+            let historyVal = b.history25[monthIdx];
+            if (currentVal == null || historyVal == null || historyVal === 0) return 0;
+            return parseFloat((((currentVal - historyVal) / historyVal) * 100).toFixed(1));
+        }
+
+        function showRanking(type, isToggle = false) {
+            if (!isToggle) {
+                currentRankingType = type;
+                isRankingExpanded = false;
+            }
             
-            const strategies = [
-                `${b.solution} 캠페인과 함께 CES 주관 '빈 강의실 소등 릴레이'에 참여해보세요!`,
-                `${b.solution} 실천으로 대기전력을 차단하고 탄소 발자국을 줄여보세요.`,
-                `사용하지 않는 플러그 뽑기, ${b.name}의 에너지 지킴이가 되어주세요.`,
-                `${b.solution} 활동을 인증하고 En-Pocket 코인을 받아가세요!`
-            ];
+            let targetMonthIdx = currentMonthIndex; 
+            if (currentRankingType === 'prev') targetMonthIdx = currentMonthIndex - 1; 
+            if (currentRankingType === 'prev2') targetMonthIdx = currentMonthIndex - 2; 
             
-            setTimeout(() => {
-                const sl = slogans[Math.floor(Math.random()*slogans.length)];
-                const st = strategies[Math.floor(Math.random()*strategies.length)];
+            const btnCurrent = document.getElementById('rankBtnCurrent');
+            const btnPrev = document.getElementById('rankBtnPrev');
+            const btnPrev2 = document.getElementById('rankBtnPrev2');
+            
+            const activeClass = "px-4 py-2 text-sm font-medium rounded-md bg-slate-600 text-white shadow-sm transition whitespace-nowrap";
+            const inactiveClass = "px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white transition whitespace-nowrap";
+
+            if (btnCurrent) btnCurrent.className = currentRankingType === 'current' ? activeClass : inactiveClass;
+            if (btnPrev) btnPrev.className = currentRankingType === 'prev' ? activeClass : inactiveClass;
+            if (btnPrev2) btnPrev2.className = currentRankingType === 'prev2' ? activeClass : inactiveClass;
+
+            const rankingData = buildingDB.map(b => {
+                return {
+                    name: b.name,
+                    growth: getGrowthForMonth(b, targetMonthIdx)
+                };
+            }).sort((a, b) => a.growth - b.growth);
+
+            const displayData = isRankingExpanded ? rankingData : rankingData.slice(0, 10);
+
+            let html = '';
+            displayData.forEach((data, index) => {
+                let rankIcon = `${index + 1}`;
+                let textClass = 'text-slate-300';
                 
-                document.getElementById('aiNudgeText').innerText = `[${b.name} 맞춤 전략] ${st}`;
-                document.getElementById('aiSloganText').innerText = `"${sl}"`;
-                document.getElementById('aiLoading').classList.add('hidden');
-                document.getElementById('aiOutput').classList.remove('hidden');
-            }, 1000);
+                if (index === 0) { rankIcon = '👑 1'; textClass = 'text-yellow-400 font-bold'; }
+                else if (index === 1) { rankIcon = '🥈 2'; textClass = 'text-slate-100 font-bold'; }
+                else if (index === 2) { rankIcon = '🥉 3'; textClass = 'text-amber-600 font-bold'; }
+
+                let growthText = data.growth > 0 ? `+${data.growth}%` : `${data.growth}%`;
+                let growthColor = data.growth > 0 ? 'text-red-400' : 'text-mint';
+
+                html += `
+                    <tr class="hover:bg-slate-700/30 transition-colors">
+                        <td class="px-4 py-3 font-medium ${textClass}">${rankIcon}</td>
+                        <td class="px-4 py-3 text-white font-medium">${data.name}</td>
+                        <td class="px-4 py-3 text-right font-bold ${growthColor}">${growthText}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('rankingTableBody').innerHTML = html;
+            
+            const btnContainer = document.getElementById('rankingViewMoreContainer');
+            const viewMoreBtn = document.getElementById('rankingViewMoreBtn');
+            
+            if (rankingData.length <= 10) {
+                if (btnContainer) btnContainer.style.display = 'none';
+            } else {
+                if (btnContainer) btnContainer.style.display = 'block';
+                if (viewMoreBtn) {
+                    viewMoreBtn.innerHTML = isRankingExpanded ? '▲ 접기' : '▼ 11위 이하 더보기';
+                }
+            }
         }
 
-        // --- Modal & Charts ---
-        let chartInstance = null;
-        let selectedB = null;
-        
-        function openModal(name) {
-            selectedB = buildingDB.find(b => b.name === name);
-            if(!selectedB) return;
-            document.getElementById('modalTitle').innerText = `${name} 상세 분석`;
-            document.getElementById('detailModal').classList.add('active');
-            switchTab('short');
+        function refreshDashboard() {
+            renderGrid(buildingDB);
+            updateBattle();
+            updateBestWorst();
+            showRanking('current');
+            document.getElementById('currentMonthDisplay').innerText = displayMonth;
+            document.getElementById('nextMonthName').innerText = nextMonth;
+            document.getElementById('battleMonthText').innerText = `2026.${(currentMonthIndex+1).toString().padStart(2,'0')} 기준 라이벌 매치`;
         }
-        function closeModal(e) { document.getElementById('detailModal').classList.remove('active'); }
-        
+
+        // --- Event Handlers ---
+        function switchPage(p) {
+            const dashboard = document.getElementById('page-dashboard');
+            const campaign = document.getElementById('page-campaign');
+            const navDashboard = document.getElementById('nav-dashboard-links');
+            const navCampaign = document.getElementById('nav-campaign-links');
+            const navSearch = document.getElementById('nav-dashboard-menu');
+
+            if (p === 'dashboard') {
+                dashboard.classList.remove('hidden-page');
+                campaign.classList.add('hidden-page');
+                navDashboard.classList.remove('hidden');
+                navCampaign.classList.add('hidden');
+                navSearch.classList.remove('hidden');
+                navSearch.classList.add('md:flex');
+            } else {
+                dashboard.classList.add('hidden-page');
+                campaign.classList.remove('hidden-page');
+                navDashboard.classList.add('hidden');
+                navCampaign.classList.remove('hidden');
+                navSearch.classList.add('hidden');
+                navSearch.classList.remove('md:flex');
+            }
+            window.scrollTo(0,0);
+        }
+
         function switchTab(t) {
             const isShort = t==='short';
             document.getElementById('tabShort').classList.toggle('active', isShort);
@@ -980,18 +934,17 @@
             if(chartInstance) chartInstance.destroy();
             
             if(isShort) {
-                const histCurr = selectedB.history25[2]; // 25년 3월
-                const histNext = selectedB.history25[3]; // 25년 4월
-                const currVal = selectedB.u26_mar;       // 26년 3월
+                const histCurr = selectedB.history25[2]; 
+                const histNext = selectedB.history25[3]; 
+                const currVal = selectedB.u26_mar;       
                 
                 const growthRate = selectedB.growth / 100;
-                const predNext = Math.floor((histNext || 0) * (1 + growthRate)) || 0; // 4월 예측
+                const predNext = Math.floor((histNext || 0) * (1 + growthRate)) || 0; 
 
                 const dataVals = [histCurr, currVal, histNext, predNext];
                 const minData = Math.min(...dataVals);
                 const maxData = Math.max(...dataVals);
                 
-                // 막대 높이 차이를 극대화하기 위해 Y축 최솟값 동적 설정 (데이터 편차의 80%를 하단 여백으로)
                 let yMin = 0;
                 if (minData > 0 && maxData > minData) {
                     yMin = Math.max(0, Math.floor(minData - (maxData - minData) * 0.8));
@@ -1027,24 +980,20 @@
                     plugins: [{
                         id: 'waveBreakPlugin',
                         afterDraw: function(chart) {
-                            // Y축 시작점이 0이 아닐 경우 하단에 물결 모양(생략선)을 그려줍니다.
                             if (chart.scales.y.min > 0) {
                                 const ctx = chart.ctx;
                                 const xAxis = chart.scales.x;
                                 const yAxis = chart.scales.y;
-                                const y = yAxis.bottom; // X축 라인 위치
+                                const y = yAxis.bottom; 
                                 
                                 ctx.save();
-                                // 1. 기존 일직선 X축 덮어쓰기 (하얀색 배경으로 지움)
                                 ctx.fillStyle = '#ffffff';
                                 ctx.fillRect(xAxis.left, y - 6, xAxis.right - xAxis.left, 12);
                                 
-                                // 2. 부드러운 물결(Sine Wave) 선 그리기
                                 ctx.beginPath();
-                                const waveLength = 15; // 물결의 너비
-                                const amplitude = 4;   // 물결의 높이
+                                const waveLength = 15; 
+                                const amplitude = 4;   
                                 for (let x = xAxis.left; x <= xAxis.right; x++) {
-                                    // Math.sin을 이용하여 부드러운 곡선 생성
                                     const yPos = y + Math.sin((x - xAxis.left) / waveLength * Math.PI * 2) * amplitude;
                                     if (x === xAxis.left) {
                                         ctx.moveTo(x, yPos);
@@ -1052,7 +1001,7 @@
                                         ctx.lineTo(x, yPos);
                                     }
                                 }
-                                ctx.strokeStyle = '#94a3b8'; // tailwind slate-400 컬러
+                                ctx.strokeStyle = '#94a3b8'; 
                                 ctx.lineWidth = 1.5;
                                 ctx.stroke();
                                 ctx.restore();
@@ -1063,11 +1012,10 @@
                 
                 document.getElementById('modalPredictionShort').innerHTML = `<strong>[전년 대비 추세]</strong> 작년 ${displayMonth} 대비 올해 증감률(${selectedB.growth}%)을 반영할 때, 2026년 ${nextMonth} 예상치는 <strong>${predNext.toLocaleString()} kWh</strong>입니다.<br><span class="text-xs text-slate-500 mt-2 inline-block"><i class="fa-solid fa-circle-info"></i> 막대의 값 차이를 명확히 보기 위해 그래프 하단이 생략(물결선) 되었습니다.</span>`;
             } else {
-                // 연간 패턴 차트 1~3월 선 잇기
                 const data26 = Array(12).fill(null);
-                data26[0] = selectedB.u26_jan; // 1월
-                data26[1] = selectedB.u26_feb; // 2월
-                data26[2] = selectedB.u26_mar; // 3월 (모두 선으로 연결됨)
+                data26[0] = selectedB.u26_jan; 
+                data26[1] = selectedB.u26_feb; 
+                data26[2] = selectedB.u26_mar; 
 
                 chartInstance = new Chart(ctx, { type:'line', data:{
                     labels:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
@@ -1081,74 +1029,74 @@
             }
         }
 
-        // --- Admin & Utils ---
-        function normalizeBuildingName(v) {
-            return String(v ?? '').replace(/\s+/g, '').toLowerCase();
+        function openModal(name) {
+            selectedB = buildingDB.find(b => b.name === name);
+            if(!selectedB) return;
+            document.getElementById('modalTitle').innerText = `${name} 상세 분석`;
+            document.getElementById('detailModal').classList.add('active');
+            switchTab('short');
+        }
+        function closeModal(e) { document.getElementById('detailModal').classList.remove('active'); }
+        
+        function goToCampaign(e) {
+            e.stopPropagation();
+            window.open('https://naver.me/xtN5mga9', '_blank');
         }
 
-        function parseMonthFromFilename(filename) {
-            const name = String(filename ?? '');
-            const m = name.match(/(\d{1,2})\s*월/);
-            if (!m) return null;
-            const month = Number(m[1]);
-            if (!Number.isFinite(month) || month < 1 || month > 12) return null;
-            return month;
+        function toggleRankingView() {
+            isRankingExpanded = !isRankingExpanded;
+            showRanking(currentRankingType, true);
         }
 
-        function coerceNumber(v) {
-            if (typeof v === 'number' && Number.isFinite(v)) return v;
-            const s = String(v ?? '').replace(/,/g, '').trim();
-            const n = Number(s);
-            return Number.isFinite(n) ? n : null;
+        function scrollToBuilding(n){ 
+            if(!n)return; 
+            switchPage('dashboard'); 
+            setTimeout(()=>{
+                const t=document.querySelector(`div[data-id="${n}"]`); 
+                if(t) {
+                    t.scrollIntoView({behavior:'smooth',block:'center'});
+                    t.classList.add('highlighted-card');
+                    setTimeout(()=>t.classList.remove('highlighted-card'), 2000);
+                }
+            },100); 
         }
 
-        // 기존의 단순 추출 함수 대신, 올려주신 엑셀 파일 양식의 
-        // 정확한 컬럼 규칙을 반영한 맞춤형 추출 함수로 교체합니다.
-        function extractMonthlyUsageFromSheetAoA(aoa, buildingNames, targetMonth) {
-            const normalizedTargets = new Map(
-                buildingNames.map(n => [normalizeBuildingName(n), n])
-            );
-            const result = new Map();
+        function filterGrid(c) { 
+            const filtered = c==='all'?buildingDB:buildingDB.filter(b=>b.cat===c);
+            renderGrid(filtered);
+            document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active','bg-white','shadow-sm'));
+            event?.target?.classList.add('active','bg-white','shadow-sm');
+        }
+
+        async function generateAIStrategy() {
+            const b = buildingDB[document.getElementById('aiBuildingSelect').value];
+            document.getElementById('aiLoading').classList.remove('hidden');
+            document.getElementById('aiOutput').classList.add('hidden');
             
-            // 엑셀 컬럼 분석: 26년 1월(idx 3), 2월(idx 7), 3월(idx 11)... 공식 적용
-            const targetColIdx = (targetMonth * 4) - 1; 
-
-            for (const row of aoa) {
-                if (!Array.isArray(row)) continue;
-
-                // 0번째 컬럼(A열)이 건물명입니다.
-                const cell0 = row[0];
-                if (cell0 == null) continue;
-                const norm = normalizeBuildingName(cell0);
+            const slogans = [
+                "작은 실천이 만드는 큰 변화, En-Pocket!",
+                "지구를 위한 1분, 지금 스위치를 내려주세요.",
+                "오늘의 소등이 내일의 맑은 공기를 만듭니다.",
+                "당신의 절약이 건국대의 녹색 미래입니다.",
+                "에너지 다이어트, 나부터 시작합니다."
+            ];
+            
+            const strategies = [
+                `${b.solution} 캠페인과 함께 CES 주관 '빈 강의실 소등 릴레이'에 참여해보세요!`,
+                `${b.solution} 실천으로 대기전력을 차단하고 탄소 발자국을 줄여보세요.`,
+                `사용하지 않는 플러그 뽑기, ${b.name}의 에너지 지킴이가 되어주세요.`,
+                `${b.solution} 활동을 인증하고 En-Pocket 코인을 받아가세요!`
+            ];
+            
+            setTimeout(() => {
+                const sl = slogans[Math.floor(Math.random()*slogans.length)];
+                const st = strategies[Math.floor(Math.random()*strategies.length)];
                 
-                // 타겟 28개 건물 목록에 포함되는지 유연하게 확인
-                let matchedName = null;
-                for (let [normKey, originalName] of normalizedTargets.entries()) {
-                    if (norm.includes(normKey) || normKey.includes(norm)) {
-                        matchedName = originalName;
-                        break;
-                    }
-                }
-
-                if (matchedName) {
-                    const value = coerceNumber(row[targetColIdx]);
-                    if (value != null) {
-                        result.set(matchedName, value);
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        function setCurrentMonth(monthIndex) {
-            currentMonthIndex = Math.max(0, Math.min(11, monthIndex));
-            displayMonth = `${currentMonthIndex + 1}월`;
-            nextMonth = currentMonthIndex < 11 ? `${currentMonthIndex + 2}월` : `12월`;
-            buildingDB.forEach(b => {
-                const v = b.u26?.[currentMonthIndex];
-                b.uCurr = (typeof v === 'number' && Number.isFinite(v)) ? v : 0;
-            });
+                document.getElementById('aiNudgeText').innerText = `[${b.name} 맞춤 전략] ${st}`;
+                document.getElementById('aiSloganText').innerText = `"${sl}"`;
+                document.getElementById('aiLoading').classList.add('hidden');
+                document.getElementById('aiOutput').classList.remove('hidden');
+            }, 1000);
         }
 
         function adminLogin() {
@@ -1163,20 +1111,18 @@
                 if(!window.applicants || window.applicants.length===0) {
                     alert("클라우드에 저장된 신청자가 없습니다.");
                 } else {
-                    // 신청일자(timestamp) 기준으로 월별 그룹화하여 예쁘게 출력합니다.
                     const grouped = {};
                     window.applicants.forEach(a => {
                         let m = "기타(월 미상)";
                         if (a.timestamp) {
                             m = (new Date(a.timestamp).getMonth() + 1) + "월";
                         } else if (a.campaignMonth) {
-                            m = a.campaignMonth; // 과거 데이터 호환용
+                            m = a.campaignMonth; 
                         }
                         if (!grouped[m]) grouped[m] = [];
                         grouped[m].push(a);
                     });
                     
-                    // 월 순서대로 정렬 (예: 5월, 6월 순)
                     const sortedKeys = Object.keys(grouped).sort((a,b) => parseInt(a) - parseInt(b));
                     
                     let msg = "";
@@ -1191,133 +1137,19 @@
                 }
             } else if(p!==null) alert("비밀번호 불일치");
         }
-        
-        function openApplyModal(preSelectBuilding = '') { 
-            document.getElementById('applyModal').classList.add('active'); 
-            if(preSelectBuilding) document.getElementById('appBuilding').value = preSelectBuilding;
-        }
-        function closeApplyModal() { document.getElementById('applyModal').classList.remove('active'); }
-        function openCancelModal() { document.getElementById('cancelModal').classList.add('active'); }
-        function closeCancelModal() { document.getElementById('cancelModal').classList.remove('active'); }
-        
-        async function submitApplication(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitAppBtn');
-            btn.innerText = "데이터 전송 중...";
-            btn.disabled = true;
 
-            const building = document.getElementById('appBuilding').value;
-            const appName = document.getElementById('appName').value;
-            const appMajor = document.getElementById('appMajor').value;
-            const appId = document.getElementById('appId').value;
-            const appPhone = document.getElementById('appPhone').value;
-            
-            // 동일한 월(displayMonth)에 이미 동일 건물을 신청했는지 체크합니다.
-            if(window.applicants.some(a => a.building === building && a.campaignMonth === displayMonth)) {
-                alert(`해당 건물은 ${displayMonth}에 이미 신청 내역이 존재합니다.`);
-                btn.innerText = "제출하기";
-                btn.disabled = false;
-                return;
-            }
-
-            // 실제 신청 버튼을 누른 날짜를 기준으로 신청월(applyMonthStr)을 추출합니다.
-            const timestampIso = new Date().toISOString();
-            const applyMonthStr = (new Date(timestampIso).getMonth() + 1) + "월";
-
-            const applicationData = {
-                campaignMonth: displayMonth, // 어느 달을 목표로 한 캠페인인지
-                applyMonth: applyMonthStr,   // 💡 실제 신청서 제출 월
-                building: building,
-                name: appName,
-                major: appMajor,
-                id: appId,
-                phone: appPhone,
-                timestamp: timestampIso
-            };
-
-            const success = await window.saveApplicationToCloud(applicationData);
-            
-            if (success) {
-                // --- 📧 관리자 이메일 알림 전송 (FormSubmit AJAX API) ---
-                try {
-                    await fetch("https://formsubmit.co/ajax/oke3728@naver.com", {
-                        method: "POST",
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            _subject: `[En-Pocket 알림] ${applicationData.applyMonth} ${applicationData.building} 캠페인 신규 신청 (${applicationData.name})`,
-                            신청구분: `${applicationData.applyMonth} 신청자`,
-                            목표캠페인월: applicationData.campaignMonth,
-                            건물명: applicationData.building,
-                            대표자_이름: applicationData.name,
-                            학과: applicationData.major,
-                            학번: applicationData.id,
-                            전화번호: applicationData.phone,
-                            신청일시: new Date(applicationData.timestamp).toLocaleString('ko-KR')
-                        })
-                    });
-                } catch(err) {
-                    console.warn("이메일 발송 에러:", err);
-                }
-                // --------------------------------------------------------
-
-                alert("코인 캠페인 참여 내역이 정상적으로 신청되었습니다!");
-                closeApplyModal();
-                e.target.reset();
-            }
-            
-            btn.innerText = "제출하기";
-            btn.disabled = false;
-        }
-
-        async function submitCancel() {
-            const buildingToCancel = document.getElementById('cancelBuilding').value;
-            const repName = document.getElementById('cancelName').value;
-            
-            const btn = document.getElementById('cancelAppBtn');
-            btn.innerText = "삭제 중...";
-            btn.disabled = true;
-            
-            // 현재 화면의 '해당 월'과 건물이 일치하는 신청 내역을 찾음
-            const index = window.applicants.findIndex(a => a.building === buildingToCancel && a.campaignMonth === displayMonth);
-            
-            if (index > -1) {
-                if(window.applicants[index].name === repName) {
-                    const success = await window.deleteApplicationFromCloud(buildingToCancel, repName, displayMonth);
-                    if (success) {
-                        alert("참여 내역이 정상적으로 취소(삭제)되었습니다.");
-                        closeCancelModal();
-                    } else {
-                        // 삭제 실패 처리
-                    }
-                } else {
-                    alert("대표자 이름이 다릅니다.");
-                }
-            } else {
-                alert(`해당 건물로 ${displayMonth}에 신청된 내역이 없습니다.`);
-            }
-            
-            btn.innerText = "신청 취소하기";
-            btn.disabled = false;
-        }
-
-        // 엑셀 파일 업로드 및 자동 분석 로직을 업그레이드 합니다.
         async function handleFileUpload(event) {
             try {
                 const file = event?.target?.files?.[0];
                 if (!file) return;
 
-                // 파일명에서 '(3월)' 등의 숫자를 파악하여 자동으로 할당합니다.
                 const monthFromName = parseMonthFromFilename(file.name);
-                const month = monthFromName ?? 3; // 인식 실패 시 기본값을 3월로 둡니다.
+                const month = monthFromName ?? 3; 
                 const monthIndex = month - 1;
 
                 const buf = await file.arrayBuffer();
                 const wb = XLSX.read(buf, { type: 'array' });
                 
-                // "각 대학별 전기사용량 및 요금" 시트를 우선적으로 찾습니다.
                 const targetSheetName = wb.SheetNames.find(name => name.includes("전기사용량")) || wb.SheetNames[0];
                 const ws = wb.Sheets[targetSheetName];
                 
@@ -1334,13 +1166,12 @@
                     const v = usageMap.get(b.name);
                     if (typeof v === 'number' && Number.isFinite(v)) {
                         if (!Array.isArray(b.u26)) b.u26 = Array(12).fill(null);
-                        b.u26[monthIndex] = v; // 배열 내 3월 자리에 데이터를 넣습니다.
+                        b.u26[monthIndex] = v; 
                         
                         if (monthIndex === 0) b.u26_jan = v;
                         if (monthIndex === 1) b.u26_feb = v;
                         if (monthIndex === 2) b.u26_mar = v;
                         
-                        // 💡 중요: 3월 데이터가 입력되면, 작년(25년) 3월 데이터와 비교하여 증감률을 자동 재계산합니다!
                         let hasCurrentData = b.u26[monthIndex] !== null;
                         let tMonth = hasCurrentData ? monthIndex : (b.u26[1] !== null ? 1 : 0);
                         b.uCurr = b.u26[tMonth] ?? 0;
@@ -1365,29 +1196,42 @@
             }
         }
 
-        function getIcon(n) { if(n.includes("기숙사"))return "fa-bed"; if(n.includes("도서관"))return "fa-book-open"; if(n.includes("과학")||n.includes("동물")||n.includes("수의")||n.includes("생명"))return "fa-flask"; if(n.includes("공학")||n.includes("건축")||n.includes("창의"))return "fa-microchip"; return "fa-building-columns"; }
-        function populateDropdown() { const s=document.getElementById('globalSearch'); [...buildingDB].sort((a,b)=>a.name.localeCompare(b.name)).forEach(b=>{const o=document.createElement('option');o.value=b.name;o.text=b.name;s.appendChild(o)}); }
-        
-        function scrollToBuilding(n){ 
-            if(!n)return; 
-            switchPage('dashboard'); 
-            setTimeout(()=>{
-                const t=document.querySelector(`div[data-id="${n}"]`); 
-                if(t) {
-                    t.scrollIntoView({behavior:'smooth',block:'center'});
-                    t.classList.add('highlighted-card');
-                    setTimeout(()=>t.classList.remove('highlighted-card'), 2000);
-                }
-            },100); 
+        function setCurrentMonth(monthIndex) {
+            currentMonthIndex = Math.max(0, Math.min(11, monthIndex));
+            displayMonth = `${currentMonthIndex + 1}월`;
+            nextMonth = currentMonthIndex < 11 ? `${currentMonthIndex + 2}월` : `12월`;
+            buildingDB.forEach(b => {
+                const v = b.u26?.[currentMonthIndex];
+                b.uCurr = (typeof v === 'number' && Number.isFinite(v)) ? v : 0;
+            });
         }
-        
-        function populateAISelect(){const s=document.getElementById('aiBuildingSelect');buildingDB.forEach((b,i)=>{const o=document.createElement('option');o.value=i;o.text=b.name;s.appendChild(o)});}
-        function filterGrid(c) { 
-            const filtered = c==='all'?buildingDB:buildingDB.filter(b=>b.cat===c);
-            renderGrid(filtered);
-            document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active','bg-white','shadow-sm'));
-            event.target.classList.add('active','bg-white','shadow-sm');
-        }
+
+        // --- DOMContentLoaded Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initBattleDropdowns();
+            populateDropdown();
+            populateAISelect();
+            updateBestWorst();
+            refreshDashboard();
+            switchPage('dashboard');
+            
+            // 전역 이벤트 리스너 등록 (onclick 대신 JS로 안전하게 바인딩)
+            window.switchPage = switchPage;
+            window.switchTab = switchTab;
+            window.openModal = openModal;
+            window.closeModal = closeModal;
+            window.goToCampaign = goToCampaign;
+            window.toggleRankingView = toggleRankingView;
+            window.scrollToBuilding = scrollToBuilding;
+            window.filterGrid = filterGrid;
+            window.generateAIStrategy = generateAIStrategy;
+            window.adminLogin = adminLogin;
+            window.viewApplicants = viewApplicants;
+            window.handleFileUpload = handleFileUpload;
+            window.updateBattle = updateBattle;
+            window.showRanking = showRanking;
+        });
+
     </script>
 </body>
 </html>
