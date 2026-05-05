@@ -439,7 +439,7 @@
             <div class="max-w-3xl mx-auto px-4 relative z-10">
                 <i class="fa-solid fa-coins text-6xl text-yellow-400 mb-6 animate-bounce"></i>
                 <h1 class="text-3xl sm:text-4xl md:text-5xl font-black mb-4 text-wrap-keepall mobile-tight">코인 지급 캠페인 활동</h1>
-                <p class="text-base sm:text-lg text-yellow-300 font-bold mb-4 text-wrap-keepall">(돈 한푼 들이지 않고, 다음달 절감량이 가장 큰 건물을 맞추면 상품을 받을 수 있는데 안할 이유가 어딨나요?)</p>
+                <p class="text-base sm:text-lg text-yellow-300 font-bold mb-4 text-wrap-keepall">돈 한푼 들이지 않고, 다음달 절감량이 가장 큰 건물을 맞추면 상품을 받을 수 있는데 안할 이유가 어딨나요?</p>
                 <div class="inline-block bg-slate-800 text-slate-300 px-4 py-3 rounded-lg text-sm sm:text-base mb-6 border border-slate-700 shadow-lg text-left">
                     <div class="mb-1"><span class="text-mint font-bold"><i class="fa-solid fa-check mr-1"></i> 기본 원칙:</span> 1인 1건물 참여 가능</div>
                     <div><span class="text-pink-400 font-bold"><i class="fa-brands fa-instagram mr-1"></i> 추가 혜택:</span> CES 동아리 계정 팔로우 시 1건물 추가 참여 가능!</div>
@@ -592,6 +592,11 @@
         
         let currentRankingType = 'current'; 
         let isRankingExpanded = false; 
+
+        // 💡 차트 인스턴스 전역 변수 복구
+        let chartInstance = null;
+        // 💡 선택된 건물 전역 변수 복구
+        let selectedB = null;
 
         let buildingDB = [
           { name: "교육과학관", cat: "study", u26_jan: 20600, u26_feb: 26500, u26_mar: 21178, growth: -6.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [18600, 27490, 22520, 17960, 18640, 22570, 25070, 26029, 28233, 15968, 28760, 24590], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
