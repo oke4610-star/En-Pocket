@@ -807,39 +807,68 @@
         }
 
         function extractMonthlyUsageFromSheetAoA(aoa, buildingNames) {
-            const normalizedTargets = new Map(
-                buildingNames.map(n => [normalizeBuildingName(n), n])
-            );
+            const normalizedTargets = new Map(buildingNames.map(n => [normalizeBuildingName(n), n]));
             const result = new Map();
 
-            for (const row of aoa) {
+            const MAX_SCAN_ROWS = Math.min(50, aoa.length);
+            let headerRowIndex = -1;
+            let colBuilding = -1;
+            let colType = -1;
+            let col2026 = -1;
+
+            for (let r = 0; r < MAX_SCAN_ROWS; r++) {
+                const row = aoa[r];
                 if (!Array.isArray(row)) continue;
 
-                let foundName = null;
-                let foundNameIdx = -1;
-
-                for (let i = 0; i < row.length; i++) {
-                    const cell = row[i];
-                    if (cell == null) continue;
-                    const norm = normalizeBuildingName(cell);
-                    if (normalizedTargets.has(norm)) {
-                        foundName = normalizedTargets.get(norm);
-                        foundNameIdx = i;
-                        break;
-                    }
+                for (let c = 0; c < row.length; c++) {
+                    const s = String(row[c] ?? '').replace(/\s+/g, '');
+                    if (!s) continue;
+                    if (colBuilding === -1 && (s.includes('건물명') || s.includes('건물'))) colBuilding = c;
+                    if (colType === -1 && (s.includes('구분') || s.includes('항목'))) colType = c;
+                    if (col2026 === -1 && (s.includes('2026') || s.includes('26년') || s === '2026년')) col2026 = c;
                 }
 
-                if (!foundName) continue;
-
-                let value = null;
-                for (let i = 0; i < row.length; i++) {
-                    if (i === foundNameIdx) continue;
-                    const n = coerceNumber(row[i]);
-                    if (n != null) { value = n; break; }
+                if (colBuilding !== -1 && col2026 !== -1) {
+                    headerRowIndex = r;
+                    // fallback: if type column not found, assume next to building
+                    if (colType === -1) colType = Math.min(colBuilding + 1, (row.length - 1));
+                    break;
                 }
-                if (value == null) continue;
+            }
 
-                result.set(foundName, value);
+            if (headerRowIndex === -1 || colBuilding === -1 || col2026 === -1) {
+                return result;
+            }
+
+            let currentBuilding = null;
+            for (let r = headerRowIndex + 1; r < aoa.length; r++) {
+                const row = aoa[r];
+                if (!Array.isArray(row)) continue;
+
+                const buildingCell = row[colBuilding];
+                const typeCell = row[colType];
+
+                const buildingNorm = normalizeBuildingName(buildingCell);
+                if (buildingNorm && normalizedTargets.has(buildingNorm)) {
+                    currentBuilding = normalizedTargets.get(buildingNorm);
+                }
+
+                // In many sheets building name is merged across 2 rows; carry forward.
+                if (!currentBuilding) continue;
+
+                const typeStr = String(typeCell ?? '').replace(/\s+/g, '');
+                const isUsageRow =
+                    typeStr.includes('사용량') ||
+                    typeStr.includes('kwh') ||
+                    row.some(v => String(v ?? '').replace(/\s+/g, '').includes('사용량'));
+
+                if (!isUsageRow) continue;
+
+                const v = coerceNumber(row[col2026]);
+                if (v == null) continue;
+
+                result.set(currentBuilding, v);
+                if (result.size === buildingNames.length) break;
             }
 
             return result;
@@ -958,7 +987,9 @@
 
                 setCurrentMonth(monthIndex);
                 refreshDashboard();
-                alert(`관리자: 2026년 ${month}월 전력사용량 업데이트 완료 (${updated}/${TARGET_BUILDINGS.length}개 반영)`);
+                const missing = TARGET_BUILDINGS.filter(n => !usageMap.has(n));
+                const missingMsg = missing.length ? `\n누락: ${missing.slice(0, 8).join(', ')}${missing.length > 8 ? ` 외 ${missing.length - 8}개` : ''}` : '';
+                alert(`관리자: 2026년 ${month}월 전력사용량 업데이트 완료 (${updated}/${TARGET_BUILDINGS.length}개 반영)${missingMsg}`);
             } catch (err) {
                 console.error(err);
                 alert("업데이트 중 오류가 발생했습니다. (엑셀 형식/건물명/값 칼럼을 확인해주세요.)");
