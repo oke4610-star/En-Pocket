@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>엔포켓 | 건국대학교 전력 사용량 확인 서비스</title>
+    <meta name="description" content="건국대학교 사회환경공학부 에코 스마트 시티 프로젝트의 일환인 엔포켓 서비스입니다.">
+    
+    <!-- [TRACKING CODE START] -->
+    <!-- 사용자 추적 코드를 여기에 삽입하세요 -->
+    <!-- [TRACKING CODE END] -->
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=GmarketSans:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase Libraries -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+        // 💡 여기에 발급받은 firebaseConfig를 붙여넣으세요.
+        let firebaseConfig = {};
+        
+        if (typeof __firebase_config !== 'undefined') {
+            firebaseConfig = JSON.parse(__firebase_config);
+        } else {
+            firebaseConfig = {
+                // TODO: Firebase 설정값을 여기에 입력해주세요!
+            };
+        }
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'en-pocket-app';
+        
+        let app, auth, db;
+        
+        if (firebaseConfig && Object.keys(firebaseConfig).length > 0 && firebaseConfig.apiKey) {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            
+            const initAuth = async () => {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            };
+            initAuth();
+            
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    window.currentUser = user;
+                    setupRealtimeListener();
+                }
+            });
+        } else {
+            console.warn("Firebase 설정값(firebaseConfig)이 누락되었습니다. 데이터베이스 연동 기능을 사용하려면 설정값을 입력해주세요.");
+        }
+        
+        const getCollectionRef = () => collection(db, 'artifacts', appId, 'public', 'data', 'campaign_applicants');
+        
+        window.saveApplicationToCloud = async (applicationData) => {
+            if (!db || !window.currentUser) {
+                alert("데이터베이스 연결에 실패했습니다. 관리자에게 문의하거나 Firebase 설정(firebaseConfig)을 확인해주세요.");
+                return false;
+            }
+            try {
+                await addDoc(getCollectionRef(), applicationData);
+                return true;
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                return false;
+            }
+        };
+
+        window.deleteApplicationFromCloud = async (building, name, campaignMonth) => {
+             if (!db || !window.currentUser) {
+                alert("데이터베이스 연결에 실패했습니다. 관리자에게 문의하거나 Firebase 설정(firebaseConfig)을 확인해주세요.");
+                return false;
+            }
+            try {
+                const querySnapshot = await getDocs(getCollectionRef());
+                let docIdToDelete = null;
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.building === building && data.name === name && data.campaignMonth === campaignMonth) {
+                        docIdToDelete = doc.id;
+                    }
+                });
+
+                if (docIdToDelete) {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaign_applicants', docIdToDelete));
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                console.error("Error deleting document: ", e);
+                return false;
+            }
+        };
+        
+        const setupRealtimeListener = () => {
+             if (!db || !window.currentUser) return;
+             
+             onSnapshot(getCollectionRef(), (snapshot) => {
+                 window.applicants = []; 
+                 snapshot.forEach((doc) => {
+                     window.applicants.push({ ...doc.data(), id_db: doc.id });
+                 });
+             }, (error) => {
+                 console.error("실시간 업데이트 오류:", error);
+             });
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; color: #1e293b; overflow-x: hidden; }
+
+        /* Mobile readability */
+        .text-wrap-anywhere { overflow-wrap: anywhere; word-break: break-word; }
+        .text-wrap-keepall { word-break: keep-all; }
+        @media (max-width: 640px) {
+            html { font-size: 15px; }
+            .mobile-tight { letter-spacing: -0.01em; }
+        }
+        
+        /* Design Tokens */
+        .text-mint { color: #2dd4bf; } 
+        .bg-mint { background-color: #2dd4bf; }
+        .border-mint { border-color: #2dd4bf; }
+        .text-ku { color: #036b3f; } 
+        .bg-ku { background-color: #036b3f; }
+        
+        .gradient-text { background: linear-gradient(135deg, #036b3f 0%, #2dd4bf 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .gradient-coin { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Interactions */
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .transition-all { transition: all 0.3s ease; }
+        .battle-bar-fill { transition: width 1.5s ease-out; }
+        
+        /* Highlight Animation */
+        @keyframes highlight-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.7); border-color: #2dd4bf; transform: scale(1); }
+            50% { box-shadow: 0 0 0 10px rgba(45, 212, 191, 0); border-color: #2dd4bf; transform: scale(1.02); }
+            100% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0); transform: scale(1); }
+        }
+        .highlighted-card { animation: highlight-pulse 1.5s ease-out; border: 2px solid #2dd4bf !important; }
+
+        /* Modal & Tabs */
+        .modal { opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 100; }
+        .modal.active { opacity: 1; visibility: visible; }
+        .modal-content { transform: scale(0.95); transition: all 0.3s ease; }
+        .modal.active .modal-content { transform: scale(1); }
+        
+        .tab-btn.active { border-bottom: 3px solid #2dd4bf; color: #0f766e; font-weight: 700; }
+        .tab-btn { color: #64748b; font-weight: 500; }
+        
+        .hidden-page { display: none !important; }
+        .font-slogan { font-family: 'GmarketSans', sans-serif; }
+
+        /* Animations */
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(45, 212, 191, 0); } 100% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0); } }
+        .btn-pulse { animation: pulse-ring 2s infinite; }
+        .bounce-slow { animation: bounce 3s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* Custom Select */
+        .battle-select {
+            appearance: none; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white; padding: 0.4rem 2rem 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: bold; cursor: pointer; width: 100%;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.4rem center; background-repeat: no-repeat; background-size: 1.2em 1.2em;
+        }
+        .battle-select option { background-color: #1e293b; color: white; }
+        
+        /* Hide scrollbar for ranking tabs on mobile */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Modal Info Msg */
+        .modal-info-msg { padding: 10px; background-color: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 8px; font-size: 0.85rem; color: #0f766e; margin-bottom: 1rem;}
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <!-- ================= NAV BAR ================= -->
+    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center gap-1 cursor-pointer group" onclick="switchPage('dashboard')">
+                <i class="fa-solid fa-bolt text-3xl text-mint drop-shadow-sm group-hover:scale-110 transition-transform"></i>
+                <span class="text-xl font-black tracking-tight text-slate-900 ml-1">En-Pocket</span>
+            </div>
+            
+            <!-- Dashboard Menu -->
+            <div id="nav-dashboard-menu" class="hidden md:flex flex-grow max-w-md mx-8 relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <select id="globalSearch" onchange="scrollToBuilding(this.value)" class="w-full bg-slate-100 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-teal-400 cursor-pointer text-slate-600 font-medium hover:bg-slate-200 transition">
+                    <option value="">건물별 에너지 리포트 검색 (가~하)</option>
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-3 text-sm font-medium items-center">
+                <div id="nav-dashboard-links" class="flex gap-4 items-center">
+                    <a href="#competition" class="text-slate-500 hover:text-teal-600 transition hidden sm:block">에너지 대항전</a>
+                    <button onclick="switchPage('campaign')" class="text-teal-700 font-bold bg-teal-50 px-3 sm:px-4 py-2 rounded-full hover:bg-teal-100 transition flex items-center gap-2 border border-teal-100 shadow-sm btn-pulse whitespace-nowrap">
+                        <i class="fa-solid fa-coins text-yellow-500"></i> 코인 캠페인
+                    </button>
+                </div>
+                <div id="nav-campaign-links" class="hidden">
+                    <button onclick="switchPage('dashboard')" class="text-slate-500 hover:text-teal-600 transition flex items-center gap-1 font-bold">
+                        <i class="fa-solid fa-arrow-left"></i> 대시보드 복귀
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= PAGE 1: DASHBOARD ================= -->
+    <main id="page-dashboard">
+        <div class="bg-slate-900 text-slate-400 text-xs py-2 text-center" id="systemStatus">
+            <i class="fa-solid fa-database mr-2"></i> 데이터 기준: 2026년 <span class="text-white font-bold" id="currentMonthDisplay">5월</span> (전년 동월 대비 분석)
+        </div>
+
+        <header class="relative bg-white pt-16 pb-12 px-4 overflow-hidden text-center">
+            <div class="max-w-4xl mx-auto relative z-10">
+                <div class="inline-flex items-center gap-2 bg-teal-50 border border-teal-100 px-4 py-1.5 rounded-full mb-6">
+                    <span class="w-2 h-2 rounded-full bg-mint animate-pulse"></span>
+                    <span class="text-xs font-bold text-teal-700 uppercase tracking-wide">Petersen 교수 연구 인용 프로젝트</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 leading-snug sm:leading-tight mb-6 mobile-tight text-wrap-keepall">
+                    전력사용량을 보기만 해도<br>
+                    <span class="gradient-text">전력감축이 된다면 믿으시나요?</span>
+                </h1>
+                <p class="text-lg text-slate-600 mb-8 leading-relaxed max-w-2xl mx-auto">
+                    오벌린 대학은 실시간 피드백으로 32%를 절감했습니다.<br>
+                    과연 <strong class="text-ku">건국대학교</strong>는 어떤 변화를 가져올까요?<br>
+                    <span class="text-slate-800 font-bold mt-2 block">이제 엔포켓과 함께 우리 캠퍼스의 변화를 시작합시다.</span>
+                </p>
+                
+                <div class="flex flex-col items-center justify-center mb-8">
+                    <p class="text-sm text-slate-600 font-bold mb-3 bg-slate-100 px-5 py-2 rounded-full border border-slate-200">
+                        <i class="fa-solid fa-handshake-simple text-ku mr-2"></i>저희 En-Pocket은 건국대학교 중앙환경동아리 <strong>CES</strong>와 함께합니다.
+                    </p>
+                    <a href="https://www.instagram.com/campus_energy_saver" target="_blank" 
+                       class="group flex items-center gap-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-pink-500/30 transition-all">
+                        <i class="fa-brands fa-instagram text-xl group-hover:scale-110 transition-transform"></i>
+                        <span>건국대 중앙환경동아리(CES)와 함께하기</span>
+                    </a>
+                </div>
+                
+                <p class="text-xs text-slate-400 mt-6 border-t border-slate-100 pt-4 inline-block">
+                    * 예측 근거: 2025년 월간 에너지 소비 패턴 및 2026년 실측 증감률 반영 모델
+                </p>
+            </div>
+        </header>
+
+        <!-- Best/Worst Section -->
+        <section class="max-w-6xl mx-auto px-4 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Best -->
+                <div class="bg-gradient-to-br from-teal-50 to-white p-6 rounded-2xl border border-teal-100 shadow-sm flex items-center gap-4 relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-20 h-20 bg-teal-100 rounded-full opacity-50"></div>
+                    <div class="w-12 h-12 bg-teal-500 rounded-full flex items-center justify-center text-white text-xl z-10"><i class="fa-solid fa-trophy"></i></div>
+                    <div class="z-10">
+                        <span class="text-xs font-bold text-teal-600 uppercase tracking-wider">이달의 에너지 챔피언</span>
+                        <h3 class="text-xl font-black text-slate-900" id="bestBuildingName">-</h3>
+                        <p class="text-sm text-slate-500 mt-1" id="bestBuildingDesc">데이터 분석 중...</p>
+                    </div>
+                </div>
+                <!-- Worst -->
+                <div class="bg-gradient-to-br from-red-50 to-white p-6 rounded-2xl border border-red-100 shadow-sm flex items-center gap-4 relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-20 h-20 bg-red-100 rounded-full opacity-50"></div>
+                    <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-xl z-10"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="z-10">
+                        <span class="text-xs font-bold text-red-600 uppercase tracking-wider">집중 관리 대상</span>
+                        <h3 class="text-xl font-black text-slate-900" id="worstBuildingName">-</h3>
+                        <p class="text-sm text-slate-500 mt-1" id="worstBuildingDesc">데이터 분석 중...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Battle Section & Ranking -->
+        <section id="competition" class="py-12 bg-slate-900 text-white relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+            <div class="max-w-6xl mx-auto px-4 relative z-10">
+                <!-- 캠퍼스 전체 오버뷰 -->
+                <div class="mb-12 bg-slate-800/80 rounded-2xl p-6 border border-slate-700 shadow-lg text-center backdrop-blur-sm">
+                    <div class="inline-flex items-center gap-2 bg-slate-700/50 px-3 py-1 rounded-full text-slate-300 text-xs font-bold uppercase tracking-widest mb-3 border border-slate-600">
+                        <i class="fa-solid fa-chart-line"></i> Campus Overview
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-black text-white mb-2" id="campusTotalTitle">이번 달 건국대학교 캠퍼스는?</h3>
+                    <p class="text-base sm:text-lg text-slate-300" id="campusTotalDesc">데이터를 분석 중입니다...</p>
+                </div>
+
+                <div class="text-center mb-10">
+                    <h2 class="text-xl sm:text-2xl font-bold text-yellow-400 uppercase tracking-widest mb-2 text-wrap-anywhere"><i class="fa-solid fa-trophy mr-2"></i> Monthly Energy Battle</h2>
+                    <p class="text-slate-400 text-sm sm:text-base text-wrap-anywhere" id="battleMonthText">추천 비교군: 공학관 vs 생명과학관</p>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-8 items-stretch mb-12">
+                    <!-- Left Side -->
+                    <div class="flex-1 bg-slate-800 rounded-2xl p-6 border-2 border-slate-700 relative flex flex-col transition-all duration-300" id="battleCardA">
+                        <div class="flex justify-between items-center mb-4 gap-2">
+                            <select id="battleSelectA" class="battle-select" onchange="updateBattle()"></select>
+                            <span class="text-xs font-bold px-2 py-1 rounded bg-slate-700 whitespace-nowrap hidden" id="badgeA"></span>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-2xl" id="iconBoxA"><i class="fa-solid fa-building" id="iconA"></i></div>
+                            <div>
+                                <div class="text-sm text-slate-400">전년 대비 증감률</div>
+                                <div class="text-2xl font-bold" id="growthA">-</div>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-700 h-4 rounded-full overflow-hidden mb-4">
+                            <div class="battle-bar-fill h-full bg-blue-500" id="barA" style="width: 50%"></div>
+                        </div>
+                        <div class="mt-auto pt-4 border-t border-slate-700">
+                            <p class="text-xs text-slate-400 leading-relaxed" id="reasonA"></p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center">
+                        <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-slate-900 z-20">VS</div>
+                    </div>
+
+                    <!-- Right Side -->
+                    <div class="flex-1 bg-slate-800 rounded-2xl p-6 border-2 border-teal-500 shadow-[0_0_20px_rgba(45,212,191,0.2)] relative flex flex-col transition-all duration-300" id="battleCardB">
+                        <div class="flex justify-between items-center mb-4 gap-2">
+                            <select id="battleSelectB" class="battle-select" onchange="updateBattle()"></select>
+                            <span class="text-xs font-bold px-2 py-1 rounded bg-teal-500 text-slate-900 whitespace-nowrap" id="badgeB">WINNER 👑</span>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 bg-teal-500 rounded-lg flex items-center justify-center text-2xl" id="iconBoxB"><i class="fa-solid fa-building" id="iconB"></i></div>
+                            <div>
+                                <div class="text-sm text-slate-400">전년 대비 증감률</div>
+                                <div class="text-2xl font-bold text-mint" id="growthB">-</div>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-700 h-4 rounded-full overflow-hidden mb-4">
+                            <div class="battle-bar-fill h-full bg-mint" id="barB" style="width: 50%"></div>
+                        </div>
+                        <div class="mt-auto pt-4 border-t border-slate-700">
+                            <p class="text-xs text-slate-400 leading-relaxed" id="reasonB"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ranking Table Section -->
+                <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <h3 class="text-xl font-bold text-white flex items-center">
+                            <i class="fa-solid fa-ranking-star text-yellow-400 mr-2"></i> 건물별 에너지 절감 순위표
+                        </h3>
+                        <div class="flex bg-slate-700 rounded-lg p-1 overflow-x-auto hide-scrollbar whitespace-nowrap max-w-full">
+                            <button id="rankBtnCurrent" onclick="showRanking('current')" class="px-4 py-2 text-sm font-medium rounded-md bg-slate-600 text-white shadow-sm transition">이번 달 (5월)</button>
+                            <button id="rankBtnPrev" onclick="showRanking('prev')" class="px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white transition">4월</button>
+                            <button id="rankBtnPrev2" onclick="showRanking('prev2')" class="px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white transition">3월</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-300">
+                            <thead class="text-xs text-slate-400 uppercase bg-slate-700/50">
+                                <tr>
+                                    <th class="px-4 py-3 rounded-tl-lg w-20">순위</th>
+                                    <th class="px-4 py-3">건물명</th>
+                                    <th class="px-4 py-3 text-right rounded-tr-lg">전년 대비 증감률</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rankingTableBody" class="divide-y divide-slate-700/50">
+                                <!-- Ranking Rows Injected Here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- 10위 이하 더보기 버튼 추가 -->
+                    <div class="text-center mt-4" id="rankingViewMoreContainer">
+                        <button onclick="toggleRankingView()" id="rankingViewMoreBtn" class="bg-slate-700 hover:bg-slate-600 text-slate-300 px-5 py-2 rounded-full text-xs font-bold transition-colors shadow-sm">
+                            ▼ 11위 이하 더보기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Building Grid -->
+        <section id="solution-section" class="py-12 bg-white border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-slate-900 text-wrap-keepall">건물별 에너지 리포트</h2>
+                        <p class="text-slate-500 text-sm mt-1">카드를 클릭하여 <span class="text-mint font-bold">상세 분석 및 단기 예측</span>을 확인하세요.</p>
+                    </div>
+                    <div class="flex p-1 bg-slate-100 rounded-lg overflow-x-auto hide-scrollbar">
+                        <button onclick="filterGrid('all')" class="filter-btn active px-4 py-2 text-sm font-medium rounded-md hover:bg-white shadow-sm transition whitespace-nowrap">전체</button>
+                        <button onclick="filterGrid('study')" class="filter-btn px-4 py-2 text-sm font-medium rounded-md hover:bg-white transition whitespace-nowrap">학습/연구</button>
+                        <button onclick="filterGrid('living')" class="filter-btn px-4 py-2 text-sm font-medium rounded-md hover:bg-white transition whitespace-nowrap">생활/편의</button>
+                        <button onclick="filterGrid('admin')" class="filter-btn px-4 py-2 text-sm font-medium rounded-md hover:bg-white transition whitespace-nowrap">행정/기타</button>
+                    </div>
+                </div>
+                <div id="buildingsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+        <!-- AI Consultant -->
+        <section class="py-16 bg-slate-900 text-white border-t border-slate-800">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <div class="inline-block bg-teal-500/20 text-teal-300 text-xs font-bold px-3 py-1 rounded-full mb-4 border border-teal-500/50">AI Beta</div>
+                <h2 class="text-3xl font-bold mb-4">AI 에너지 컨설턴트</h2>
+                <p class="text-slate-400 mb-8">건물을 선택하면 Gemini가 건물 특성에 맞는 넛지 캠페인을 제안합니다.</p>
+                <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 max-w-2xl mx-auto">
+                    <div class="flex gap-4 mb-6">
+                        <select id="aiBuildingSelect" class="flex-1 bg-slate-700 border-none rounded-lg text-white px-4 py-3 focus:ring-2 focus:ring-teal-500"></select>
+                        <button onclick="generateAIStrategy()" id="aiBtn" class="bg-teal-600 hover:bg-teal-500 text-white px-6 py-3 rounded-lg font-bold transition flex items-center gap-2">
+                            <span>전략 생성</span> <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </button>
+                    </div>
+                    <div id="aiOutput" class="hidden text-left bg-slate-900 p-6 rounded-xl border border-slate-700">
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-lightbulb text-teal-400"></i></div>
+                            <div class="flex-grow space-y-3">
+                                <p id="aiNudgeText" class="text-slate-300 text-sm leading-relaxed mt-1">...</p>
+                                <div class="border-t border-slate-800 pt-3">
+                                    <p id="aiSloganText" class="text-white text-lg mt-1 font-slogan text-mint">"..."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="aiLoading" class="hidden py-8"><i class="fa-solid fa-circle-notch fa-spin text-2xl text-teal-500"></i></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= PAGE 2: CAMPAIGN ================= -->
+    <main id="page-campaign" class="hidden-page">
+        <header class="py-20 bg-slate-900 text-white text-center overflow-hidden relative">
+            <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+            <div class="max-w-3xl mx-auto px-4 relative z-10">
+                <i class="fa-solid fa-coins text-6xl text-yellow-400 mb-6 animate-bounce"></i>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-black mb-4 text-wrap-keepall mobile-tight">코인 지급 캠페인 활동</h1>
+                <p class="text-base sm:text-lg text-yellow-300 font-bold mb-4 text-wrap-keepall">돈 한푼 들이지 않고, 다음달 절감량이 가장 큰 건물을 맞추면 상품을 받을 수 있는데 안할 이유가 어딨나요?</p>
+                <div class="inline-block bg-slate-800 text-slate-300 px-4 py-3 rounded-lg text-sm sm:text-base mb-6 border border-slate-700 shadow-lg text-left">
+                    <div class="mb-1"><span class="text-mint font-bold"><i class="fa-solid fa-check mr-1"></i> 기본 원칙:</span> 1인 1건물 참여 가능</div>
+                    <div><span class="text-pink-400 font-bold"><i class="fa-brands fa-instagram mr-1"></i> 추가 혜택:</span> CES 동아리 계정 팔로우 시 1건물 추가 참여 가능!</div>
+                </div>
+                
+                <div class="mt-4 flex justify-center gap-4 flex-wrap">
+                    <!-- 💡 네이버 폼 링크 연동 -->
+                    <button onclick="window.open('https://naver.me/xtN5mga9', '_blank')" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-slate-900 font-black px-8 py-4 rounded-full shadow-lg hover:scale-105 transition transform flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> 지금 바로 캠페인 참여하기
+                    </button>
+                    <button onclick="alert('캠페인 참여 취소는 관리자(010-3728-4610)에게 문의해주세요.');" class="bg-white text-slate-700 font-bold px-8 py-4 rounded-full shadow-lg hover:bg-slate-100 transition transform border border-slate-200">
+                        <i class="fa-solid fa-trash"></i> 참여 취소하기
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <section class="py-16 bg-white">
+            <div class="max-w-5xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <span class="text-mint font-bold text-sm uppercase tracking-wider">How It Works</span>
+                    <h2 class="text-3xl font-bold text-slate-900">코인 지급 캠페인 활동 메뉴얼</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div class="text-center group">
+                        <div class="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center text-3xl text-teal-600 mx-auto mb-4 group-hover:bg-teal-200 transition shadow-sm">
+                            <i class="fa-solid fa-building-circle-check"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">1. 관심 건물 선정</h3>
+                        <p class="text-xs text-slate-500">주요 활동 건물 선택</p>
+                    </div>
+                    <div class="text-center group">
+                        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-3xl text-blue-600 mx-auto mb-4 group-hover:bg-blue-200 transition shadow-sm">
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">2. 절감 캠페인 진행</h3>
+                        <p class="text-xs text-slate-500">맞춤형 넛지 액션 실천</p>
+                    </div>
+                    <div class="text-center group">
+                        <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center text-3xl text-yellow-600 mx-auto mb-4 group-hover:bg-yellow-200 transition shadow-sm">
+                            <i class="fa-solid fa-chart-pie bounce-slow"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">3. 정량적 성과 측정</h3>
+                        <p class="text-xs text-slate-500">데이터 기반 절감량 확인</p>
+                    </div>
+                    <div class="text-center group">
+                        <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center text-3xl text-purple-600 mx-auto mb-4 group-hover:bg-purple-200 transition shadow-sm">
+                            <i class="fa-solid fa-gift"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">4. 보상 지급 및 선택</h3>
+                        <p class="text-xs text-slate-500">코인 기반 리워드 교환</p>
+                    </div>
+                </div>
+
+                <div class="mt-20 max-w-4xl mx-auto bg-slate-50 rounded-2xl p-10 border border-slate-200 shadow-inner text-center">
+                    <h3 class="text-2xl font-bold mb-8">💰 월간 코인 지급 정책 (총 90코인 한도)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-xl border-2 border-yellow-400 shadow-md">
+                            <i class="fa-solid fa-crown text-3xl text-yellow-500 mb-2"></i>
+                            <h4 class="font-bold">1위팀 (5명)</h4>
+                            <p class="text-3xl font-black gradient-coin mt-2">인당 10 코인</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <i class="fa-solid fa-medal text-3xl text-slate-300 mb-2"></i>
+                            <h4 class="font-bold">2위팀 (5명)</h4>
+                            <p class="text-2xl font-black text-slate-700 mt-2">인당 6 코인</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <i class="fa-solid fa-award text-3xl text-amber-600 mb-2"></i>
+                            <h4 class="font-bold">3위팀 (5명)</h4>
+                            <p class="text-2xl font-black text-slate-700 mt-2">인당 2 코인</p>
+                        </div>
+                    </div>
+                    <p class="mt-8 text-sm text-slate-500">* 1코인 당 커피 쿠폰 1매 혹은 대학 발전 기금 기부 선택권 부여</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-white border-t border-slate-200 py-16 text-center relative z-20">
+        <div class="max-w-4xl mx-auto px-4 space-y-6">
+            <div class="flex items-center justify-center gap-2">
+                <div class="w-10 h-10 flex items-center justify-center">
+                    <i class="fa-solid fa-bolt text-3xl text-mint drop-shadow-sm"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-900">En-Pocket</h2>
+            </div>
+            
+            <p class="text-slate-500 font-medium italic">지속 가능한 캠퍼스를 위한 작은 움직임</p>
+            <div class="w-12 h-1 bg-mint mx-auto rounded-full"></div>
+            <div class="text-sm text-slate-500 leading-relaxed font-medium">
+                <p>Representative: Lee Jeong-hoon | Project Period: 2025.07 - 2026.12</p>
+                <p>Data Source: Campus Facility Management Team (2025 Jan-2026 March)</p>
+                <p class="mt-4 text-xs">활동 및 캠페인 문의: <span class="text-ku font-bold">010-3728-4610</span> (이정훈 대표)</p>
+                <p class="mt-2 text-xs text-slate-400">해당 자료는 건국대학교 시설팀으로부터 제공받은 자료를 사용하였습니다.</p>
+            </div>
+            
+            <p class="text-xs text-slate-400 border-t border-slate-100 inline-block pt-4">
+                ※ 아메리카노 환산 기준: 2,000원 (교내 및 인근 카페 평균가 적용)
+            </p>
+            
+            <div class="pt-6 flex justify-center gap-4">
+                <button onclick="adminLogin()" class="text-slate-300 hover:text-slate-500 transition p-4 rounded-full hover:bg-slate-50 relative z-50 focus:outline-none cursor-pointer" title="관리자 전용">
+                    <i class="fa-solid fa-lock text-xl"></i>
+                </button>
+                <button onclick="viewApplicants()" class="text-slate-300 hover:text-slate-500 transition p-4 rounded-full hover:bg-slate-50 relative z-50 focus:outline-none cursor-pointer" title="신청자 명단">
+                    <i class="fa-solid fa-list-check text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Hidden Input for Data Update -->
+    <input type="file" id="excelInput" accept=".xlsx, .csv" class="hidden" onchange="handleFileUpload(event)">
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onclick="closeModal(event)">
+        <div class="modal-content bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden" onclick="event.stopPropagation()">
+            <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                <h3 id="modalTitle" class="text-lg font-bold">건물 상세 분석</h3>
+                <button onclick="closeModal(event)" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="flex border-b border-slate-200 overflow-x-auto">
+                <button onclick="switchTab('short')" id="tabShort" class="tab-btn active flex-1 py-3 px-2 text-center transition-colors whitespace-nowrap text-sm sm:text-base">📊 <span id="nextMonthName">6월</span> 단기 예측</button>
+                <button onclick="switchTab('long')" id="tabLong" class="tab-btn flex-1 py-3 px-2 text-center transition-colors whitespace-nowrap text-sm sm:text-base">📅 2025 연간 패턴</button>
+            </div>
+            <div class="p-4 sm:p-6 overflow-y-auto max-h-[70vh]">
+                <div id="contentShort" class="block">
+                    <div class="h-64 w-full mb-6"><canvas id="chartShort"></canvas></div>
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-sm leading-relaxed" id="modalPredictionShort"></div>
+                </div>
+                <div id="contentLong" class="hidden">
+                    <div class="h-64 w-full mb-6"><canvas id="chartLong"></canvas></div>
+                    <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 text-sm leading-relaxed" id="modalAnalysisLong"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        // --- 전역 변수 및 상태 관리 명시적 선언 ---
+        window.applicants = []; 
+        window.chartInstance = null;
+        window.selectedB = null;
+
+        // 💡 5월 업데이트: 현재 월 인덱스를 4(5월)로 설정
+        let currentMonthIndex = 4; // 0=Jan, 1=Feb, 2=Mar, 3=Apr, 4=May
+        let displayMonth = "5월";
+        let nextMonth = "6월";
+        
+        let currentRankingType = 'current'; 
+        let isRankingExpanded = false; 
+        
+        let currentCampusMode = 'YTD'; // 캠퍼스 전체 요약의 현재 보기 상태
+
+        // 5월 실측값 및 2025년 데이터 반영 (요청해주신 데이터 그대로 교체)
+        let buildingDB = [
+          { name: "교육과학관", cat: "study", u26_jan: 20600, u26_feb: 26500, u26_mar: 21178, u26_apr: 17940, u26_may: 18790, growth: 0.8, desc: "학습/연구", solution: "빈 강의실 소등", history25: [18600, 27490, 22520, 17960, 18640, 22570, 25070, 26029, 28233, 15968, 28760, 24590], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "공학관", cat: "study", u26_jan: 235790, u26_feb: 164240, u26_mar: 217800, u26_apr: 179800, u26_may: 226800, growth: 4.1, desc: "학습/연구", solution: "빈 강의실 소등", history25: [205799, 172800, 190800, 164600, 217800, 225000, 297400, 454813, 227584, 199074, 171414, 199880], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "인문학관", cat: "study", u26_jan: 26380, u26_feb: 24200, u26_mar: 24985, u26_apr: 24300, u26_may: 21750, growth: -7.1, desc: "학습/연구", solution: "빈 강의실 소등", history25: [25850, 26400, 26000, 22650, 23400, 22350, 20100, 21040, 21585, 19596, 27092, 28100], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "언어교육원", cat: "study", u26_jan: 15690, u26_feb: 13755, u26_mar: 12600, u26_apr: 9900, u26_may: 7650, growth: -15.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [15750, 13950, 13500, 10800, 9000, 10800, 13050, 8740, 10635, 9350, 12302, 13690], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "창의관", cat: "study", u26_jan: 28400, u26_feb: 29780, u26_mar: 25280, u26_apr: 16920, u26_may: 16640, growth: 13.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [27840, 32920, 24640, 16320, 14720, 15040, 16000, 41449, 33474, 13948, 33384, 25580], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "입학정보관", cat: "admin", u26_jan: 135200, u26_feb: 105700, u26_mar: 97200, u26_apr: 96300, u26_may: 108000, growth: 2.6, desc: "행정/지원", solution: "대기전력 차단", history25: [119700, 114300, 100600, 94500, 105300, 101600, 132300, 97132, 115277, 92150, 98260, 121200], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+          { name: "실내체육관", cat: "study", u26_jan: 8960, u26_feb: 8070, u26_mar: 9960, u26_apr: 8280, u26_may: 8700, growth: -10.3, desc: "학습/연구", solution: "빈 강의실 소등", history25: [8880, 8580, 9120, 7860, 9700, 10140, 8960, 11123, 10947, 7620, 6878, 11400], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "건축관", cat: "study", u26_jan: 31330, u26_feb: 25120, u26_mar: 30060, u26_apr: 31500, u26_may: 31770, growth: 6.3, desc: "학습/연구", solution: "빈 강의실 소등", history25: [28080, 25470, 30310, 30150, 29880, 34008, 26190, 20842, 32410, 28952, 41025, 38700], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 일실 소등 필요" },
+          { name: "행정관", cat: "admin", u26_jan: 68260, u26_feb: 65900, u26_mar: 44400, u26_apr: 30000, u26_may: 28000, growth: 3.7, desc: "행정/지원", solution: "대기전력 차단", history25: [60000, 64800, 42000, 27600, 27000, 36400, 49200, 51400, 82783, 32928, 27120, 68700], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+          { name: "일우헌", cat: "living", u26_jan: 7090, u26_feb: 6750, u26_mar: 11010, u26_apr: 7230, u26_may: 7470, growth: 0.0, desc: "거주 시설", solution: "개별 전열기구 관리", history25: [6180, 6900, 5400, 0, 0, 0, 15370, 39340, 33298, 16380, 34159, 5930], winFactor: "적극적인 개별 전열기구 관리 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 개별 전열기구 관리 필요" },
+          { name: "학생회관", cat: "study", u26_jan: 63950, u26_feb: 61200, u26_mar: 67200, u26_apr: 52200, u26_may: 63970, growth: 8.1, desc: "학습/연구", solution: "빈 강의실 소등", history25: [58800, 62400, 56800, 49200, 57200, 62200, 62800, 56320, 65390, 47012, 47936, 67100], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "법학전문대학원", cat: "study", u26_jan: 48760, u26_feb: 41500, u26_mar: 50400, u26_apr: 43800, u26_may: 41400, growth: 3.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [45600, 42600, 38400, 39000, 40200, 39600, 43200, 39520, 40201, 39600, 45966, 48000], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "경영관", cat: "study", u26_jan: 55400, u26_feb: 45870, u26_mar: 48600, u26_apr: 39600, u26_may: 40200, growth: 1.5, desc: "학습/연구", solution: "빈 강의실 소등", history25: [50400, 48600, 44800, 40400, 39600, 38400, 43200, 30242, 41651, 34828, 46624, 53200], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "상허기념도서관", cat: "study", u26_jan: 179500, u26_feb: 138600, u26_mar: 106538, u26_apr: 111600, u26_may: 154800, growth: 4.9, desc: "학습/연구", solution: "빈 강의실 소등", history25: [154800, 147600, 117179, 115200, 147600, 256400, 302400, 369738, 319965, 148400, 115001, 193890], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "공예관", cat: "study", u26_jan: 17860, u26_feb: 17900, u26_mar: 16200, u26_apr: 14850, u26_may: 18450, growth: 15.7, desc: "학습/연구", solution: "빈 강의실 소등", history25: [16650, 19350, 15750, 15750, 13950, 18450, 17100, 17800, 12795, 10050, 23194, 24960], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "과학관", cat: "study", u26_jan: 124300, u26_feb: 99900, u26_mar: 96590, u26_apr: 93590, u26_may: 122400, growth: 4.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [113400, 104400, 102600, 84600, 117000, 141200, 158400, 178700, 142035, 114200, 119144, 108879], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "새천년관", cat: "admin", u26_jan: 155580, u26_feb: 118000, u26_mar: 138000, u26_apr: 108000, u26_may: 126000, growth: 8.6, desc: "행정/지원", solution: "대기전력 차단", history25: [141000, 132000, 131000, 107779, 116035, 123000, 161000, 60713, 58418, 122000, 81042, 145000], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+          { name: "수의학관", cat: "study", u26_jan: 122000, u26_feb: 90190, u26_mar: 70875, u26_apr: 61920, u26_may: 68640, growth: -10.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [99360, 94080, 74360, 66240, 76800, 85760, 106080, 100516, 118704, 72960, 100622, 98750], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "KU기술혁신관", cat: "admin", u26_jan: 39600, u26_feb: 31500, u26_mar: 31975, u26_apr: 34800, u26_may: 34800, growth: -3.3, desc: "행정/지원", solution: "대기전력 차단", history25: [36000, 33600, 34800, 33600, 36000, 36800, 33600, 34870, 26233, 26800, 36416, 36900], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+          { name: "생명과학관", cat: "study", u26_jan: 139100, u26_feb: 107300, u26_mar: 126000, u26_apr: 117000, u26_may: 119000, growth: 3.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [121500, 118500, 115000, 109500, 115500, 120500, 150500, 150023, 141687, 122220, 136134, 118700], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "산학협동관", cat: "admin", u26_jan: 154330, u26_feb: 121000, u26_mar: 139200, u26_apr: 123400, u26_may: 154000, growth: 4.1, desc: "행정/지원", solution: "대기전력 차단", history25: [122165, 122400, 114400, 120000, 104000, 160000, 120000, 133892, 156689, 119048, 108963, 130060], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+          { name: "상허연구관", cat: "study", u26_jan: 51200, u26_feb: 44800, u26_mar: 55200, u26_apr: 51600, u26_may: 51600, growth: -3.4, desc: "학습/연구", solution: "빈 강의실 소등", history25: [46800, 45600, 52800, 49200, 53400, 51600, 48000, 40192, 61277, 41456, 55276, 52370], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "KULHOUSE", cat: "living", u26_jan: 782041, u26_feb: 584172, u26_mar: 554581, u26_apr: 327151, u26_may: 353881, growth: 10.3, desc: "거주 시설", solution: "개별 전열기구 관리", history25: [691945, 655954, 551943, 333945, 320857, 469985, 528129, 491880, 500365, 443422, 452325, 761891], winFactor: "적극적인 개별 전열기구 관리 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 개별 전열기구 관리 필요" },
+          { name: "예술디자인대학", cat: "study", u26_jan: 65408, u26_feb: 50800, u26_mar: 74400, u26_apr: 62400, u26_may: 62400, growth: 8.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [60000, 52800, 67200, 64800, 57800, 69600, 55200, 46380, 69534, 60000, 83428, 83740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "의학생명과학관", cat: "study", u26_jan: 186516, u26_feb: 163026, u26_mar: 187272, u26_apr: 197550, u26_may: 253458, growth: -9.2, desc: "학습/연구", solution: "빈 강의실 소등", history25: [215136, 180792, 213606, 225612, 279270, 346170, 432134, 452592, 341694, 250650, 169470, 176832], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "동물생명과학관", cat: "study", u26_jan: 112800, u26_feb: 94000, u26_mar: 100350, u26_apr: 103200, u26_may: 102000, growth: 6.7, desc: "학습/연구", solution: "빈 강의실 소등", history25: [103200, 96000, 93200, 100800, 95600, 103200, 112800, 94270, 113103, 97477, 99536, 116740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "부동산학관", cat: "study", u26_jan: 24720, u26_feb: 20100, u26_mar: 24926, u26_apr: 21900, u26_may: 24450, growth: 0.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [22800, 19950, 22050, 21750, 24300, 27000, 25553, 19500, 30886, 21366, 40715, 23090], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "신공학관", cat: "study", u26_jan: 328000, u26_feb: 215000, u26_mar: 273000, u26_apr: 263000, u26_may: 328000, growth: 9.7, desc: "학습/연구", solution: "빈 강의실 소등", history25: [276000, 246000, 276000, 252000, 298994, 315000, 387000, 301900, 373822, 301020, 262235, 276900], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" }
+        ];
+
+        buildingDB = buildingDB.map(b => {
+            const u26 = Array(12).fill(null);
+            u26[0] = b.u26_jan;
+            u26[1] = b.u26_feb;
+            u26[2] = b.u26_mar;
+            u26[3] = b.u26_apr; 
+            u26[4] = b.u26_may; 
+            // 💡 5월 기준으로 갱신
+            return { ...b, u26, uCurr: b.u26_may };
+        });
+
+        const TARGET_BUILDINGS = buildingDB.map(b => b.name);
+
+        // --- Utility Functions ---
+        function normalizeBuildingName(v) {
+            return String(v ?? '').replace(/\s+/g, '').toLowerCase();
+        }
+
+        function parseMonthFromFilename(filename) {
+            const name = String(filename ?? '');
+            const m = name.match(/(\d{1,2})\s*월/);
+            if (!m) return null;
+            const month = Number(m[1]);
+            if (!Number.isFinite(month) || month < 1 || month > 12) return null;
+            return month;
+        }
+
+        function coerceNumber(v) {
+            if (typeof v === 'number' && Number.isFinite(v)) return v;
+            const s = String(v ?? '').replace(/,/g, '').trim();
+            const n = Number(s);
+            return Number.isFinite(n) ? n : null;
+        }
+
+        function extractMonthlyUsageFromSheetAoA(aoa, buildingNames, targetMonth) {
+            const normalizedTargets = new Map(
+                buildingNames.map(n => [normalizeBuildingName(n), n])
+            );
+            const result = new Map();
+            const targetColIdx = (targetMonth * 4) - 1; 
+
+            for (const row of aoa) {
+                if (!Array.isArray(row)) continue;
+                const cell0 = row[0];
+                if (cell0 == null) continue;
+                const norm = normalizeBuildingName(cell0);
+                
+                let matchedName = null;
+                for (let [normKey, originalName] of normalizedTargets.entries()) {
+                    if (norm.includes(normKey) || normKey.includes(norm)) {
+                        matchedName = originalName;
+                        break;
+                    }
+                }
+
+                if (matchedName) {
+                    const value = coerceNumber(row[targetColIdx]);
+                    if (value != null) {
+                        result.set(matchedName, value);
+                    }
+                }
+            }
+            return result;
+        }
+
+        function getIcon(n) { 
+            if(n.includes("기숙사")) return "fa-bed"; 
+            if(n.includes("도서관")) return "fa-book-open"; 
+            if(n.includes("과학")||n.includes("동물")||n.includes("수의")||n.includes("생명")) return "fa-flask"; 
+            if(n.includes("공학")||n.includes("건축")||n.includes("창의")) return "fa-microchip"; 
+            return "fa-building-columns"; 
+        }
+
+        function populateDropdown() { 
+            const s = document.getElementById('globalSearch'); 
+            [...buildingDB].sort((a,b)=>a.name.localeCompare(b.name)).forEach(b=>{
+                const o = document.createElement('option');
+                o.value = b.name;
+                o.text = b.name;
+                s.appendChild(o);
+            }); 
+        }
+
+        function populateAISelect() {
+            const s = document.getElementById('aiBuildingSelect');
+            buildingDB.forEach((b,i)=>{
+                const o = document.createElement('option');
+                o.value = i;
+                o.text = b.name;
+                s.appendChild(o);
+            });
+        }
+
+        function initBattleDropdowns() {
+            const sA = document.getElementById('battleSelectA');
+            const sB = document.getElementById('battleSelectB');
+            if(!sA || !sB) return;
+            sA.innerHTML=''; sB.innerHTML='';
+            buildingDB.forEach((b,i)=>{
+                sA.add(new Option(b.name, i)); sB.add(new Option(b.name, i));
+            });
+            const engIdx = buildingDB.findIndex(b=>b.name.includes("공학관"));
+            const bioIdx = buildingDB.findIndex(b=>b.name.includes("생명과학관"));
+            sA.value = engIdx >= 0 ? engIdx : 0;
+            sB.value = bioIdx >= 0 ? bioIdx : 1;
+        }
+
+        // --- 캠퍼스 전체 통계 업데이트 ---
+        function updateCampusTotal() {
+            let total25 = 0;
+            let total26 = 0;
+            let validCount = 0;
+
+            buildingDB.forEach(b => {
+                const hist = b.history25[currentMonthIndex];
+                const curr = b.uCurr;
+                if (hist > 0 && curr > 0) {
+                    total25 += hist;
+                    total26 += curr;
+                    validCount++;
+                }
+            });
+
+            const campusTitle = document.getElementById('campusTotalTitle');
+            const campusDesc = document.getElementById('campusTotalDesc');
+
+            if (validCount > 0 && total25 > 0) {
+                const totalDiff = total26 - total25;
+                const totalGrowth = ((totalDiff / total25) * 100).toFixed(1);
+                
+                const coffeeCups = Math.floor((Math.abs(totalDiff) * 120) / 2000);
+                const costDiffText = `${(Math.abs(totalDiff) * 120).toLocaleString()}원`;
+                
+                const isSaved = totalDiff <= 0;
+                
+                campusTitle.innerHTML = `
+                    총 증감률 <span class="${isSaved ? 'text-emerald-400' : 'text-red-400'}">${totalGrowth > 0 ? '+' : ''}${totalGrowth}%</span>
+                `;
+                
+                if (isSaved) {
+                    campusDesc.innerHTML = `<span class="text-emerald-300 font-bold">약 ${costDiffText}</span> (아메리카노 ${coffeeCups.toLocaleString()}잔)을 <span class="font-bold">절약</span>했습니다! 🎉`;
+                } else {
+                    campusDesc.innerHTML = `<span class="text-red-300 font-bold">약 ${costDiffText}</span> (아메리카노 ${coffeeCups.toLocaleString()}잔)을 <span class="font-bold">추가 소비</span>했습니다. 😭`;
+                }
+            } else {
+                campusTitle.innerHTML = `데이터를 분석 중입니다...`;
+                campusDesc.innerHTML = `전력 데이터가 업데이트되면 캠퍼스 전체 통계가 표시됩니다.`;
+            }
+        }
+
+        function renderGrid(data) {
+            const grid = document.getElementById('buildingsGrid');
+            grid.innerHTML = '';
+            data.forEach((b) => {
+                const historyVal = b.history25[currentMonthIndex]; 
+                const u26_val = b.uCurr; 
+                const diff = u26_val - historyVal;
+                
+                const coffeeCups = Math.floor((Math.abs(diff) * 120) / 2000);
+                const co2 = (diff * 0.424).toFixed(1);
+                const coffeeTag = diff > 0 ? '초과 낭비!' : (diff < 0 ? '세이브!' : '');
+                const co2Text = `${diff > 0 ? '+' : ''}${co2}`;
+                
+                const div = document.createElement('div');
+                div.className = "bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm card-hover flex flex-col cursor-pointer group";
+                div.onclick = () => window.openModal(b.name);
+                div.dataset.id = b.name; 
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-mint group-hover:text-white transition"><i class="fa-solid ${getIcon(b.name)}"></i></div>
+                            <div><h3 class="font-bold text-slate-900 group-hover:text-mint transition text-wrap-anywhere">${b.name}</h3><span class="text-xs text-slate-400 font-medium uppercase">${b.cat}</span></div>
+                        </div>
+                        <div class="text-lg font-bold ${b.growth>0?'text-red-500':'text-emerald-500'}">${b.growth>0?'+':''}${b.growth}%</div>
+                    </div>
+                    <div class="bg-slate-50 rounded-lg p-3 mb-4 text-sm font-sans">
+                        <div class="flex justify-between"><span>25년 ${displayMonth}</span><span class="font-bold text-slate-600 font-sans">${historyVal.toLocaleString()}</span></div>
+                        <div class="flex justify-between text-mint mt-1"><span>26년 ${displayMonth}</span><span class="font-bold font-sans">${u26_val.toLocaleString()}</span></div>
+                    </div>
+                    <div class="mb-4 bg-orange-50 p-3 rounded-lg border border-orange-100 text-xs text-orange-800 leading-tight flex flex-col gap-1">
+                        <div class="flex items-center gap-2 font-bold"><i class="fa-solid fa-mug-hot"></i> 증감분 = 아메리카노 ${coffeeCups.toLocaleString()}잔 값! ${coffeeTag}</div>
+                        <div class="flex items-center gap-2 text-slate-500"><i class="fa-solid fa-cloud"></i> 탄소 증감분: ${co2Text} kg-CO2</div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between items-center">
+                        <span class="text-xs text-slate-400 font-medium group-hover:text-mint transition">상세 분석 &rarr;</span>
+                        <button onclick="window.goToCampaign(event)" class="text-xs bg-mint text-white px-2.5 sm:px-3 py-1 rounded-full font-bold hover:bg-teal-600 transition shadow whitespace-nowrap">⚡ 코인 캠페인 참여</button>
+                    </div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function renderBattleSide(side, bSelf, bOpponent) {
+            const growthSelf = parseFloat(bSelf.growth);
+            const growthOpp = parseFloat(bOpponent.growth);
+            const isWin = growthSelf < growthOpp;
+            
+            document.getElementById(`icon${side}`).className = `fa-solid ${getIcon(bSelf.name)}`;
+            const growthElem = document.getElementById(`growth${side}`);
+            growthElem.innerText = `${growthSelf > 0 ? '+' : ''}${growthSelf}%`;
+            growthElem.className = `text-2xl font-bold ${isWin ? 'text-mint' : 'text-red-400'}`;
+            
+            document.getElementById(`bar${side}`).style.width = isWin ? '70%' : '30%';
+            document.getElementById(`bar${side}`).className = `battle-bar-fill h-full ${isWin ? 'bg-mint' : 'bg-blue-500'}`;
+            
+            const badge = document.getElementById(`badge${side}`);
+            if(badge) {
+                badge.style.display = isWin ? "inline-block" : "none";
+                badge.innerText = isWin ? "WINNER 👑" : "";
+            }
+            
+            document.getElementById(`battleCard${side}`).className = `flex-1 bg-slate-800 rounded-2xl p-6 border-2 flex flex-col transition-all duration-300 ${isWin ? 'border-teal-500 shadow-[0_0_20px_rgba(45,212,191,0.2)]' : 'border-slate-700'}`;
+            document.getElementById(`iconBox${side}`).className = `w-12 h-12 rounded-lg flex items-center justify-center text-2xl transition-colors duration-300 ${isWin ? 'bg-mint text-slate-900' : 'bg-blue-600'}`;
+            document.getElementById(`reason${side}`).innerHTML = isWin ? `<span class="font-bold text-mint mb-1 block">승리 요인:</span>${bSelf.winFactor}` : `<span class="font-bold text-blue-400 mb-1 block">패배 원인:</span>${bSelf.loseFactor}`;
+        }
+
+        function updateBattle() {
+            const idxA = document.getElementById('battleSelectA').value;
+            const idxB = document.getElementById('battleSelectB').value;
+            if (idxA === "" || idxB === "") return;
+            renderBattleSide('A', buildingDB[idxA], buildingDB[idxB]);
+            renderBattleSide('B', buildingDB[idxB], buildingDB[idxA]);
+        }
+
+        function updateBestWorst() {
+            const sorted = [...buildingDB].sort((a,b)=>a.growth - b.growth);
+            const best = sorted[0];
+            const worst = sorted[sorted.length-1];
+            
+            if(document.getElementById('bestBuildingName')) {
+                document.getElementById('bestBuildingName').innerText = best.name;
+                document.getElementById('bestBuildingDesc').innerText = `${displayMonth} 증감률 ${best.growth}% (최저)`;
+                document.getElementById('worstBuildingName').innerText = worst.name;
+                document.getElementById('worstBuildingDesc').innerText = `${displayMonth} 증감률 ${worst.growth > 0 ? '+' : ''}${worst.growth}% (최고)`;
+            }
+        }
+
+        function getGrowthForMonth(b, monthIdx) {
+            let currentVal = b.u26[monthIdx];
+            let historyVal = b.history25[monthIdx];
+            if (currentVal == null || historyVal == null || historyVal === 0) return 0;
+            return parseFloat((((currentVal - historyVal) / historyVal) * 100).toFixed(1));
+        }
+
+        function showRanking(type, isToggle = false) {
+            if (!isToggle) {
+                currentRankingType = type;
+                isRankingExpanded = false;
+            }
+            
+            let targetMonthIdx = currentMonthIndex; 
+            if (currentRankingType === 'prev') targetMonthIdx = currentMonthIndex - 1; 
+            if (currentRankingType === 'prev2') targetMonthIdx = currentMonthIndex - 2; 
+            
+            const btnCurrent = document.getElementById('rankBtnCurrent');
+            const btnPrev = document.getElementById('rankBtnPrev');
+            const btnPrev2 = document.getElementById('rankBtnPrev2');
+            
+            const activeClass = "px-4 py-2 text-sm font-medium rounded-md bg-slate-600 text-white shadow-sm transition whitespace-nowrap";
+            const inactiveClass = "px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white transition whitespace-nowrap";
+
+            if (btnCurrent) btnCurrent.className = currentRankingType === 'current' ? activeClass : inactiveClass;
+            if (btnPrev) btnPrev.className = currentRankingType === 'prev' ? activeClass : inactiveClass;
+            if (btnPrev2) btnPrev2.className = currentRankingType === 'prev2' ? activeClass : inactiveClass;
+
+            const rankingData = buildingDB.map(b => {
+                return {
+                    name: b.name,
+                    growth: getGrowthForMonth(b, targetMonthIdx)
+                };
+            }).sort((a, b) => a.growth - b.growth);
+
+            const displayData = isRankingExpanded ? rankingData : rankingData.slice(0, 10);
+
+            let html = '';
+            displayData.forEach((data, index) => {
+                let rankIcon = `${index + 1}`;
+                let textClass = 'text-slate-300';
+                
+                if (index === 0) { rankIcon = '👑 1'; textClass = 'text-yellow-400 font-bold'; }
+                else if (index === 1) { rankIcon = '🥈 2'; textClass = 'text-slate-100 font-bold'; }
+                else if (index === 2) { rankIcon = '🥉 3'; textClass = 'text-amber-600 font-bold'; }
+
+                let growthText = data.growth > 0 ? `+${data.growth}%` : `${data.growth}%`;
+                let growthColor = data.growth > 0 ? 'text-red-400' : 'text-mint';
+
+                html += `
+                    <tr class="hover:bg-slate-700/30 transition-colors">
+                        <td class="px-4 py-3 font-medium ${textClass}">${rankIcon}</td>
+                        <td class="px-4 py-3 text-white font-medium">${data.name}</td>
+                        <td class="px-4 py-3 text-right font-bold ${growthColor}">${growthText}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('rankingTableBody').innerHTML = html;
+            
+            const btnContainer = document.getElementById('rankingViewMoreContainer');
+            const viewMoreBtn = document.getElementById('rankingViewMoreBtn');
+            
+            if (rankingData.length <= 10) {
+                if (btnContainer) btnContainer.style.display = 'none';
+            } else {
+                if (btnContainer) btnContainer.style.display = 'block';
+                if (viewMoreBtn) {
+                    viewMoreBtn.innerHTML = isRankingExpanded ? '▲ 접기' : '▼ 11위 이하 더보기';
+                }
+            }
+        }
+
+        function refreshDashboard() {
+            // 버튼 텍스트 동적 업데이트
+            document.getElementById('rankBtnCurrent').innerText = `이번 달 (${currentMonthIndex + 1}월)`;
+            document.getElementById('rankBtnPrev').innerText = `${currentMonthIndex}월`;
+            document.getElementById('rankBtnPrev2').innerText = `${currentMonthIndex - 1}월`;
+
+            renderGrid(buildingDB);
+            updateBattle();
+            updateBestWorst();
+            updateCampusTotal();
+            showRanking('current');
+            document.getElementById('currentMonthDisplay').innerText = displayMonth;
+            document.getElementById('nextMonthName').innerText = nextMonth;
+            document.getElementById('battleMonthText').innerText = `2026.${(currentMonthIndex+1).toString().padStart(2,'0')} 기준 라이벌 매치`;
+        }
+
+        // --- Event Handlers ---
+        function switchPage(p) {
+            const dashboard = document.getElementById('page-dashboard');
+            const campaign = document.getElementById('page-campaign');
+            const navDashboard = document.getElementById('nav-dashboard-links');
+            const navCampaign = document.getElementById('nav-campaign-links');
+            const navSearch = document.getElementById('nav-dashboard-menu');
+
+            if (p === 'dashboard') {
+                dashboard.classList.remove('hidden-page');
+                campaign.classList.add('hidden-page');
+                navDashboard.classList.remove('hidden');
+                navCampaign.classList.add('hidden');
+                navSearch.classList.remove('hidden');
+                navSearch.classList.add('md:flex');
+            } else {
+                dashboard.classList.add('hidden-page');
+                campaign.classList.remove('hidden-page');
+                navDashboard.classList.add('hidden');
+                navCampaign.classList.remove('hidden');
+                navSearch.classList.add('hidden');
+                navSearch.classList.remove('md:flex');
+            }
+            window.scrollTo(0,0);
+        }
+
+        function switchTab(t) {
+            const isShort = t==='short';
+            document.getElementById('tabShort').classList.toggle('active', isShort);
+            document.getElementById('tabLong').classList.toggle('active', !isShort);
+            document.getElementById('contentShort').style.display = isShort?'block':'none';
+            document.getElementById('contentLong').style.display = isShort?'none':'block';
+            
+            const ctx = document.getElementById(isShort?'chartShort':'chartLong').getContext('2d');
+            if(window.chartInstance) window.chartInstance.destroy();
+            
+            if(isShort) {
+                // 현재 설정된 월 기준으로 동적 동작
+                const histCurr = window.selectedB.history25[currentMonthIndex]; 
+                const histNext = window.selectedB.history25[currentMonthIndex + 1]; 
+                const currVal = window.selectedB.uCurr;       
+                
+                const growthRate = window.selectedB.growth / 100;
+                const predNext = Math.floor((histNext || 0) * (1 + growthRate)) || 0; 
+
+                const dataVals = [histCurr, currVal, histNext, predNext];
+                const minData = Math.min(...dataVals);
+                const maxData = Math.max(...dataVals);
+                
+                let yMin = 0;
+                if (minData > 0 && maxData > minData) {
+                    yMin = Math.max(0, Math.floor(minData - (maxData - minData) * 0.8));
+                } else if (minData === maxData && minData > 0) {
+                    yMin = Math.floor(minData * 0.5);
+                }
+
+                window.chartInstance = new Chart(ctx, { 
+                    type:'bar', 
+                    data:{
+                        labels: [`25년 ${displayMonth}`, `26년 ${displayMonth}`, `25년 ${nextMonth}`, `26년 ${nextMonth}(예측)`],
+                        datasets:[{
+                            label:'전력 사용량 (kWh)',
+                            data: dataVals,
+                            backgroundColor: ['#94a3b8', '#2dd4bf', '#94a3b8', '#3b82f6'],
+                            borderRadius: 6,
+                            borderSkipped: false
+                        }]
+                    }, 
+                    options:{ 
+                        plugins:{legend:{display:false}}, 
+                        responsive:true, 
+                        maintainAspectRatio:false,
+                        scales: {
+                            y: {
+                                min: yMin,
+                                ticks: {
+                                    callback: function(value) { return value.toLocaleString(); }
+                                }
+                            }
+                        }
+                    },
+                    plugins: [{
+                        id: 'waveBreakPlugin',
+                        afterDraw: function(chart) {
+                            if (chart.scales.y.min > 0) {
+                                const ctx = chart.ctx;
+                                const xAxis = chart.scales.x;
+                                const yAxis = chart.scales.y;
+                                const y = yAxis.bottom; 
+                                
+                                ctx.save();
+                                ctx.fillStyle = '#ffffff';
+                                ctx.fillRect(xAxis.left, y - 6, xAxis.right - xAxis.left, 12);
+                                
+                                ctx.beginPath();
+                                const waveLength = 15; 
+                                const amplitude = 4;   
+                                for (let x = xAxis.left; x <= xAxis.right; x++) {
+                                    const yPos = y + Math.sin((x - xAxis.left) / waveLength * Math.PI * 2) * amplitude;
+                                    if (x === xAxis.left) {
+                                        ctx.moveTo(x, yPos);
+                                    } else {
+                                        ctx.lineTo(x, yPos);
+                                    }
+                                }
+                                ctx.strokeStyle = '#94a3b8'; 
+                                ctx.lineWidth = 1.5;
+                                ctx.stroke();
+                                ctx.restore();
+                            }
+                        }
+                    }]
+                });
+                
+                document.getElementById('modalPredictionShort').innerHTML = `<strong>[전년 대비 추세]</strong> 작년 ${displayMonth} 대비 올해 증감률(${window.selectedB.growth}%)을 반영할 때, 2026년 ${nextMonth} 예상치는 <strong>${predNext.toLocaleString()} kWh</strong>입니다.<br><span class="text-xs text-slate-500 mt-2 inline-block"><i class="fa-solid fa-circle-info"></i> 막대의 값 차이를 명확히 보기 위해 그래프 하단이 생략(물결선) 되었습니다.</span>`;
+            } else {
+                const data26 = Array(12).fill(null);
+                // 현재 월까지만 동적으로 라인을 이어줍니다.
+                for (let i = 0; i <= currentMonthIndex; i++) {
+                    data26[i] = window.selectedB.u26[i]; 
+                }
+
+                window.chartInstance = new Chart(ctx, { type:'line', data:{
+                    labels:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+                    datasets:[
+                        {label:'2025년 실측', data:window.selectedB.history25, borderColor:'#cbd5e1', borderDash:[5,5], fill:false, tension:0.4},
+                        {label:'2026년 실측', data:data26, borderColor:'#2dd4bf', backgroundColor:'#2dd4bf', pointRadius:5, fill:false, spanGaps:false, tension:0.4}
+                    ]
+                }, options:{ responsive:true, maintainAspectRatio:false }});
+                
+                document.getElementById('modalAnalysisLong').innerHTML = `작년(2025)의 연간 패턴을 비교하여 건물의 계절적 특성을 분석합니다. 2026년은 데이터가 존재하는 월의 실측값이 월별로 이어져 표시됩니다.`;
+            }
+        }
+
+        function openModal(name) {
+            window.selectedB = buildingDB.find(b => b.name === name);
+            if(!window.selectedB) return;
+            document.getElementById('modalTitle').innerText = `${name} 상세 분석`;
+            document.getElementById('detailModal').classList.add('active');
+            window.switchTab('short');
+        }
+        function closeModal(e) { document.getElementById('detailModal').classList.remove('active'); }
+        
+        function goToCampaign(e) {
+            e.stopPropagation();
+            window.open('https://naver.me/xtN5mga9', '_blank');
+        }
+
+        function toggleRankingView() {
+            isRankingExpanded = !isRankingExpanded;
+            showRanking(currentRankingType, true);
+        }
+
+        function scrollToBuilding(n){ 
+            if(!n)return; 
+            switchPage('dashboard'); 
+            setTimeout(()=>{
+                const t=document.querySelector(`div[data-id="${n}"]`); 
+                if(t) {
+                    t.scrollIntoView({behavior:'smooth',block:'center'});
+                    t.classList.add('highlighted-card');
+                    setTimeout(()=>t.classList.remove('highlighted-card'), 2000);
+                }
+            },100); 
+        }
+
+        function filterGrid(c) { 
+            const filtered = c==='all'?buildingDB:buildingDB.filter(b=>b.cat===c);
+            renderGrid(filtered);
+            document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active','bg-white','shadow-sm'));
+            event?.target?.classList.add('active','bg-white','shadow-sm');
+        }
+
+        async function generateAIStrategy() {
+            const b = buildingDB[document.getElementById('aiBuildingSelect').value];
+            document.getElementById('aiLoading').classList.remove('hidden');
+            document.getElementById('aiOutput').classList.add('hidden');
+            
+            const slogans = [
+                "작은 실천이 만드는 큰 변화, En-Pocket!",
+                "지구를 위한 1분, 지금 스위치를 내려주세요.",
+                "오늘의 소등이 내일의 맑은 공기를 만듭니다.",
+                "당신의 절약이 건국대의 녹색 미래입니다.",
+                "에너지 다이어트, 나부터 시작합니다."
+            ];
+            
+            const strategies = [
+                `${b.solution} 캠페인과 함께 CES 주관 '빈 강의실 소등 릴레이'에 참여해보세요!`,
+                `${b.solution} 실천으로 대기전력을 차단하고 탄소 발자국을 줄여보세요.`,
+                `사용하지 않는 플러그 뽑기, ${b.name}의 에너지 지킴이가 되어주세요.`,
+                `${b.solution} 활동을 인증하고 En-Pocket 코인을 받아가세요!`
+            ];
+            
+            setTimeout(() => {
+                const sl = slogans[Math.floor(Math.random()*slogans.length)];
+                const st = strategies[Math.floor(Math.random()*strategies.length)];
+                
+                document.getElementById('aiNudgeText').innerText = `[${b.name} 맞춤 전략] ${st}`;
+                document.getElementById('aiSloganText').innerText = `"${sl}"`;
+                document.getElementById('aiLoading').classList.add('hidden');
+                document.getElementById('aiOutput').classList.remove('hidden');
+            }, 1000);
+        }
+
+        function adminLogin() {
+            const p = prompt("관리자 비밀번호:");
+            if(p==="4610") document.getElementById('excelInput').click();
+            else if(p!==null) alert("비밀번호 불일치");
+        }
+        
+        function viewApplicants() {
+            const p = prompt("관리자 비밀번호:");
+            if(p==="4610") {
+                if(!window.applicants || window.applicants.length===0) {
+                    alert("클라우드에 저장된 신청자가 없습니다.");
+                } else {
+                    const grouped = {};
+                    window.applicants.forEach(a => {
+                        let m = "기타(월 미상)";
+                        if (a.timestamp) {
+                            m = (new Date(a.timestamp).getMonth() + 1) + "월";
+                        } else if (a.campaignMonth) {
+                            m = a.campaignMonth; 
+                        }
+                        if (!grouped[m]) grouped[m] = [];
+                        grouped[m].push(a);
+                    });
+                    
+                    const sortedKeys = Object.keys(grouped).sort((a,b) => parseInt(a) - parseInt(b));
+                    
+                    let msg = "";
+                    for (const m of sortedKeys) {
+                        msg += `=== ${m} 신청명단 ===\n`;
+                        grouped[m].forEach((a, i) => {
+                            msg += `${i+1}. [${m} 신청자] ${a.building} - ${a.name} (${a.major}, ${a.id}, ${a.phone})\n`;
+                        });
+                        msg += "\n";
+                    }
+                    alert(msg.trim());
+                }
+            } else if(p!==null) alert("비밀번호 불일치");
+        }
+
+        async function handleFileUpload(event) {
+            try {
+                const file = event?.target?.files?.[0];
+                if (!file) return;
+
+                const monthFromName = parseMonthFromFilename(file.name);
+                const month = monthFromName ?? 5; // 인식 실패 시 기본값을 5월로 둡니다.
+                const monthIndex = month - 1;
+
+                const buf = await file.arrayBuffer();
+                const wb = XLSX.read(buf, { type: 'array' });
+                
+                const targetSheetName = wb.SheetNames.find(name => name.includes("전기사용량")) || wb.SheetNames[0];
+                const ws = wb.Sheets[targetSheetName];
+                
+                if (!ws) {
+                    alert("엑셀 시트를 찾지 못했습니다.");
+                    return;
+                }
+
+                const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true });
+                const usageMap = extractMonthlyUsageFromSheetAoA(aoa, TARGET_BUILDINGS, month);
+
+                let updated = 0;
+                buildingDB.forEach(b => {
+                    const v = usageMap.get(b.name);
+                    if (typeof v === 'number' && Number.isFinite(v)) {
+                        if (!Array.isArray(b.u26)) b.u26 = Array(12).fill(null);
+                        b.u26[monthIndex] = v; 
+                        
+                        if (monthIndex === 0) b.u26_jan = v;
+                        if (monthIndex === 1) b.u26_feb = v;
+                        if (monthIndex === 2) b.u26_mar = v;
+                        if (monthIndex === 3) b.u26_apr = v;
+                        if (monthIndex === 4) b.u26_may = v;
+                        
+                        let hasCurrentData = b.u26[monthIndex] !== null;
+                        let tMonth = hasCurrentData ? monthIndex : (b.u26[1] !== null ? 1 : 0);
+                        b.uCurr = b.u26[tMonth] ?? 0;
+                        let historyVal = b.history25[tMonth];
+                        
+                        if (hasCurrentData && historyVal > 0) {
+                            b.growth = parseFloat((((b.uCurr - historyVal) / historyVal) * 100).toFixed(1));
+                        }
+                        
+                        updated++;
+                    }
+                });
+
+                setCurrentMonth(monthIndex);
+                refreshDashboard();
+                alert(`관리자: 2026년 ${month}월 전력사용량 업데이트 완료 (${updated}/${TARGET_BUILDINGS.length}개 반영)`);
+            } catch (err) {
+                console.error(err);
+                alert("업데이트 중 오류가 발생했습니다. (엑셀 형식/건물명/값 칼럼을 확인해주세요.)");
+            } finally {
+                if (event?.target) event.target.value = "";
+            }
+        }
+
+        function setCurrentMonth(monthIndex) {
+            currentMonthIndex = Math.max(0, Math.min(11, monthIndex));
+            displayMonth = `${currentMonthIndex + 1}월`;
+            nextMonth = currentMonthIndex < 11 ? `${currentMonthIndex + 2}월` : `12월`;
+            buildingDB.forEach(b => {
+                const v = b.u26?.[currentMonthIndex];
+                b.uCurr = (typeof v === 'number' && Number.isFinite(v)) ? v : 0;
+            });
+        }
+
+        // --- DOMContentLoaded Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initBattleDropdowns();
+            populateDropdown();
+            populateAISelect();
+            updateBestWorst();
+            refreshDashboard();
+            switchPage('dashboard');
+            
+            // 전역 이벤트 리스너 등록 (onclick 대신 JS로 안전하게 바인딩)
+            window.switchPage = switchPage;
+            window.switchTab = switchTab;
+            window.openModal = openModal;
+            window.closeModal = closeModal;
+            window.goToCampaign = goToCampaign;
+            window.toggleRankingView = toggleRankingView;
+            window.scrollToBuilding = scrollToBuilding;
+            window.filterGrid = filterGrid;
+            window.generateAIStrategy = generateAIStrategy;
+            window.adminLogin = adminLogin;
+            window.viewApplicants = viewApplicants;
+            window.handleFileUpload = handleFileUpload;
+            window.updateBattle = updateBattle;
+            window.showRanking = showRanking;
+        });
+
+    </script>
+</body>
+</html>
