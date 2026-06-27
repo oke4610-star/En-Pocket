@@ -295,11 +295,15 @@
             <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
             <div class="max-w-6xl mx-auto px-4 relative z-10">
                 <!-- 캠퍼스 전체 오버뷰 -->
-                <div class="mb-12 bg-slate-800/80 rounded-2xl p-6 border border-slate-700 shadow-lg text-center backdrop-blur-sm">
+                <div class="mb-12 bg-slate-800/80 rounded-2xl p-6 border border-slate-700 shadow-lg text-center backdrop-blur-sm relative">
+                    <!-- 동적 월별 선택 버튼들이 들어갈 위치 -->
+                    <div class="flex flex-wrap justify-center gap-2 mb-6" id="campusMonthSelectors">
+                    </div>
+                    
                     <div class="inline-flex items-center gap-2 bg-slate-700/50 px-3 py-1 rounded-full text-slate-300 text-xs font-bold uppercase tracking-widest mb-3 border border-slate-600">
                         <i class="fa-solid fa-chart-line"></i> Campus Overview
                     </div>
-                    <h3 class="text-2xl sm:text-3xl font-black text-white mb-2" id="campusTotalTitle">이번 달 건국대학교 캠퍼스는?</h3>
+                    <h3 class="text-2xl sm:text-3xl font-black text-white mb-2" id="campusTotalTitle">캠퍼스 전체 통계</h3>
                     <p class="text-base sm:text-lg text-slate-300" id="campusTotalDesc">데이터를 분석 중입니다...</p>
                 </div>
 
@@ -613,29 +617,29 @@
           { name: "인문학관", cat: "study", u26_jan: 26380, u26_feb: 24200, u26_mar: 24985, u26_apr: 24300, u26_may: 21750, growth: -7.1, desc: "학습/연구", solution: "빈 강의실 소등", history25: [25850, 26400, 26000, 22650, 23400, 22350, 20100, 21040, 21585, 19596, 27092, 28100], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
           { name: "언어교육원", cat: "study", u26_jan: 15690, u26_feb: 13755, u26_mar: 12600, u26_apr: 9900, u26_may: 7650, growth: -15.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [15750, 13950, 13500, 10800, 9000, 10800, 13050, 8740, 10635, 9350, 12302, 13690], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
           { name: "창의관", cat: "study", u26_jan: 28400, u26_feb: 29780, u26_mar: 25280, u26_apr: 16920, u26_may: 16640, growth: 13.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [27840, 32920, 24640, 16320, 14720, 15040, 16000, 41449, 33474, 13948, 33384, 25580], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "입학정보관", cat: "admin", u26_jan: 135200, u26_feb: 105700, u26_mar: 97200, u26_apr: 96300, u26_may: 108000, growth: 2.6, desc: "행정/지원", solution: "대기전력 차단", history25: [119700, 114300, 100600, 94500, 105300, 101600, 132300, 97132, 115277, 92150, 98260, 121200], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
-          { name: "실내체육관", cat: "study", u26_jan: 8960, u26_feb: 8070, u26_mar: 9960, u26_apr: 8280, u26_may: 8700, growth: -10.3, desc: "학습/연구", solution: "빈 강의실 소등", history25: [8880, 8580, 9120, 7860, 9700, 10140, 8960, 11123, 10947, 7620, 6878, 11400], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "건축관", cat: "study", u26_jan: 31330, u26_feb: 25120, u26_mar: 30060, u26_apr: 31500, u26_may: 31770, growth: 6.3, desc: "학습/연구", solution: "빈 강의실 소등", history25: [28080, 25470, 30310, 30150, 29880, 34008, 26190, 20842, 32410, 28952, 41025, 38700], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 일실 소등 필요" },
-          { name: "행정관", cat: "admin", u26_jan: 68260, u26_feb: 65900, u26_mar: 44400, u26_apr: 30000, u26_may: 28000, growth: 3.7, desc: "행정/지원", solution: "대기전력 차단", history25: [60000, 64800, 42000, 27600, 27000, 36400, 49200, 51400, 82783, 32928, 27120, 68700], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+          { name: "입학정보관", cat: "admin", u26_jan: 135200, u26_feb: 105700, u26_mar: 97200, u26_apr: 96300, u26_may: 112500, growth: 6.8, desc: "행정/지원", solution: "대기전력 차단", history25: [119700, 114300, 100600, 94500, 105300, 101600, 132300, 97132, 115277, 92150, 98260, 121200], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+          { name: "실내체육관", cat: "study", u26_jan: 8960, u26_feb: 8070, u26_mar: 9960, u26_apr: 8280, u26_may: 11100, growth: 14.4, desc: "학습/연구", solution: "빈 강의실 소등", history25: [8880, 8580, 9120, 7860, 9700, 10140, 8960, 11123, 10947, 7620, 6878, 11400], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "건축관", cat: "study", u26_jan: 31330, u26_feb: 25120, u26_mar: 30060, u26_apr: 31500, u26_may: 27900, growth: -6.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [28080, 25470, 30310, 30150, 29880, 34008, 26190, 20842, 32410, 28952, 41025, 38700], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 일실 소등 필요" },
+          { name: "행정관", cat: "admin", u26_jan: 68260, u26_feb: 65900, u26_mar: 44400, u26_apr: 30000, u26_may: 28200, growth: 4.4, desc: "행정/지원", solution: "대기전력 차단", history25: [60000, 64800, 42000, 27600, 27000, 36400, 49200, 51400, 82783, 32928, 27120, 68700], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
           { name: "일우헌", cat: "living", u26_jan: 7090, u26_feb: 6750, u26_mar: 11010, u26_apr: 7230, u26_may: 7470, growth: 0.0, desc: "거주 시설", solution: "개별 전열기구 관리", history25: [6180, 6900, 5400, 0, 0, 0, 15370, 39340, 33298, 16380, 34159, 5930], winFactor: "적극적인 개별 전열기구 관리 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 개별 전열기구 관리 필요" },
-          { name: "학생회관", cat: "study", u26_jan: 63950, u26_feb: 61200, u26_mar: 67200, u26_apr: 52200, u26_may: 63970, growth: 8.1, desc: "학습/연구", solution: "빈 강의실 소등", history25: [58800, 62400, 56800, 49200, 57200, 62200, 62800, 56320, 65390, 47012, 47936, 67100], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "법학전문대학원", cat: "study", u26_jan: 48760, u26_feb: 41500, u26_mar: 50400, u26_apr: 43800, u26_may: 41400, growth: 3.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [45600, 42600, 38400, 39000, 40200, 39600, 43200, 39520, 40201, 39600, 45966, 48000], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "경영관", cat: "study", u26_jan: 55400, u26_feb: 45870, u26_mar: 48600, u26_apr: 39600, u26_may: 40200, growth: 1.5, desc: "학습/연구", solution: "빈 강의실 소등", history25: [50400, 48600, 44800, 40400, 39600, 38400, 43200, 30242, 41651, 34828, 46624, 53200], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "상허기념도서관", cat: "study", u26_jan: 179500, u26_feb: 138600, u26_mar: 106538, u26_apr: 111600, u26_may: 154800, growth: 4.9, desc: "학습/연구", solution: "빈 강의실 소등", history25: [154800, 147600, 117179, 115200, 147600, 256400, 302400, 369738, 319965, 148400, 115001, 193890], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "공예관", cat: "study", u26_jan: 17860, u26_feb: 17900, u26_mar: 16200, u26_apr: 14850, u26_may: 18450, growth: 15.7, desc: "학습/연구", solution: "빈 강의실 소등", history25: [16650, 19350, 15750, 15750, 13950, 18450, 17100, 17800, 12795, 10050, 23194, 24960], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "과학관", cat: "study", u26_jan: 124300, u26_feb: 99900, u26_mar: 96590, u26_apr: 93590, u26_may: 122400, growth: 4.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [113400, 104400, 102600, 84600, 117000, 141200, 158400, 178700, 142035, 114200, 119144, 108879], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "새천년관", cat: "admin", u26_jan: 155580, u26_feb: 118000, u26_mar: 138000, u26_apr: 108000, u26_may: 126000, growth: 8.6, desc: "행정/지원", solution: "대기전력 차단", history25: [141000, 132000, 131000, 107779, 116035, 123000, 161000, 60713, 58418, 122000, 81042, 145000], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
-          { name: "수의학관", cat: "study", u26_jan: 122000, u26_feb: 90190, u26_mar: 70875, u26_apr: 61920, u26_may: 68640, growth: -10.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [99360, 94080, 74360, 66240, 76800, 85760, 106080, 100516, 118704, 72960, 100622, 98750], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "KU기술혁신관", cat: "admin", u26_jan: 39600, u26_feb: 31500, u26_mar: 31975, u26_apr: 34800, u26_may: 34800, growth: -3.3, desc: "행정/지원", solution: "대기전력 차단", history25: [36000, 33600, 34800, 33600, 36000, 36800, 33600, 34870, 26233, 26800, 36416, 36900], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
-          { name: "생명과학관", cat: "study", u26_jan: 139100, u26_feb: 107300, u26_mar: 126000, u26_apr: 117000, u26_may: 119000, growth: 3.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [121500, 118500, 115000, 109500, 115500, 120500, 150500, 150023, 141687, 122220, 136134, 118700], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "산학협동관", cat: "admin", u26_jan: 154330, u26_feb: 121000, u26_mar: 139200, u26_apr: 123400, u26_may: 154000, growth: 4.1, desc: "행정/지원", solution: "대기전력 차단", history25: [122165, 122400, 114400, 120000, 104000, 160000, 120000, 133892, 156689, 119048, 108963, 130060], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
-          { name: "상허연구관", cat: "study", u26_jan: 51200, u26_feb: 44800, u26_mar: 55200, u26_apr: 51600, u26_may: 51600, growth: -3.4, desc: "학습/연구", solution: "빈 강의실 소등", history25: [46800, 45600, 52800, 49200, 53400, 51600, 48000, 40192, 61277, 41456, 55276, 52370], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "학생회관", cat: "study", u26_jan: 63950, u26_feb: 61200, u26_mar: 67200, u26_apr: 52200, u26_may: 60400, growth: 5.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [58800, 62400, 56800, 49200, 57200, 62200, 62800, 56320, 65390, 47012, 47936, 67100], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "법학전문대학원", cat: "study", u26_jan: 48760, u26_feb: 41500, u26_mar: 50400, u26_apr: 43800, u26_may: 44400, growth: 10.4, desc: "학습/연구", solution: "빈 강의실 소등", history25: [45600, 42600, 38400, 39000, 40200, 39600, 43200, 39520, 40201, 39600, 45966, 48000], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "경영관", cat: "study", u26_jan: 55400, u26_feb: 45870, u26_mar: 48600, u26_apr: 39600, u26_may: 43800, growth: 10.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [50400, 48600, 44800, 40400, 39600, 38400, 43200, 30242, 41651, 34828, 46624, 53200], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "상허기념도서관", cat: "study", u26_jan: 179500, u26_feb: 138600, u26_mar: 106538, u26_apr: 111600, u26_may: 161800, growth: 9.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [154800, 147600, 117179, 115200, 147600, 256400, 302400, 369738, 319965, 148400, 115001, 193890], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "공예관", cat: "study", u26_jan: 17860, u26_feb: 17900, u26_mar: 16200, u26_apr: 14850, u26_may: 14400, growth: 3.2, desc: "학습/연구", solution: "빈 강의실 소등", history25: [16650, 19350, 15750, 15750, 13950, 18450, 17100, 17800, 12795, 10050, 23194, 24960], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "과학관", cat: "study", u26_jan: 124300, u26_feb: 99900, u26_mar: 96590, u26_apr: 93590, u26_may: 131800, growth: 12.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [113400, 104400, 102600, 84600, 117000, 141200, 158400, 178700, 142035, 114200, 119144, 108879], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "새천년관", cat: "admin", u26_jan: 155580, u26_feb: 118000, u26_mar: 138000, u26_apr: 108000, u26_may: 116000, growth: 0.0, desc: "행정/지원", solution: "대기전력 차단", history25: [141000, 132000, 131000, 107779, 116035, 123000, 161000, 60713, 58418, 122000, 81042, 145000], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+          { name: "수의학관", cat: "study", u26_jan: 122000, u26_feb: 90190, u26_mar: 70875, u26_apr: 61920, u26_may: 77760, growth: 1.2, desc: "학습/연구", solution: "빈 강의실 소등", history25: [99360, 94080, 74360, 66240, 76800, 85760, 106080, 100516, 118704, 72960, 100622, 98750], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "KU기술혁신관", cat: "admin", u26_jan: 39600, u26_feb: 31500, u26_mar: 31975, u26_apr: 34800, u26_may: 39600, growth: 10.0, desc: "행정/지원", solution: "대기전력 차단", history25: [36000, 33600, 34800, 33600, 36000, 36800, 33600, 34870, 26233, 26800, 36416, 36900], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+          { name: "생명과학관", cat: "study", u26_jan: 139100, u26_feb: 107300, u26_mar: 126000, u26_apr: 117000, u26_may: 125500, growth: 8.7, desc: "학습/연구", solution: "빈 강의실 소등", history25: [121500, 118500, 115000, 109500, 115500, 120500, 150500, 150023, 141687, 122220, 136134, 118700], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "산학협동관", cat: "admin", u26_jan: 154330, u26_feb: 121000, u26_mar: 139200, u26_apr: 123400, u26_may: 105600, growth: 1.5, desc: "행정/지원", solution: "대기전력 차단", history25: [122165, 122400, 114400, 120000, 104000, 160000, 120000, 133892, 156689, 119048, 108963, 130060], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
+          { name: "상허연구관", cat: "study", u26_jan: 51200, u26_feb: 44800, u26_mar: 55200, u26_apr: 51600, u26_may: 56400, growth: 5.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [46800, 45600, 52800, 49200, 53400, 51600, 48000, 40192, 61277, 41456, 55276, 52370], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
           { name: "KULHOUSE", cat: "living", u26_jan: 782041, u26_feb: 584172, u26_mar: 554581, u26_apr: 327151, u26_may: 353881, growth: 10.3, desc: "거주 시설", solution: "개별 전열기구 관리", history25: [691945, 655954, 551943, 333945, 320857, 469985, 528129, 491880, 500365, 443422, 452325, 761891], winFactor: "적극적인 개별 전열기구 관리 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 개별 전열기구 관리 필요" },
-          { name: "예술디자인대학", cat: "study", u26_jan: 65408, u26_feb: 50800, u26_mar: 74400, u26_apr: 62400, u26_may: 62400, growth: 8.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [60000, 52800, 67200, 64800, 57800, 69600, 55200, 46380, 69534, 60000, 83428, 83740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "의학생명과학관", cat: "study", u26_jan: 186516, u26_feb: 163026, u26_mar: 187272, u26_apr: 197550, u26_may: 253458, growth: -9.2, desc: "학습/연구", solution: "빈 강의실 소등", history25: [215136, 180792, 213606, 225612, 279270, 346170, 432134, 452592, 341694, 250650, 169470, 176832], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "동물생명과학관", cat: "study", u26_jan: 112800, u26_feb: 94000, u26_mar: 100350, u26_apr: 103200, u26_may: 102000, growth: 6.7, desc: "학습/연구", solution: "빈 강의실 소등", history25: [103200, 96000, 93200, 100800, 95600, 103200, 112800, 94270, 113103, 97477, 99536, 116740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "부동산학관", cat: "study", u26_jan: 24720, u26_feb: 20100, u26_mar: 24926, u26_apr: 21900, u26_may: 24450, growth: 0.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [22800, 19950, 22050, 21750, 24300, 27000, 25553, 19500, 30886, 21366, 40715, 23090], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "신공학관", cat: "study", u26_jan: 328000, u26_feb: 215000, u26_mar: 273000, u26_apr: 263000, u26_may: 328000, growth: 9.7, desc: "학습/연구", solution: "빈 강의실 소등", history25: [276000, 246000, 276000, 252000, 298994, 315000, 387000, 301900, 373822, 301020, 262235, 276900], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" }
+          { name: "예술디자인대학", cat: "study", u26_jan: 65408, u26_feb: 50800, u26_mar: 74400, u26_apr: 62400, u26_may: 62000, growth: 7.3, desc: "학습/연구", solution: "빈 강의실 소등", history25: [60000, 52800, 67200, 64800, 57800, 69600, 55200, 46380, 69534, 60000, 83428, 83740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "의학생명과학관", cat: "study", u26_jan: 186516, u26_feb: 163026, u26_mar: 187272, u26_apr: 197550, u26_may: 284136, growth: 1.7, desc: "학습/연구", solution: "빈 강의실 소등", history25: [215136, 180792, 213606, 225612, 279270, 346170, 432134, 452592, 341694, 250650, 169470, 176832], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "동물생명과학관", cat: "study", u26_jan: 112800, u26_feb: 94000, u26_mar: 100350, u26_apr: 103200, u26_may: 103600, growth: 8.4, desc: "학습/연구", solution: "빈 강의실 소등", history25: [103200, 96000, 93200, 100800, 95600, 103200, 112800, 94270, 113103, 97477, 99536, 116740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "부동산학관", cat: "study", u26_jan: 24720, u26_feb: 20100, u26_mar: 24926, u26_apr: 21900, u26_may: 24750, growth: 1.9, desc: "학습/연구", solution: "빈 강의실 소등", history25: [22800, 19950, 22050, 21750, 24300, 27000, 25553, 19500, 30886, 21366, 40715, 23090], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
+          { name: "신공학관", cat: "study", u26_jan: 328000, u26_feb: 215000, u26_mar: 273000, u26_apr: 263000, u26_may: 300000, growth: 0.3, desc: "학습/연구", solution: "빈 강의실 소등", history25: [276000, 246000, 276000, 252000, 298994, 315000, 387000, 301900, 373822, 301020, 262235, 276900], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" }
         ];
 
         buildingDB = buildingDB.map(b => {
@@ -746,23 +750,64 @@
         }
 
         // --- 캠퍼스 전체 통계 업데이트 ---
-        function updateCampusTotal() {
+        function renderCampusMonthSelectors() {
+            const container = document.getElementById('campusMonthSelectors');
+            if(!container) return;
+            
+            let html = `<button onclick="window.updateCampusTotal('YTD')" id="btnCampusYTD" class="px-4 py-1.5 rounded-full text-sm font-bold transition-colors border">누적(1~${currentMonthIndex + 1}월)</button>`;
+            
+            for(let i = currentMonthIndex; i >= 0; i--) {
+                html += `<button onclick="window.updateCampusTotal(${i})" id="btnCampus${i}" class="px-4 py-1.5 rounded-full text-sm font-bold transition-colors border">${i + 1}월</button>`;
+            }
+            
+            container.innerHTML = html;
+            window.updateCampusTotal('YTD'); // 초기 기본값: 누적
+        }
+
+        function updateCampusTotal(mode) {
+            currentCampusMode = mode;
             let total25 = 0;
             let total26 = 0;
             let validCount = 0;
 
+            // 버튼 스타일 갱신
+            const container = document.getElementById('campusMonthSelectors');
+            if(container) {
+                Array.from(container.children).forEach(btn => {
+                    btn.className = "px-4 py-1.5 rounded-full text-sm font-bold transition-colors bg-slate-700 text-slate-300 border-slate-600 hover:text-white hover:bg-slate-600";
+                });
+                const activeBtn = document.getElementById(`btnCampus${mode}`);
+                if(activeBtn) {
+                    activeBtn.className = "px-4 py-1.5 rounded-full text-sm font-bold transition-colors bg-teal-500 text-slate-900 border-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.3)]";
+                }
+            }
+
             buildingDB.forEach(b => {
-                const hist = b.history25[currentMonthIndex];
-                const curr = b.uCurr;
-                if (hist > 0 && curr > 0) {
-                    total25 += hist;
-                    total26 += curr;
-                    validCount++;
+                if (mode === 'YTD') {
+                    for(let i = 0; i <= currentMonthIndex; i++) {
+                        const hist = b.history25[i];
+                        const curr = b.u26[i];
+                        if (hist != null && curr != null && hist > 0) {
+                            total25 += hist;
+                            total26 += curr;
+                            validCount++;
+                        }
+                    }
+                } else {
+                    const hist = b.history25[mode];
+                    const curr = b.u26[mode];
+                    if (hist != null && curr != null && hist > 0) {
+                        total25 += hist;
+                        total26 += curr;
+                        validCount++;
+                    }
                 }
             });
 
             const campusTitle = document.getElementById('campusTotalTitle');
             const campusDesc = document.getElementById('campusTotalDesc');
+
+            let periodText = mode === 'YTD' ? `1~${currentMonthIndex + 1}월 누적` : `${mode + 1}월`;
 
             if (validCount > 0 && total25 > 0) {
                 const totalDiff = total26 - total25;
@@ -774,7 +819,7 @@
                 const isSaved = totalDiff <= 0;
                 
                 campusTitle.innerHTML = `
-                    총 증감률 <span class="${isSaved ? 'text-emerald-400' : 'text-red-400'}">${totalGrowth > 0 ? '+' : ''}${totalGrowth}%</span>
+                    ${periodText} 총 증감률 <span class="${isSaved ? 'text-emerald-400' : 'text-red-400'}">${totalGrowth > 0 ? '+' : ''}${totalGrowth}%</span>
                 `;
                 
                 if (isSaved) {
@@ -783,8 +828,8 @@
                     campusDesc.innerHTML = `<span class="text-red-300 font-bold">약 ${costDiffText}</span> (아메리카노 ${coffeeCups.toLocaleString()}잔)을 <span class="font-bold">추가 소비</span>했습니다. 😭`;
                 }
             } else {
-                campusTitle.innerHTML = `데이터를 분석 중입니다...`;
-                campusDesc.innerHTML = `전력 데이터가 업데이트되면 캠퍼스 전체 통계가 표시됩니다.`;
+                campusTitle.innerHTML = `${periodText} 데이터를 분석 중입니다...`;
+                campusDesc.innerHTML = `전력 데이터가 충분하지 않습니다.`;
             }
         }
 
@@ -801,6 +846,11 @@
                 const coffeeTag = diff > 0 ? '초과 낭비!' : (diff < 0 ? '세이브!' : '');
                 const co2Text = `${diff > 0 ? '+' : ''}${co2}`;
                 
+                // 💡 Grid의 증감률 표기를 소수점 첫째자리(.toFixed(1))로 강제 포맷팅하여 통일합니다.
+                const displayGrowth = b.growth.toFixed(1);
+                const growthColor = b.growth > 0 ? 'text-red-500' : 'text-emerald-500';
+                const growthSign = b.growth > 0 ? '+' : '';
+                
                 const div = document.createElement('div');
                 div.className = "bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm card-hover flex flex-col cursor-pointer group";
                 div.onclick = () => window.openModal(b.name);
@@ -811,7 +861,7 @@
                             <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-mint group-hover:text-white transition"><i class="fa-solid ${getIcon(b.name)}"></i></div>
                             <div><h3 class="font-bold text-slate-900 group-hover:text-mint transition text-wrap-anywhere">${b.name}</h3><span class="text-xs text-slate-400 font-medium uppercase">${b.cat}</span></div>
                         </div>
-                        <div class="text-lg font-bold ${b.growth>0?'text-red-500':'text-emerald-500'}">${b.growth>0?'+':''}${b.growth}%</div>
+                        <div class="text-lg font-bold ${growthColor}">${growthSign}${displayGrowth}%</div>
                     </div>
                     <div class="bg-slate-50 rounded-lg p-3 mb-4 text-sm font-sans">
                         <div class="flex justify-between"><span>25년 ${displayMonth}</span><span class="font-bold text-slate-600 font-sans">${historyVal.toLocaleString()}</span></div>
@@ -831,13 +881,14 @@
         }
 
         function renderBattleSide(side, bSelf, bOpponent) {
+            // 💡 Battle 표기도 .toFixed(1)를 사용하여 일관성 유지
             const growthSelf = parseFloat(bSelf.growth);
             const growthOpp = parseFloat(bOpponent.growth);
             const isWin = growthSelf < growthOpp;
             
             document.getElementById(`icon${side}`).className = `fa-solid ${getIcon(bSelf.name)}`;
             const growthElem = document.getElementById(`growth${side}`);
-            growthElem.innerText = `${growthSelf > 0 ? '+' : ''}${growthSelf}%`;
+            growthElem.innerText = `${growthSelf > 0 ? '+' : ''}${growthSelf.toFixed(1)}%`;
             growthElem.className = `text-2xl font-bold ${isWin ? 'text-mint' : 'text-red-400'}`;
             
             document.getElementById(`bar${side}`).style.width = isWin ? '70%' : '30%';
@@ -869,13 +920,18 @@
             
             if(document.getElementById('bestBuildingName')) {
                 document.getElementById('bestBuildingName').innerText = best.name;
-                document.getElementById('bestBuildingDesc').innerText = `${displayMonth} 증감률 ${best.growth}% (최저)`;
+                document.getElementById('bestBuildingDesc').innerText = `${displayMonth} 증감률 ${best.growth.toFixed(1)}% (최저)`;
                 document.getElementById('worstBuildingName').innerText = worst.name;
-                document.getElementById('worstBuildingDesc').innerText = `${displayMonth} 증감률 ${worst.growth > 0 ? '+' : ''}${worst.growth}% (최고)`;
+                document.getElementById('worstBuildingDesc').innerText = `${displayMonth} 증감률 ${worst.growth > 0 ? '+' : ''}${worst.growth.toFixed(1)}% (최고)`;
             }
         }
 
         function getGrowthForMonth(b, monthIdx) {
+            // 💡 현재 월(5월)에 대한 순위를 요청할 경우, 직접 하드코딩해주신 b.growth 값을 최우선으로 사용하여 100% 동기화합니다.
+            if (monthIdx === currentMonthIndex && typeof b.growth === 'number') {
+                return b.growth;
+            }
+            
             let currentVal = b.u26[monthIdx];
             let historyVal = b.history25[monthIdx];
             if (currentVal == null || historyVal == null || historyVal === 0) return 0;
@@ -921,7 +977,8 @@
                 else if (index === 1) { rankIcon = '🥈 2'; textClass = 'text-slate-100 font-bold'; }
                 else if (index === 2) { rankIcon = '🥉 3'; textClass = 'text-amber-600 font-bold'; }
 
-                let growthText = data.growth > 0 ? `+${data.growth}%` : `${data.growth}%`;
+                // 💡 Ranking의 퍼센트 텍스트도 무조건 .toFixed(1) 포맷팅을 거치게 하여 Grid와 오차가 생기지 않도록 함
+                let growthText = data.growth > 0 ? `+${data.growth.toFixed(1)}%` : `${data.growth.toFixed(1)}%`;
                 let growthColor = data.growth > 0 ? 'text-red-400' : 'text-mint';
 
                 html += `
@@ -953,10 +1010,10 @@
             document.getElementById('rankBtnPrev').innerText = `${currentMonthIndex}월`;
             document.getElementById('rankBtnPrev2').innerText = `${currentMonthIndex - 1}월`;
 
+            renderCampusMonthSelectors(); // 캠퍼스 오버뷰 영역 버튼 및 계산 수행
             renderGrid(buildingDB);
             updateBattle();
             updateBestWorst();
-            updateCampusTotal();
             showRanking('current');
             document.getElementById('currentMonthDisplay').innerText = displayMonth;
             document.getElementById('nextMonthName').innerText = nextMonth;
@@ -1077,7 +1134,7 @@
                     }]
                 });
                 
-                document.getElementById('modalPredictionShort').innerHTML = `<strong>[전년 대비 추세]</strong> 작년 ${displayMonth} 대비 올해 증감률(${window.selectedB.growth}%)을 반영할 때, 2026년 ${nextMonth} 예상치는 <strong>${predNext.toLocaleString()} kWh</strong>입니다.<br><span class="text-xs text-slate-500 mt-2 inline-block"><i class="fa-solid fa-circle-info"></i> 막대의 값 차이를 명확히 보기 위해 그래프 하단이 생략(물결선) 되었습니다.</span>`;
+                document.getElementById('modalPredictionShort').innerHTML = `<strong>[전년 대비 추세]</strong> 작년 ${displayMonth} 대비 올해 증감률(${window.selectedB.growth.toFixed(1)}%)을 반영할 때, 2026년 ${nextMonth} 예상치는 <strong>${predNext.toLocaleString()} kWh</strong>입니다.<br><span class="text-xs text-slate-500 mt-2 inline-block"><i class="fa-solid fa-circle-info"></i> 막대의 값 차이를 명확히 보기 위해 그래프 하단이 생략(물결선) 되었습니다.</span>`;
             } else {
                 const data26 = Array(12).fill(null);
                 // 현재 월까지만 동적으로 라인을 이어줍니다.
@@ -1300,6 +1357,7 @@
             window.handleFileUpload = handleFileUpload;
             window.updateBattle = updateBattle;
             window.showRanking = showRanking;
+            window.updateCampusTotal = updateCampusTotal;
         });
 
     </script>
