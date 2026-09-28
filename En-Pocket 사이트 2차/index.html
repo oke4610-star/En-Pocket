@@ -5,18 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>엔포켓 | 건국대학교 전력 사용량 확인 서비스</title>
     <meta name="description" content="건국대학교 사회환경공학부 에코 스마트 시티 프로젝트의 일환인 엔포켓 서비스입니다.">
-    
+    <meta name="robots" content="noindex, nofollow">
+
     <!-- [TRACKING CODE START] -->
     <!-- 사용자 추적 코드를 여기에 삽입하세요 -->
     <!-- [TRACKING CODE END] -->
 
     <!-- Libraries -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <!-- Tailwind 는 빌드한 정적 CSS 를 쓴다. cdn.tailwindcss.com 은 브라우저에서 CSS 를
+         컴파일하는 개발용 CDN 이라 걷어냈다. 클래스를 바꾸면 npm run build:css 를 다시 돌려야 한다. -->
+    <style>
+*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }
+/*! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.\!container{width:100%!important}.container{width:100%}@media (min-width:640px){.\!container{max-width:640px!important}.container{max-width:640px}}@media (min-width:768px){.\!container{max-width:768px!important}.container{max-width:768px}}@media (min-width:1024px){.\!container{max-width:1024px!important}.container{max-width:1024px}}@media (min-width:1280px){.\!container{max-width:1280px!important}.container{max-width:1280px}}@media (min-width:1536px){.\!container{max-width:1536px!important}.container{max-width:1536px}}.visible{visibility:visible}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0}.-right-4{right:-1rem}.-top-4{top:-1rem}.left-0{left:0}.left-3{left:.75rem}.top-0{top:0}.top-1\/2{top:50%}.z-10{z-index:10}.z-20{z-index:20}.z-50{z-index:50}.col-span-full{grid-column:1/-1}.mx-8{margin-left:2rem;margin-right:2rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:.25rem}.mb-10{margin-bottom:2.5rem}.mb-12{margin-bottom:3rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.ml-1{margin-left:.25rem}.mr-1{margin-right:.25rem}.mr-2{margin-right:.5rem}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-20{margin-top:5rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.mt-auto{margin-top:auto}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.inline-flex{display:inline-flex}.table{display:table}.grid{display:grid}.hidden{display:none}.h-1{height:.25rem}.h-10{height:2.5rem}.h-12{height:3rem}.h-16{height:4rem}.h-2{height:.5rem}.h-20{height:5rem}.h-4{height:1rem}.h-64{height:16rem}.h-full{height:100%}.max-h-\[70vh\]{max-height:70vh}.w-10{width:2.5rem}.w-12{width:3rem}.w-16{width:4rem}.w-2{width:.5rem}.w-20{width:5rem}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-5xl{max-width:64rem}.max-w-6xl{max-width:72rem}.max-w-7xl{max-width:80rem}.max-w-full{max-width:100%}.max-w-md{max-width:28rem}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.flex-grow{flex-grow:1}.-translate-y-1\/2{--tw-translate-y:-50%}.-translate-y-1\/2,.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes bounce{0%,to{transform:translateY(-25%);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:none;animation-timing-function:cubic-bezier(0,0,.2,1)}}.animate-bounce{animation:bounce 1s infinite}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}.cursor-pointer{cursor:pointer}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:.25rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.75rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem*var(--tw-space-y-reverse))}.space-y-6>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem*var(--tw-space-y-reverse))}.divide-y>:not([hidden])~:not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px*(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px*var(--tw-divide-y-reverse))}.divide-slate-700\/50>:not([hidden])~:not([hidden]){border-color:rgba(51,65,85,.5)}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-md{border-radius:.375rem}.rounded-xl{border-radius:.75rem}.rounded-tl-lg{border-top-left-radius:.5rem}.rounded-tr-lg{border-top-right-radius:.5rem}.border{border-width:1px}.border-2{border-width:2px}.border-4{border-width:4px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-none{border-style:none}.border-blue-100{--tw-border-opacity:1;border-color:rgb(219 234 254/var(--tw-border-opacity,1))}.border-indigo-100{--tw-border-opacity:1;border-color:rgb(224 231 255/var(--tw-border-opacity,1))}.border-orange-100{--tw-border-opacity:1;border-color:rgb(255 237 213/var(--tw-border-opacity,1))}.border-red-100{--tw-border-opacity:1;border-color:rgb(254 226 226/var(--tw-border-opacity,1))}.border-red-200{--tw-border-opacity:1;border-color:rgb(254 202 202/var(--tw-border-opacity,1))}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249/var(--tw-border-opacity,1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240/var(--tw-border-opacity,1))}.border-slate-600{--tw-border-opacity:1;border-color:rgb(71 85 105/var(--tw-border-opacity,1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85/var(--tw-border-opacity,1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59/var(--tw-border-opacity,1))}.border-slate-900{--tw-border-opacity:1;border-color:rgb(15 23 42/var(--tw-border-opacity,1))}.border-teal-100{--tw-border-opacity:1;border-color:rgb(204 251 241/var(--tw-border-opacity,1))}.border-teal-400{--tw-border-opacity:1;border-color:rgb(45 212 191/var(--tw-border-opacity,1))}.border-teal-500{--tw-border-opacity:1;border-color:rgb(20 184 166/var(--tw-border-opacity,1))}.border-teal-500\/50{border-color:rgba(20,184,166,.5)}.border-yellow-400{--tw-border-opacity:1;border-color:rgb(250 204 21/var(--tw-border-opacity,1))}.bg-black\/60{background-color:rgba(0,0,0,.6)}.bg-blue-100{--tw-bg-opacity:1;background-color:rgb(219 234 254/var(--tw-bg-opacity,1))}.bg-blue-50{--tw-bg-opacity:1;background-color:rgb(239 246 255/var(--tw-bg-opacity,1))}.bg-blue-500{--tw-bg-opacity:1;background-color:rgb(59 130 246/var(--tw-bg-opacity,1))}.bg-blue-600{--tw-bg-opacity:1;background-color:rgb(37 99 235/var(--tw-bg-opacity,1))}.bg-indigo-50{--tw-bg-opacity:1;background-color:rgb(238 242 255/var(--tw-bg-opacity,1))}.bg-orange-50{--tw-bg-opacity:1;background-color:rgb(255 247 237/var(--tw-bg-opacity,1))}.bg-purple-100{--tw-bg-opacity:1;background-color:rgb(243 232 255/var(--tw-bg-opacity,1))}.bg-red-100{--tw-bg-opacity:1;background-color:rgb(254 226 226/var(--tw-bg-opacity,1))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242/var(--tw-bg-opacity,1))}.bg-red-500{--tw-bg-opacity:1;background-color:rgb(239 68 68/var(--tw-bg-opacity,1))}.bg-red-600{--tw-bg-opacity:1;background-color:rgb(220 38 38/var(--tw-bg-opacity,1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity,1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.bg-slate-600{--tw-bg-opacity:1;background-color:rgb(71 85 105/var(--tw-bg-opacity,1))}.bg-slate-700{--tw-bg-opacity:1;background-color:rgb(51 65 85/var(--tw-bg-opacity,1))}.bg-slate-700\/50{background-color:rgba(51,65,85,.5)}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59/var(--tw-bg-opacity,1))}.bg-slate-800\/80{background-color:rgba(30,41,59,.8)}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42/var(--tw-bg-opacity,1))}.bg-teal-100{--tw-bg-opacity:1;background-color:rgb(204 251 241/var(--tw-bg-opacity,1))}.bg-teal-50{--tw-bg-opacity:1;background-color:rgb(240 253 250/var(--tw-bg-opacity,1))}.bg-teal-500{--tw-bg-opacity:1;background-color:rgb(20 184 166/var(--tw-bg-opacity,1))}.bg-teal-500\/20{background-color:rgba(20,184,166,.2)}.bg-teal-600{--tw-bg-opacity:1;background-color:rgb(13 148 136/var(--tw-bg-opacity,1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.bg-white\/90{background-color:hsla(0,0%,100%,.9)}.bg-yellow-100{--tw-bg-opacity:1;background-color:rgb(254 249 195/var(--tw-bg-opacity,1))}.bg-\[url\(\'https\:\/\/www\.transparenttextures\.com\/patterns\/carbon-fibre\.png\'\)\]{background-image:url(https://www.transparenttextures.com/patterns/carbon-fibre.png)}.bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right,var(--tw-gradient-stops))}.from-purple-600{--tw-gradient-from:#9333ea var(--tw-gradient-from-position);--tw-gradient-to:rgba(147,51,234,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-red-50{--tw-gradient-from:#fef2f2 var(--tw-gradient-from-position);--tw-gradient-to:hsla(0,86%,97%,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-teal-50{--tw-gradient-from:#f0fdfa var(--tw-gradient-from-position);--tw-gradient-to:rgba(240,253,250,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-yellow-400{--tw-gradient-from:#facc15 var(--tw-gradient-from-position);--tw-gradient-to:rgba(250,204,21,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.to-orange-500{--tw-gradient-to:#f97316 var(--tw-gradient-to-position)}.to-pink-600{--tw-gradient-to:#db2777 var(--tw-gradient-to-position)}.to-white{--tw-gradient-to:#fff var(--tw-gradient-to-position)}.p-1{padding:.25rem}.p-10{padding:2.5rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-20{padding-top:5rem;padding-bottom:5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-12{padding-bottom:3rem}.pl-10{padding-left:2.5rem}.pr-4{padding-right:1rem}.pt-16{padding-top:4rem}.pt-3{padding-top:.75rem}.pt-4{padding-top:1rem}.pt-6{padding-top:1.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.font-sans{font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-6xl{font-size:3.75rem;line-height:1}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.font-medium{font-weight:500}.uppercase{text-transform:uppercase}.italic{font-style:italic}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-.025em}.tracking-wide{letter-spacing:.025em}.tracking-wider{letter-spacing:.05em}.tracking-widest{letter-spacing:.1em}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6/var(--tw-text-opacity,1))}.text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250/var(--tw-text-opacity,1))}.text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235/var(--tw-text-opacity,1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183/var(--tw-text-opacity,1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153/var(--tw-text-opacity,1))}.text-emerald-500{--tw-text-opacity:1;color:rgb(16 185 129/var(--tw-text-opacity,1))}.text-orange-800{--tw-text-opacity:1;color:rgb(154 52 18/var(--tw-text-opacity,1))}.text-pink-400{--tw-text-opacity:1;color:rgb(244 114 182/var(--tw-text-opacity,1))}.text-purple-600{--tw-text-opacity:1;color:rgb(147 51 234/var(--tw-text-opacity,1))}.text-red-300{--tw-text-opacity:1;color:rgb(252 165 165/var(--tw-text-opacity,1))}.text-red-400{--tw-text-opacity:1;color:rgb(248 113 113/var(--tw-text-opacity,1))}.text-red-500{--tw-text-opacity:1;color:rgb(239 68 68/var(--tw-text-opacity,1))}.text-red-600{--tw-text-opacity:1;color:rgb(220 38 38/var(--tw-text-opacity,1))}.text-red-700{--tw-text-opacity:1;color:rgb(185 28 28/var(--tw-text-opacity,1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249/var(--tw-text-opacity,1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225/var(--tw-text-opacity,1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity,1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity,1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59/var(--tw-text-opacity,1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42/var(--tw-text-opacity,1))}.text-teal-300{--tw-text-opacity:1;color:rgb(94 234 212/var(--tw-text-opacity,1))}.text-teal-400{--tw-text-opacity:1;color:rgb(45 212 191/var(--tw-text-opacity,1))}.text-teal-500{--tw-text-opacity:1;color:rgb(20 184 166/var(--tw-text-opacity,1))}.text-teal-600{--tw-text-opacity:1;color:rgb(13 148 136/var(--tw-text-opacity,1))}.text-teal-700{--tw-text-opacity:1;color:rgb(15 118 110/var(--tw-text-opacity,1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.text-yellow-300{--tw-text-opacity:1;color:rgb(253 224 71/var(--tw-text-opacity,1))}.text-yellow-400{--tw-text-opacity:1;color:rgb(250 204 21/var(--tw-text-opacity,1))}.text-yellow-500{--tw-text-opacity:1;color:rgb(234 179 8/var(--tw-text-opacity,1))}.text-yellow-600{--tw-text-opacity:1;color:rgb(202 138 4/var(--tw-text-opacity,1))}.opacity-10{opacity:.1}.opacity-50{opacity:.5}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px -1px rgba(0,0,0,.1);--tw-shadow-colored:0 1px 3px 0 var(--tw-shadow-color),0 1px 2px -1px var(--tw-shadow-color)}.shadow,.shadow-2xl{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgba(0,0,0,.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color)}.shadow-\[0_0_10px_rgba\(45\2c 212\2c 191\2c 0\.3\)\]{--tw-shadow:0 0 10px rgba(45,212,191,.3);--tw-shadow-colored:0 0 10px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-\[0_0_20px_rgba\(45\2c 212\2c 191\2c 0\.2\)\]{--tw-shadow:0 0 20px rgba(45,212,191,.2);--tw-shadow-colored:0 0 20px var(--tw-shadow-color)}.shadow-\[0_0_20px_rgba\(45\2c 212\2c 191\2c 0\.2\)\],.shadow-inner{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-inner{--tw-shadow:inset 0 2px 4px 0 rgba(0,0,0,.05);--tw-shadow-colored:inset 0 2px 4px 0 var(--tw-shadow-color)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color),0 4px 6px -4px var(--tw-shadow-color)}.shadow-lg,.shadow-md{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color),0 2px 4px -2px var(--tw-shadow-color)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color)}.shadow-sm,.shadow-xl{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color),0 8px 10px -6px var(--tw-shadow-color)}.drop-shadow-sm{--tw-drop-shadow:drop-shadow(0 1px 1px rgba(0,0,0,.05))}.drop-shadow-sm,.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px)}.backdrop-blur-md,.backdrop-blur-sm{-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-300{transition-duration:.3s}.hover\:scale-105:hover{--tw-scale-x:1.05;--tw-scale-y:1.05;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:bg-slate-100:hover{--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity,1))}.hover\:bg-slate-200:hover{--tw-bg-opacity:1;background-color:rgb(226 232 240/var(--tw-bg-opacity,1))}.hover\:bg-slate-50:hover{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.hover\:bg-slate-600:hover{--tw-bg-opacity:1;background-color:rgb(71 85 105/var(--tw-bg-opacity,1))}.hover\:bg-slate-700\/30:hover{background-color:rgba(51,65,85,.3)}.hover\:bg-teal-100:hover{--tw-bg-opacity:1;background-color:rgb(204 251 241/var(--tw-bg-opacity,1))}.hover\:bg-teal-500:hover{--tw-bg-opacity:1;background-color:rgb(20 184 166/var(--tw-bg-opacity,1))}.hover\:bg-teal-600:hover{--tw-bg-opacity:1;background-color:rgb(13 148 136/var(--tw-bg-opacity,1))}.hover\:bg-white:hover{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.hover\:text-slate-500:hover{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.hover\:text-slate-600:hover{--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity,1))}.hover\:text-teal-600:hover{--tw-text-opacity:1;color:rgb(13 148 136/var(--tw-text-opacity,1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.hover\:shadow-lg:hover{--tw-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color),0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.hover\:shadow-pink-500\/30:hover{--tw-shadow-color:rgba(236,72,153,.3);--tw-shadow:var(--tw-shadow-colored)}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.focus\:ring-teal-400:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(45 212 191/var(--tw-ring-opacity,1))}.focus\:ring-teal-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(20 184 166/var(--tw-ring-opacity,1))}.group:hover .group-hover\:scale-110{--tw-scale-x:1.1;--tw-scale-y:1.1;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.group:hover .group-hover\:bg-blue-200{--tw-bg-opacity:1;background-color:rgb(191 219 254/var(--tw-bg-opacity,1))}.group:hover .group-hover\:bg-purple-200{--tw-bg-opacity:1;background-color:rgb(233 213 255/var(--tw-bg-opacity,1))}.group:hover .group-hover\:bg-teal-200{--tw-bg-opacity:1;background-color:rgb(153 246 228/var(--tw-bg-opacity,1))}.group:hover .group-hover\:bg-yellow-200{--tw-bg-opacity:1;background-color:rgb(254 240 138/var(--tw-bg-opacity,1))}.group:hover .group-hover\:text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}@media (min-width:640px){.sm\:block{display:block}.sm\:flex-row{flex-direction:row}.sm\:items-center{align-items:center}.sm\:p-6{padding:1.5rem}.sm\:px-3{padding-left:.75rem;padding-right:.75rem}.sm\:px-4{padding-left:1rem;padding-right:1rem}.sm\:text-2xl{font-size:1.5rem;line-height:2rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-4xl{font-size:2.25rem;line-height:2.5rem}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}.sm\:leading-tight{line-height:1.25}}@media (min-width:768px){.md\:flex{display:flex}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.md\:flex-row{flex-direction:row}.md\:text-5xl{font-size:3rem;line-height:1}}@media (min-width:1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    </style>
+    <!-- 외부 스크립트는 버전을 고정하고 SRI 해시를 붙인다. CDN 이 변조되면 해시가 어긋나 실행되지 않는다.
+         SheetJS(xlsx)는 참조가 0건이고 엑셀 업로드 기능을 되살리지 않기로 해서 제거했다. -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"
+            integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=GmarketSans:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
     
     <!-- Firebase Libraries -->
     <script type="module">
@@ -24,35 +35,26 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-        // 💡 여기에 발급받은 firebaseConfig를 붙여넣으세요.
-        let firebaseConfig = {};
-        
-        if (typeof __firebase_config !== 'undefined') {
-            firebaseConfig = JSON.parse(__firebase_config);
-        } else {
-            firebaseConfig = {
-                // TODO: Firebase 설정값을 여기에 입력해주세요!
-            };
-        }
+        // firebaseConfig 값 자체는 비밀이 아니다(웹 앱에 노출되는 게 정상).
+        // 실제 접근 통제는 Firestore 보안 규칙이 한다.
+        // firestore.rules 를 먼저 배포하지 않은 채로는 켜지 말 것.
+        const firebaseConfig = {
+            // TODO: Firebase 콘솔 > 프로젝트 설정 > 웹 앱의 설정값을 넣는다.
+        };
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'en-pocket-app';
-        
+        const appId = 'en-pocket-app';
+
         let app, auth, db;
-        
-        if (firebaseConfig && Object.keys(firebaseConfig).length > 0 && firebaseConfig.apiKey) {
+
+        if (firebaseConfig && firebaseConfig.apiKey) {
             app = initializeApp(firebaseConfig);
             auth = getAuth(app);
             db = getFirestore(app);
-            
-            const initAuth = async () => {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            };
-            initAuth();
-            
+
+            // 현재는 익명 로그인. 정식 로그인 기능이 들어오면 이 자리를 교체한다.
+            // 익명이든 아니든 "본인 문서만" 접근하도록 막는 건 Firestore 규칙 쪽 책임이다.
+            signInAnonymously(auth).catch((e) => console.error('로그인 실패:', e));
+
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     window.currentUser = user;
@@ -60,10 +62,11 @@
                 }
             });
         } else {
-            console.warn("Firebase 설정값(firebaseConfig)이 누락되었습니다. 데이터베이스 연동 기능을 사용하려면 설정값을 입력해주세요.");
+            console.warn('Firebase 설정값이 없습니다. 신청 관련 기능은 비활성 상태입니다.');
         }
-        
-        const getCollectionRef = () => collection(db, 'artifacts', appId, 'public', 'data', 'campaign_applicants');
+
+        // 신청자 문서에는 이름·학번·전화번호가 들어간다. 접근 통제는 firestore.rules 가 한다.
+        const getCollectionRef = () => collection(db, 'artifacts', appId, 'applicants');
         
         window.saveApplicationToCloud = async (applicationData) => {
             if (!db || !window.currentUser) {
@@ -71,7 +74,13 @@
                 return false;
             }
             try {
-                await addDoc(getCollectionRef(), applicationData);
+                // uid 를 같이 저장해야 Firestore 규칙에서 "본인 문서만" 을 강제할 수 있고,
+                // 아래 조회/삭제도 남의 문서를 건드리지 않게 좁힐 수 있다.
+                await addDoc(getCollectionRef(), {
+                    ...applicationData,
+                    uid: window.currentUser.uid,
+                    createdAt: new Date().toISOString(),
+                });
                 return true;
             } catch (e) {
                 console.error("Error adding document: ", e);
@@ -85,18 +94,20 @@
                 return false;
             }
             try {
-                const querySnapshot = await getDocs(getCollectionRef());
+                // 본인 uid 로 좁혀서 조회한다. 남의 문서는 애초에 내려오지 않는다.
+                const own = query(getCollectionRef(), where('uid', '==', window.currentUser.uid));
+                const querySnapshot = await getDocs(own);
                 let docIdToDelete = null;
-                
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
+
+                querySnapshot.forEach((d) => {
+                    const data = d.data();
                     if (data.building === building && data.name === name && data.campaignMonth === campaignMonth) {
-                        docIdToDelete = doc.id;
+                        docIdToDelete = d.id;
                     }
                 });
 
                 if (docIdToDelete) {
-                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaign_applicants', docIdToDelete));
+                    await deleteDoc(doc(db, 'artifacts', appId, 'applicants', docIdToDelete));
                     return true;
                 }
                 return false;
@@ -105,14 +116,16 @@
                 return false;
             }
         };
-        
+
         const setupRealtimeListener = () => {
              if (!db || !window.currentUser) return;
-             
-             onSnapshot(getCollectionRef(), (snapshot) => {
-                 window.applicants = []; 
-                 snapshot.forEach((doc) => {
-                     window.applicants.push({ ...doc.data(), id_db: doc.id });
+
+             // 본인 문서만 구독한다. window.applicants 에는 본인 기록만 담긴다.
+             const own = query(getCollectionRef(), where('uid', '==', window.currentUser.uid));
+             onSnapshot(own, (snapshot) => {
+                 window.applicants = [];
+                 snapshot.forEach((d) => {
+                     window.applicants.push({ ...d.data(), id_db: d.id });
                  });
              }, (error) => {
                  console.error("실시간 업데이트 오류:", error);
@@ -228,7 +241,7 @@
     <!-- ================= PAGE 1: DASHBOARD ================= -->
     <main id="page-dashboard">
         <div class="bg-slate-900 text-slate-400 text-xs py-2 text-center" id="systemStatus">
-            <i class="fa-solid fa-database mr-2"></i> 데이터 기준: 2026년 <span class="text-white font-bold" id="currentMonthDisplay">5월</span> (전년 동월 대비 분석)
+            <i class="fa-solid fa-database mr-2"></i> 데이터 기준: <span id="currentYearDisplay">2026년</span> <span class="text-white font-bold" id="currentMonthDisplay">-</span> (전년 동월 대비 분석)
         </div>
 
         <header class="relative bg-white pt-16 pb-12 px-4 overflow-hidden text-center">
@@ -259,7 +272,7 @@
                 </div>
                 
                 <p class="text-xs text-slate-400 mt-6 border-t border-slate-100 pt-4 inline-block">
-                    * 예측 근거: 2025년 월간 에너지 소비 패턴 및 2026년 실측 증감률 반영 모델
+                    * 예측 근거: 전년도 월간 에너지 소비 패턴 및 당해년도 실측 증감률 반영 모델
                 </p>
             </div>
         </header>
@@ -367,9 +380,9 @@
                             <i class="fa-solid fa-ranking-star text-yellow-400 mr-2"></i> 건물별 에너지 절감 순위표
                         </h3>
                         <div class="flex bg-slate-700 rounded-lg p-1 overflow-x-auto hide-scrollbar whitespace-nowrap max-w-full">
-                            <button id="rankBtnCurrent" onclick="showRanking('current')" class="px-4 py-2 text-sm font-medium rounded-md bg-slate-600 text-white shadow-sm transition">이번 달 (5월)</button>
-                            <button id="rankBtnPrev" onclick="showRanking('prev')" class="px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white transition">4월</button>
-                            <button id="rankBtnPrev2" onclick="showRanking('prev2')" class="px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white transition">3월</button>
+                            <button id="rankBtnCurrent" onclick="showRanking('current')" class="px-4 py-2 text-sm font-medium rounded-md bg-slate-600 text-white shadow-sm transition">이번 달</button>
+                            <button id="rankBtnPrev" onclick="showRanking('prev')" class="px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white transition">-</button>
+                            <button id="rankBtnPrev2" onclick="showRanking('prev2')" class="px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white transition">-</button>
                         </div>
                     </div>
                     <div class="overflow-x-auto">
@@ -546,7 +559,7 @@
             <div class="w-12 h-1 bg-mint mx-auto rounded-full"></div>
             <div class="text-sm text-slate-500 leading-relaxed font-medium">
                 <p>Representative: Lee Jeong-hoon | Project Period: 2025.07 - 2026.12</p>
-                <p>Data Source: Campus Facility Management Team (2025 Jan-2026 March)</p>
+                <p id="dataSourceRange">Data Source: Campus Facility Management Team</p>
                 <p class="mt-4 text-xs">활동 및 캠페인 문의: <span class="text-ku font-bold">010-3728-4610</span> (이정훈 대표)</p>
                 <p class="mt-2 text-xs text-slate-400">해당 자료는 건국대학교 시설팀으로부터 제공받은 자료를 사용하였습니다.</p>
             </div>
@@ -578,7 +591,7 @@
             </div>
             <div class="flex border-b border-slate-200 overflow-x-auto">
                 <button onclick="switchTab('short')" id="tabShort" class="tab-btn active flex-1 py-3 px-2 text-center transition-colors whitespace-nowrap text-sm sm:text-base">📊 <span id="nextMonthName">6월</span> 단기 예측</button>
-                <button onclick="switchTab('long')" id="tabLong" class="tab-btn flex-1 py-3 px-2 text-center transition-colors whitespace-nowrap text-sm sm:text-base">📅 2025 연간 패턴</button>
+                <button onclick="switchTab('long')" id="tabLong" class="tab-btn flex-1 py-3 px-2 text-center transition-colors whitespace-nowrap text-sm sm:text-base">📅 <span id="longTabLabel">연간 패턴</span></button>
             </div>
             <div class="p-4 sm:p-6 overflow-y-auto max-h-[70vh]">
                 <div id="contentShort" class="block">
@@ -600,60 +613,75 @@
         window.chartInstance = null;
         window.selectedB = null;
 
-        // 💡 5월 업데이트: 현재 월 인덱스를 4(5월)로 설정
-        let currentMonthIndex = 4; // 0=Jan, 1=Feb, 2=Mar, 3=Apr, 4=May
-        let displayMonth = "5월";
-        let nextMonth = "6월";
+        // --- 기준 월 상태 ---
+        // 화면의 모든 월/연도 표기는 이 객체 하나만 참조한다.
+        // monthIndex 는 loadData() 가 "값이 있는 마지막 달"로 자동 설정한다.
+        const period = {
+            year: 2026,      // 표시 연도
+            baseYear: 2025,  // 비교 기준 연도
+            monthIndex: 0,   // 0 = 1월
+            get month()          { return this.monthIndex + 1; },
+            get label()          { return `${this.month}월`; },
+            get nextMonthIndex() { return Math.min(11, this.monthIndex + 1); },
+            get nextLabel()      { return `${this.nextMonthIndex + 1}월`; },
+            get yy()             { return String(this.year).slice(2); },
+            get baseYy()         { return String(this.baseYear).slice(2); }
+        };
         
         let currentRankingType = 'current'; 
         let isRankingExpanded = false; 
         
         let currentCampusMode = 'YTD'; // 캠퍼스 전체 요약의 현재 보기 상태
 
-        // 5월 실측값 및 2025년 데이터 반영 (요청해주신 데이터 그대로 교체)
-        let buildingDB = [
-          { name: "교육과학관", cat: "study", u26_jan: 20600, u26_feb: 26500, u26_mar: 21178, u26_apr: 17940, u26_may: 18790, growth: 0.8, desc: "학습/연구", solution: "빈 강의실 소등", history25: [18600, 27490, 22520, 17960, 18640, 22570, 25070, 26029, 28233, 15968, 28760, 24590], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "공학관", cat: "study", u26_jan: 235790, u26_feb: 164240, u26_mar: 217800, u26_apr: 179800, u26_may: 226800, growth: 4.1, desc: "학습/연구", solution: "빈 강의실 소등", history25: [205799, 172800, 190800, 164600, 217800, 225000, 297400, 454813, 227584, 199074, 171414, 199880], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "인문학관", cat: "study", u26_jan: 26380, u26_feb: 24200, u26_mar: 24985, u26_apr: 24300, u26_may: 21750, growth: -7.1, desc: "학습/연구", solution: "빈 강의실 소등", history25: [25850, 26400, 26000, 22650, 23400, 22350, 20100, 21040, 21585, 19596, 27092, 28100], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "언어교육원", cat: "study", u26_jan: 15690, u26_feb: 13755, u26_mar: 12600, u26_apr: 9900, u26_may: 7650, growth: -15.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [15750, 13950, 13500, 10800, 9000, 10800, 13050, 8740, 10635, 9350, 12302, 13690], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "창의관", cat: "study", u26_jan: 28400, u26_feb: 29780, u26_mar: 25280, u26_apr: 16920, u26_may: 16640, growth: 13.0, desc: "학습/연구", solution: "빈 강의실 소등", history25: [27840, 32920, 24640, 16320, 14720, 15040, 16000, 41449, 33474, 13948, 33384, 25580], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "입학정보관", cat: "admin", u26_jan: 135200, u26_feb: 105700, u26_mar: 97200, u26_apr: 96300, u26_may: 112500, growth: 6.8, desc: "행정/지원", solution: "대기전력 차단", history25: [119700, 114300, 100600, 94500, 105300, 101600, 132300, 97132, 115277, 92150, 98260, 121200], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
-          { name: "실내체육관", cat: "study", u26_jan: 8960, u26_feb: 8070, u26_mar: 9960, u26_apr: 8280, u26_may: 11100, growth: 14.4, desc: "학습/연구", solution: "빈 강의실 소등", history25: [8880, 8580, 9120, 7860, 9700, 10140, 8960, 11123, 10947, 7620, 6878, 11400], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "건축관", cat: "study", u26_jan: 31330, u26_feb: 25120, u26_mar: 30060, u26_apr: 31500, u26_may: 27900, growth: -6.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [28080, 25470, 30310, 30150, 29880, 34008, 26190, 20842, 32410, 28952, 41025, 38700], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 일실 소등 필요" },
-          { name: "행정관", cat: "admin", u26_jan: 68260, u26_feb: 65900, u26_mar: 44400, u26_apr: 30000, u26_may: 28200, growth: 4.4, desc: "행정/지원", solution: "대기전력 차단", history25: [60000, 64800, 42000, 27600, 27000, 36400, 49200, 51400, 82783, 32928, 27120, 68700], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
-          { name: "일우헌", cat: "living", u26_jan: 7090, u26_feb: 6750, u26_mar: 11010, u26_apr: 7230, u26_may: 7470, growth: 0.0, desc: "거주 시설", solution: "개별 전열기구 관리", history25: [6180, 6900, 5400, 0, 0, 0, 15370, 39340, 33298, 16380, 34159, 5930], winFactor: "적극적인 개별 전열기구 관리 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 개별 전열기구 관리 필요" },
-          { name: "학생회관", cat: "study", u26_jan: 63950, u26_feb: 61200, u26_mar: 67200, u26_apr: 52200, u26_may: 60400, growth: 5.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [58800, 62400, 56800, 49200, 57200, 62200, 62800, 56320, 65390, 47012, 47936, 67100], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "법학전문대학원", cat: "study", u26_jan: 48760, u26_feb: 41500, u26_mar: 50400, u26_apr: 43800, u26_may: 44400, growth: 10.4, desc: "학습/연구", solution: "빈 강의실 소등", history25: [45600, 42600, 38400, 39000, 40200, 39600, 43200, 39520, 40201, 39600, 45966, 48000], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "경영관", cat: "study", u26_jan: 55400, u26_feb: 45870, u26_mar: 48600, u26_apr: 39600, u26_may: 43800, growth: 10.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [50400, 48600, 44800, 40400, 39600, 38400, 43200, 30242, 41651, 34828, 46624, 53200], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "상허기념도서관", cat: "study", u26_jan: 179500, u26_feb: 138600, u26_mar: 106538, u26_apr: 111600, u26_may: 161800, growth: 9.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [154800, 147600, 117179, 115200, 147600, 256400, 302400, 369738, 319965, 148400, 115001, 193890], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "공예관", cat: "study", u26_jan: 17860, u26_feb: 17900, u26_mar: 16200, u26_apr: 14850, u26_may: 14400, growth: 3.2, desc: "학습/연구", solution: "빈 강의실 소등", history25: [16650, 19350, 15750, 15750, 13950, 18450, 17100, 17800, 12795, 10050, 23194, 24960], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "과학관", cat: "study", u26_jan: 124300, u26_feb: 99900, u26_mar: 96590, u26_apr: 93590, u26_may: 131800, growth: 12.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [113400, 104400, 102600, 84600, 117000, 141200, 158400, 178700, 142035, 114200, 119144, 108879], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "새천년관", cat: "admin", u26_jan: 155580, u26_feb: 118000, u26_mar: 138000, u26_apr: 108000, u26_may: 116000, growth: 0.0, desc: "행정/지원", solution: "대기전력 차단", history25: [141000, 132000, 131000, 107779, 116035, 123000, 161000, 60713, 58418, 122000, 81042, 145000], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
-          { name: "수의학관", cat: "study", u26_jan: 122000, u26_feb: 90190, u26_mar: 70875, u26_apr: 61920, u26_may: 77760, growth: 1.2, desc: "학습/연구", solution: "빈 강의실 소등", history25: [99360, 94080, 74360, 66240, 76800, 85760, 106080, 100516, 118704, 72960, 100622, 98750], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "KU기술혁신관", cat: "admin", u26_jan: 39600, u26_feb: 31500, u26_mar: 31975, u26_apr: 34800, u26_may: 39600, growth: 10.0, desc: "행정/지원", solution: "대기전력 차단", history25: [36000, 33600, 34800, 33600, 36000, 36800, 33600, 34870, 26233, 26800, 36416, 36900], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
-          { name: "생명과학관", cat: "study", u26_jan: 139100, u26_feb: 107300, u26_mar: 126000, u26_apr: 117000, u26_may: 125500, growth: 8.7, desc: "학습/연구", solution: "빈 강의실 소등", history25: [121500, 118500, 115000, 109500, 115500, 120500, 150500, 150023, 141687, 122220, 136134, 118700], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "산학협동관", cat: "admin", u26_jan: 154330, u26_feb: 121000, u26_mar: 139200, u26_apr: 123400, u26_may: 105600, growth: 1.5, desc: "행정/지원", solution: "대기전력 차단", history25: [122165, 122400, 114400, 120000, 104000, 160000, 120000, 133892, 156689, 119048, 108963, 130060], winFactor: "적극적인 대기전력 차단 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 대기전력 차단 필요" },
-          { name: "상허연구관", cat: "study", u26_jan: 51200, u26_feb: 44800, u26_mar: 55200, u26_apr: 51600, u26_may: 56400, growth: 5.6, desc: "학습/연구", solution: "빈 강의실 소등", history25: [46800, 45600, 52800, 49200, 53400, 51600, 48000, 40192, 61277, 41456, 55276, 52370], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "KULHOUSE", cat: "living", u26_jan: 782041, u26_feb: 584172, u26_mar: 554581, u26_apr: 327151, u26_may: 353881, growth: 10.3, desc: "거주 시설", solution: "개별 전열기구 관리", history25: [691945, 655954, 551943, 333945, 320857, 469985, 528129, 491880, 500365, 443422, 452325, 761891], winFactor: "적극적인 개별 전열기구 관리 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 개별 전열기구 관리 필요" },
-          { name: "예술디자인대학", cat: "study", u26_jan: 65408, u26_feb: 50800, u26_mar: 74400, u26_apr: 62400, u26_may: 62000, growth: 7.3, desc: "학습/연구", solution: "빈 강의실 소등", history25: [60000, 52800, 67200, 64800, 57800, 69600, 55200, 46380, 69534, 60000, 83428, 83740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "의학생명과학관", cat: "study", u26_jan: 186516, u26_feb: 163026, u26_mar: 187272, u26_apr: 197550, u26_may: 284136, growth: 1.7, desc: "학습/연구", solution: "빈 강의실 소등", history25: [215136, 180792, 213606, 225612, 279270, 346170, 432134, 452592, 341694, 250650, 169470, 176832], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "동물생명과학관", cat: "study", u26_jan: 112800, u26_feb: 94000, u26_mar: 100350, u26_apr: 103200, u26_may: 103600, growth: 8.4, desc: "학습/연구", solution: "빈 강의실 소등", history25: [103200, 96000, 93200, 100800, 95600, 103200, 112800, 94270, 113103, 97477, 99536, 116740], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "부동산학관", cat: "study", u26_jan: 24720, u26_feb: 20100, u26_mar: 24926, u26_apr: 21900, u26_may: 24750, growth: 1.9, desc: "학습/연구", solution: "빈 강의실 소등", history25: [22800, 19950, 22050, 21750, 24300, 27000, 25553, 19500, 30886, 21366, 40715, 23090], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" },
-          { name: "신공학관", cat: "study", u26_jan: 328000, u26_feb: 215000, u26_mar: 273000, u26_apr: 263000, u26_may: 300000, growth: 0.3, desc: "학습/연구", solution: "빈 강의실 소등", history25: [276000, 246000, 276000, 252000, 298994, 315000, 387000, 301900, 373822, 301020, 262235, 276900], winFactor: "적극적인 빈 강의실 소등 캠페인 실천", loseFactor: "전년 대비 사용량 증가, 빈 강의실 소등 필요" }
-        ];
+        // --- 건물 데이터 ---
+        // 값은 하드코딩하지 않고 /api/usage (DB) 에서 받아온다.
+        // 카테고리별 문구만 화면용으로 여기에 둔다.
+        const CATEGORY_INFO = {
+            study:  { desc: "학습/연구", solution: "빈 강의실 소등" },
+            admin:  { desc: "행정/지원", solution: "대기전력 차단" },
+            living: { desc: "거주 시설", solution: "개별 전열기구 관리" }
+        };
 
-        buildingDB = buildingDB.map(b => {
-            const u26 = Array(12).fill(null);
-            u26[0] = b.u26_jan;
-            u26[1] = b.u26_feb;
-            u26[2] = b.u26_mar;
-            u26[3] = b.u26_apr; 
-            u26[4] = b.u26_may; 
-            // 💡 5월 기준으로 갱신
-            return { ...b, u26, uCurr: b.u26_may };
-        });
+        let buildingDB = [];
+        let TARGET_BUILDINGS = [];
 
-        const TARGET_BUILDINGS = buildingDB.map(b => b.name);
+        // 단일 파일 배포용으로 서버 데이터를 그대로 박아 넣은 것.
+        // 원본은 DB이고, 이 값은 2026-09-25T14:48:18.033Z 시점의 사본이다.
+        const EMBEDDED_USAGE = [{"name":"교육과학관","category":"study","period":"2025-01","kwh":18600},{"name":"교육과학관","category":"study","period":"2025-02","kwh":27490},{"name":"교육과학관","category":"study","period":"2025-03","kwh":22520},{"name":"교육과학관","category":"study","period":"2025-04","kwh":17960},{"name":"교육과학관","category":"study","period":"2025-05","kwh":18640},{"name":"교육과학관","category":"study","period":"2025-06","kwh":22570},{"name":"교육과학관","category":"study","period":"2025-07","kwh":25070},{"name":"교육과학관","category":"study","period":"2025-08","kwh":26029},{"name":"교육과학관","category":"study","period":"2025-09","kwh":28233},{"name":"교육과학관","category":"study","period":"2025-10","kwh":15968},{"name":"교육과학관","category":"study","period":"2025-11","kwh":28760},{"name":"교육과학관","category":"study","period":"2025-12","kwh":24590},{"name":"교육과학관","category":"study","period":"2026-01","kwh":20600},{"name":"교육과학관","category":"study","period":"2026-02","kwh":26500},{"name":"교육과학관","category":"study","period":"2026-03","kwh":21178},{"name":"교육과학관","category":"study","period":"2026-04","kwh":17940},{"name":"교육과학관","category":"study","period":"2026-05","kwh":18790},{"name":"교육과학관","category":"study","period":"2026-06","kwh":null},{"name":"교육과학관","category":"study","period":"2026-07","kwh":23380},{"name":"교육과학관","category":"study","period":"2026-08","kwh":24200},{"name":"공학관","category":"study","period":"2025-01","kwh":205799},{"name":"공학관","category":"study","period":"2025-02","kwh":172800},{"name":"공학관","category":"study","period":"2025-03","kwh":190800},{"name":"공학관","category":"study","period":"2025-04","kwh":164600},{"name":"공학관","category":"study","period":"2025-05","kwh":217800},{"name":"공학관","category":"study","period":"2025-06","kwh":225000},{"name":"공학관","category":"study","period":"2025-07","kwh":297400},{"name":"공학관","category":"study","period":"2025-08","kwh":454813},{"name":"공학관","category":"study","period":"2025-09","kwh":227584},{"name":"공학관","category":"study","period":"2025-10","kwh":199074},{"name":"공학관","category":"study","period":"2025-11","kwh":171414},{"name":"공학관","category":"study","period":"2025-12","kwh":199880},{"name":"공학관","category":"study","period":"2026-01","kwh":235790},{"name":"공학관","category":"study","period":"2026-02","kwh":164240},{"name":"공학관","category":"study","period":"2026-03","kwh":217800},{"name":"공학관","category":"study","period":"2026-04","kwh":179800},{"name":"공학관","category":"study","period":"2026-05","kwh":226800},{"name":"공학관","category":"study","period":"2026-06","kwh":null},{"name":"공학관","category":"study","period":"2026-07","kwh":278400},{"name":"공학관","category":"study","period":"2026-08","kwh":290000},{"name":"인문학관","category":"study","period":"2025-01","kwh":25850},{"name":"인문학관","category":"study","period":"2025-02","kwh":26400},{"name":"인문학관","category":"study","period":"2025-03","kwh":26000},{"name":"인문학관","category":"study","period":"2025-04","kwh":22650},{"name":"인문학관","category":"study","period":"2025-05","kwh":23400},{"name":"인문학관","category":"study","period":"2025-06","kwh":22350},{"name":"인문학관","category":"study","period":"2025-07","kwh":20100},{"name":"인문학관","category":"study","period":"2025-08","kwh":21040},{"name":"인문학관","category":"study","period":"2025-09","kwh":21585},{"name":"인문학관","category":"study","period":"2025-10","kwh":19596},{"name":"인문학관","category":"study","period":"2025-11","kwh":27092},{"name":"인문학관","category":"study","period":"2025-12","kwh":28100},{"name":"인문학관","category":"study","period":"2026-01","kwh":26380},{"name":"인문학관","category":"study","period":"2026-02","kwh":24200},{"name":"인문학관","category":"study","period":"2026-03","kwh":24985},{"name":"인문학관","category":"study","period":"2026-04","kwh":24300},{"name":"인문학관","category":"study","period":"2026-05","kwh":21750},{"name":"인문학관","category":"study","period":"2026-06","kwh":null},{"name":"인문학관","category":"study","period":"2026-07","kwh":22400},{"name":"인문학관","category":"study","period":"2026-08","kwh":22500},{"name":"언어교육원","category":"study","period":"2025-01","kwh":15750},{"name":"언어교육원","category":"study","period":"2025-02","kwh":13950},{"name":"언어교육원","category":"study","period":"2025-03","kwh":13500},{"name":"언어교육원","category":"study","period":"2025-04","kwh":10800},{"name":"언어교육원","category":"study","period":"2025-05","kwh":9000},{"name":"언어교육원","category":"study","period":"2025-06","kwh":10800},{"name":"언어교육원","category":"study","period":"2025-07","kwh":13050},{"name":"언어교육원","category":"study","period":"2025-08","kwh":8740},{"name":"언어교육원","category":"study","period":"2025-09","kwh":10635},{"name":"언어교육원","category":"study","period":"2025-10","kwh":9350},{"name":"언어교육원","category":"study","period":"2025-11","kwh":12302},{"name":"언어교육원","category":"study","period":"2025-12","kwh":13690},{"name":"언어교육원","category":"study","period":"2026-01","kwh":15690},{"name":"언어교육원","category":"study","period":"2026-02","kwh":13755},{"name":"언어교육원","category":"study","period":"2026-03","kwh":12600},{"name":"언어교육원","category":"study","period":"2026-04","kwh":9900},{"name":"언어교육원","category":"study","period":"2026-05","kwh":7650},{"name":"언어교육원","category":"study","period":"2026-06","kwh":null},{"name":"언어교육원","category":"study","period":"2026-07","kwh":12350},{"name":"언어교육원","category":"study","period":"2026-08","kwh":9000},{"name":"창의관","category":"study","period":"2025-01","kwh":27840},{"name":"창의관","category":"study","period":"2025-02","kwh":32920},{"name":"창의관","category":"study","period":"2025-03","kwh":24640},{"name":"창의관","category":"study","period":"2025-04","kwh":16320},{"name":"창의관","category":"study","period":"2025-05","kwh":14720},{"name":"창의관","category":"study","period":"2025-06","kwh":15040},{"name":"창의관","category":"study","period":"2025-07","kwh":16000},{"name":"창의관","category":"study","period":"2025-08","kwh":41449},{"name":"창의관","category":"study","period":"2025-09","kwh":33474},{"name":"창의관","category":"study","period":"2025-10","kwh":13948},{"name":"창의관","category":"study","period":"2025-11","kwh":33384},{"name":"창의관","category":"study","period":"2025-12","kwh":25580},{"name":"창의관","category":"study","period":"2026-01","kwh":28400},{"name":"창의관","category":"study","period":"2026-02","kwh":29780},{"name":"창의관","category":"study","period":"2026-03","kwh":25280},{"name":"창의관","category":"study","period":"2026-04","kwh":16920},{"name":"창의관","category":"study","period":"2026-05","kwh":16640},{"name":"창의관","category":"study","period":"2026-06","kwh":null},{"name":"창의관","category":"study","period":"2026-07","kwh":16060},{"name":"창의관","category":"study","period":"2026-08","kwh":20800},{"name":"입학정보관","category":"admin","period":"2025-01","kwh":119700},{"name":"입학정보관","category":"admin","period":"2025-02","kwh":114300},{"name":"입학정보관","category":"admin","period":"2025-03","kwh":100600},{"name":"입학정보관","category":"admin","period":"2025-04","kwh":94500},{"name":"입학정보관","category":"admin","period":"2025-05","kwh":105300},{"name":"입학정보관","category":"admin","period":"2025-06","kwh":101600},{"name":"입학정보관","category":"admin","period":"2025-07","kwh":132300},{"name":"입학정보관","category":"admin","period":"2025-08","kwh":97132},{"name":"입학정보관","category":"admin","period":"2025-09","kwh":115277},{"name":"입학정보관","category":"admin","period":"2025-10","kwh":92150},{"name":"입학정보관","category":"admin","period":"2025-11","kwh":98260},{"name":"입학정보관","category":"admin","period":"2025-12","kwh":121200},{"name":"입학정보관","category":"admin","period":"2026-01","kwh":135200},{"name":"입학정보관","category":"admin","period":"2026-02","kwh":105700},{"name":"입학정보관","category":"admin","period":"2026-03","kwh":97200},{"name":"입학정보관","category":"admin","period":"2026-04","kwh":96300},{"name":"입학정보관","category":"admin","period":"2026-05","kwh":112500},{"name":"입학정보관","category":"admin","period":"2026-06","kwh":null},{"name":"입학정보관","category":"admin","period":"2026-07","kwh":123300},{"name":"입학정보관","category":"admin","period":"2026-08","kwh":117900},{"name":"실내체육관","category":"study","period":"2025-01","kwh":8880},{"name":"실내체육관","category":"study","period":"2025-02","kwh":8580},{"name":"실내체육관","category":"study","period":"2025-03","kwh":9120},{"name":"실내체육관","category":"study","period":"2025-04","kwh":7860},{"name":"실내체육관","category":"study","period":"2025-05","kwh":9700},{"name":"실내체육관","category":"study","period":"2025-06","kwh":10140},{"name":"실내체육관","category":"study","period":"2025-07","kwh":8960},{"name":"실내체육관","category":"study","period":"2025-08","kwh":11123},{"name":"실내체육관","category":"study","period":"2025-09","kwh":10947},{"name":"실내체육관","category":"study","period":"2025-10","kwh":7620},{"name":"실내체육관","category":"study","period":"2025-11","kwh":6878},{"name":"실내체육관","category":"study","period":"2025-12","kwh":11400},{"name":"실내체육관","category":"study","period":"2026-01","kwh":8960},{"name":"실내체육관","category":"study","period":"2026-02","kwh":8070},{"name":"실내체육관","category":"study","period":"2026-03","kwh":9960},{"name":"실내체육관","category":"study","period":"2026-04","kwh":8280},{"name":"실내체육관","category":"study","period":"2026-05","kwh":11100},{"name":"실내체육관","category":"study","period":"2026-06","kwh":null},{"name":"실내체육관","category":"study","period":"2026-07","kwh":9900},{"name":"실내체육관","category":"study","period":"2026-08","kwh":10980},{"name":"건축관","category":"study","period":"2025-01","kwh":28080},{"name":"건축관","category":"study","period":"2025-02","kwh":25470},{"name":"건축관","category":"study","period":"2025-03","kwh":30310},{"name":"건축관","category":"study","period":"2025-04","kwh":30150},{"name":"건축관","category":"study","period":"2025-05","kwh":29880},{"name":"건축관","category":"study","period":"2025-06","kwh":34008},{"name":"건축관","category":"study","period":"2025-07","kwh":26190},{"name":"건축관","category":"study","period":"2025-08","kwh":20842},{"name":"건축관","category":"study","period":"2025-09","kwh":32410},{"name":"건축관","category":"study","period":"2025-10","kwh":28952},{"name":"건축관","category":"study","period":"2025-11","kwh":41025},{"name":"건축관","category":"study","period":"2025-12","kwh":38700},{"name":"건축관","category":"study","period":"2026-01","kwh":31330},{"name":"건축관","category":"study","period":"2026-02","kwh":25120},{"name":"건축관","category":"study","period":"2026-03","kwh":30060},{"name":"건축관","category":"study","period":"2026-04","kwh":31500},{"name":"건축관","category":"study","period":"2026-05","kwh":27900},{"name":"건축관","category":"study","period":"2026-06","kwh":null},{"name":"건축관","category":"study","period":"2026-07","kwh":28620},{"name":"건축관","category":"study","period":"2026-08","kwh":32220},{"name":"행정관","category":"admin","period":"2025-01","kwh":60000},{"name":"행정관","category":"admin","period":"2025-02","kwh":64800},{"name":"행정관","category":"admin","period":"2025-03","kwh":42000},{"name":"행정관","category":"admin","period":"2025-04","kwh":27600},{"name":"행정관","category":"admin","period":"2025-05","kwh":27000},{"name":"행정관","category":"admin","period":"2025-06","kwh":36400},{"name":"행정관","category":"admin","period":"2025-07","kwh":49200},{"name":"행정관","category":"admin","period":"2025-08","kwh":51400},{"name":"행정관","category":"admin","period":"2025-09","kwh":82783},{"name":"행정관","category":"admin","period":"2025-10","kwh":32928},{"name":"행정관","category":"admin","period":"2025-11","kwh":27120},{"name":"행정관","category":"admin","period":"2025-12","kwh":68700},{"name":"행정관","category":"admin","period":"2026-01","kwh":68260},{"name":"행정관","category":"admin","period":"2026-02","kwh":65900},{"name":"행정관","category":"admin","period":"2026-03","kwh":44400},{"name":"행정관","category":"admin","period":"2026-04","kwh":30000},{"name":"행정관","category":"admin","period":"2026-05","kwh":28200},{"name":"행정관","category":"admin","period":"2026-06","kwh":null},{"name":"행정관","category":"admin","period":"2026-07","kwh":46800},{"name":"행정관","category":"admin","period":"2026-08","kwh":50700},{"name":"일우헌","category":"living","period":"2025-01","kwh":6180},{"name":"일우헌","category":"living","period":"2025-02","kwh":6900},{"name":"일우헌","category":"living","period":"2025-03","kwh":5400},{"name":"일우헌","category":"living","period":"2025-04","kwh":null},{"name":"일우헌","category":"living","period":"2025-05","kwh":null},{"name":"일우헌","category":"living","period":"2025-06","kwh":null},{"name":"일우헌","category":"living","period":"2025-07","kwh":15370},{"name":"일우헌","category":"living","period":"2025-08","kwh":39340},{"name":"일우헌","category":"living","period":"2025-09","kwh":33298},{"name":"일우헌","category":"living","period":"2025-10","kwh":16380},{"name":"일우헌","category":"living","period":"2025-11","kwh":34159},{"name":"일우헌","category":"living","period":"2025-12","kwh":5930},{"name":"일우헌","category":"living","period":"2026-01","kwh":7090},{"name":"일우헌","category":"living","period":"2026-02","kwh":6750},{"name":"일우헌","category":"living","period":"2026-03","kwh":11010},{"name":"일우헌","category":"living","period":"2026-04","kwh":7230},{"name":"일우헌","category":"living","period":"2026-05","kwh":7470},{"name":"일우헌","category":"living","period":"2026-06","kwh":null},{"name":"일우헌","category":"living","period":"2026-07","kwh":10860},{"name":"일우헌","category":"living","period":"2026-08","kwh":11410},{"name":"학생회관","category":"study","period":"2025-01","kwh":58800},{"name":"학생회관","category":"study","period":"2025-02","kwh":62400},{"name":"학생회관","category":"study","period":"2025-03","kwh":56800},{"name":"학생회관","category":"study","period":"2025-04","kwh":49200},{"name":"학생회관","category":"study","period":"2025-05","kwh":57200},{"name":"학생회관","category":"study","period":"2025-06","kwh":62200},{"name":"학생회관","category":"study","period":"2025-07","kwh":62800},{"name":"학생회관","category":"study","period":"2025-08","kwh":56320},{"name":"학생회관","category":"study","period":"2025-09","kwh":65390},{"name":"학생회관","category":"study","period":"2025-10","kwh":47012},{"name":"학생회관","category":"study","period":"2025-11","kwh":47936},{"name":"학생회관","category":"study","period":"2025-12","kwh":67100},{"name":"학생회관","category":"study","period":"2026-01","kwh":63950},{"name":"학생회관","category":"study","period":"2026-02","kwh":61200},{"name":"학생회관","category":"study","period":"2026-03","kwh":67200},{"name":"학생회관","category":"study","period":"2026-04","kwh":52200},{"name":"학생회관","category":"study","period":"2026-05","kwh":60400},{"name":"학생회관","category":"study","period":"2026-06","kwh":null},{"name":"학생회관","category":"study","period":"2026-07","kwh":70400},{"name":"학생회관","category":"study","period":"2026-08","kwh":75800},{"name":"법학전문대학원","category":"study","period":"2025-01","kwh":45600},{"name":"법학전문대학원","category":"study","period":"2025-02","kwh":42600},{"name":"법학전문대학원","category":"study","period":"2025-03","kwh":38400},{"name":"법학전문대학원","category":"study","period":"2025-04","kwh":39000},{"name":"법학전문대학원","category":"study","period":"2025-05","kwh":40200},{"name":"법학전문대학원","category":"study","period":"2025-06","kwh":39600},{"name":"법학전문대학원","category":"study","period":"2025-07","kwh":43200},{"name":"법학전문대학원","category":"study","period":"2025-08","kwh":39520},{"name":"법학전문대학원","category":"study","period":"2025-09","kwh":40201},{"name":"법학전문대학원","category":"study","period":"2025-10","kwh":39600},{"name":"법학전문대학원","category":"study","period":"2025-11","kwh":45966},{"name":"법학전문대학원","category":"study","period":"2025-12","kwh":48000},{"name":"법학전문대학원","category":"study","period":"2026-01","kwh":48760},{"name":"법학전문대학원","category":"study","period":"2026-02","kwh":41500},{"name":"법학전문대학원","category":"study","period":"2026-03","kwh":50400},{"name":"법학전문대학원","category":"study","period":"2026-04","kwh":43800},{"name":"법학전문대학원","category":"study","period":"2026-05","kwh":44400},{"name":"법학전문대학원","category":"study","period":"2026-06","kwh":null},{"name":"법학전문대학원","category":"study","period":"2026-07","kwh":40400},{"name":"법학전문대학원","category":"study","period":"2026-08","kwh":45000},{"name":"경영관","category":"study","period":"2025-01","kwh":50400},{"name":"경영관","category":"study","period":"2025-02","kwh":48600},{"name":"경영관","category":"study","period":"2025-03","kwh":44800},{"name":"경영관","category":"study","period":"2025-04","kwh":40400},{"name":"경영관","category":"study","period":"2025-05","kwh":39600},{"name":"경영관","category":"study","period":"2025-06","kwh":38400},{"name":"경영관","category":"study","period":"2025-07","kwh":43200},{"name":"경영관","category":"study","period":"2025-08","kwh":30242},{"name":"경영관","category":"study","period":"2025-09","kwh":41651},{"name":"경영관","category":"study","period":"2025-10","kwh":34828},{"name":"경영관","category":"study","period":"2025-11","kwh":46624},{"name":"경영관","category":"study","period":"2025-12","kwh":53200},{"name":"경영관","category":"study","period":"2026-01","kwh":55400},{"name":"경영관","category":"study","period":"2026-02","kwh":45870},{"name":"경영관","category":"study","period":"2026-03","kwh":48600},{"name":"경영관","category":"study","period":"2026-04","kwh":39600},{"name":"경영관","category":"study","period":"2026-05","kwh":43800},{"name":"경영관","category":"study","period":"2026-06","kwh":null},{"name":"경영관","category":"study","period":"2026-07","kwh":41400},{"name":"경영관","category":"study","period":"2026-08","kwh":42200},{"name":"상허기념도서관","category":"study","period":"2025-01","kwh":154800},{"name":"상허기념도서관","category":"study","period":"2025-02","kwh":147600},{"name":"상허기념도서관","category":"study","period":"2025-03","kwh":117179},{"name":"상허기념도서관","category":"study","period":"2025-04","kwh":115200},{"name":"상허기념도서관","category":"study","period":"2025-05","kwh":147600},{"name":"상허기념도서관","category":"study","period":"2025-06","kwh":256400},{"name":"상허기념도서관","category":"study","period":"2025-07","kwh":302400},{"name":"상허기념도서관","category":"study","period":"2025-08","kwh":369738},{"name":"상허기념도서관","category":"study","period":"2025-09","kwh":319965},{"name":"상허기념도서관","category":"study","period":"2025-10","kwh":148400},{"name":"상허기념도서관","category":"study","period":"2025-11","kwh":115001},{"name":"상허기념도서관","category":"study","period":"2025-12","kwh":193890},{"name":"상허기념도서관","category":"study","period":"2026-01","kwh":179500},{"name":"상허기념도서관","category":"study","period":"2026-02","kwh":138600},{"name":"상허기념도서관","category":"study","period":"2026-03","kwh":106538},{"name":"상허기념도서관","category":"study","period":"2026-04","kwh":111600},{"name":"상허기념도서관","category":"study","period":"2026-05","kwh":161800},{"name":"상허기념도서관","category":"study","period":"2026-06","kwh":null},{"name":"상허기념도서관","category":"study","period":"2026-07","kwh":274100},{"name":"상허기념도서관","category":"study","period":"2026-08","kwh":338000},{"name":"공예관","category":"study","period":"2025-01","kwh":16650},{"name":"공예관","category":"study","period":"2025-02","kwh":19350},{"name":"공예관","category":"study","period":"2025-03","kwh":15750},{"name":"공예관","category":"study","period":"2025-04","kwh":15750},{"name":"공예관","category":"study","period":"2025-05","kwh":13950},{"name":"공예관","category":"study","period":"2025-06","kwh":18450},{"name":"공예관","category":"study","period":"2025-07","kwh":17100},{"name":"공예관","category":"study","period":"2025-08","kwh":17800},{"name":"공예관","category":"study","period":"2025-09","kwh":12795},{"name":"공예관","category":"study","period":"2025-10","kwh":10050},{"name":"공예관","category":"study","period":"2025-11","kwh":23194},{"name":"공예관","category":"study","period":"2025-12","kwh":24960},{"name":"공예관","category":"study","period":"2026-01","kwh":17860},{"name":"공예관","category":"study","period":"2026-02","kwh":17900},{"name":"공예관","category":"study","period":"2026-03","kwh":16200},{"name":"공예관","category":"study","period":"2026-04","kwh":14850},{"name":"공예관","category":"study","period":"2026-05","kwh":14400},{"name":"공예관","category":"study","period":"2026-06","kwh":null},{"name":"공예관","category":"study","period":"2026-07","kwh":19800},{"name":"공예관","category":"study","period":"2026-08","kwh":24750},{"name":"과학관","category":"study","period":"2025-01","kwh":113400},{"name":"과학관","category":"study","period":"2025-02","kwh":104400},{"name":"과학관","category":"study","period":"2025-03","kwh":102600},{"name":"과학관","category":"study","period":"2025-04","kwh":84600},{"name":"과학관","category":"study","period":"2025-05","kwh":117000},{"name":"과학관","category":"study","period":"2025-06","kwh":141200},{"name":"과학관","category":"study","period":"2025-07","kwh":158400},{"name":"과학관","category":"study","period":"2025-08","kwh":178700},{"name":"과학관","category":"study","period":"2025-09","kwh":142035},{"name":"과학관","category":"study","period":"2025-10","kwh":114200},{"name":"과학관","category":"study","period":"2025-11","kwh":119144},{"name":"과학관","category":"study","period":"2025-12","kwh":108879},{"name":"과학관","category":"study","period":"2026-01","kwh":124300},{"name":"과학관","category":"study","period":"2026-02","kwh":99900},{"name":"과학관","category":"study","period":"2026-03","kwh":96590},{"name":"과학관","category":"study","period":"2026-04","kwh":93590},{"name":"과학관","category":"study","period":"2026-05","kwh":131800},{"name":"과학관","category":"study","period":"2026-06","kwh":null},{"name":"과학관","category":"study","period":"2026-07","kwh":169200},{"name":"과학관","category":"study","period":"2026-08","kwh":174600},{"name":"새천년관","category":"admin","period":"2025-01","kwh":141000},{"name":"새천년관","category":"admin","period":"2025-02","kwh":132000},{"name":"새천년관","category":"admin","period":"2025-03","kwh":131000},{"name":"새천년관","category":"admin","period":"2025-04","kwh":107779},{"name":"새천년관","category":"admin","period":"2025-05","kwh":116035},{"name":"새천년관","category":"admin","period":"2025-06","kwh":123000},{"name":"새천년관","category":"admin","period":"2025-07","kwh":161000},{"name":"새천년관","category":"admin","period":"2025-08","kwh":60713},{"name":"새천년관","category":"admin","period":"2025-09","kwh":58418},{"name":"새천년관","category":"admin","period":"2025-10","kwh":122000},{"name":"새천년관","category":"admin","period":"2025-11","kwh":81042},{"name":"새천년관","category":"admin","period":"2025-12","kwh":145000},{"name":"새천년관","category":"admin","period":"2026-01","kwh":155580},{"name":"새천년관","category":"admin","period":"2026-02","kwh":118000},{"name":"새천년관","category":"admin","period":"2026-03","kwh":138000},{"name":"새천년관","category":"admin","period":"2026-04","kwh":108000},{"name":"새천년관","category":"admin","period":"2026-05","kwh":116000},{"name":"새천년관","category":"admin","period":"2026-06","kwh":null},{"name":"새천년관","category":"admin","period":"2026-07","kwh":159000},{"name":"새천년관","category":"admin","period":"2026-08","kwh":162000},{"name":"수의학관","category":"study","period":"2025-01","kwh":99360},{"name":"수의학관","category":"study","period":"2025-02","kwh":94080},{"name":"수의학관","category":"study","period":"2025-03","kwh":74360},{"name":"수의학관","category":"study","period":"2025-04","kwh":66240},{"name":"수의학관","category":"study","period":"2025-05","kwh":76800},{"name":"수의학관","category":"study","period":"2025-06","kwh":85760},{"name":"수의학관","category":"study","period":"2025-07","kwh":106080},{"name":"수의학관","category":"study","period":"2025-08","kwh":100516},{"name":"수의학관","category":"study","period":"2025-09","kwh":118704},{"name":"수의학관","category":"study","period":"2025-10","kwh":72960},{"name":"수의학관","category":"study","period":"2025-11","kwh":100622},{"name":"수의학관","category":"study","period":"2025-12","kwh":98750},{"name":"수의학관","category":"study","period":"2026-01","kwh":122000},{"name":"수의학관","category":"study","period":"2026-02","kwh":90190},{"name":"수의학관","category":"study","period":"2026-03","kwh":70875},{"name":"수의학관","category":"study","period":"2026-04","kwh":61920},{"name":"수의학관","category":"study","period":"2026-05","kwh":77760},{"name":"수의학관","category":"study","period":"2026-06","kwh":null},{"name":"수의학관","category":"study","period":"2026-07","kwh":94080},{"name":"수의학관","category":"study","period":"2026-08","kwh":111800},{"name":"KU기술혁신관","category":"admin","period":"2025-01","kwh":36000},{"name":"KU기술혁신관","category":"admin","period":"2025-02","kwh":33600},{"name":"KU기술혁신관","category":"admin","period":"2025-03","kwh":34800},{"name":"KU기술혁신관","category":"admin","period":"2025-04","kwh":33600},{"name":"KU기술혁신관","category":"admin","period":"2025-05","kwh":36000},{"name":"KU기술혁신관","category":"admin","period":"2025-06","kwh":36800},{"name":"KU기술혁신관","category":"admin","period":"2025-07","kwh":33600},{"name":"KU기술혁신관","category":"admin","period":"2025-08","kwh":34870},{"name":"KU기술혁신관","category":"admin","period":"2025-09","kwh":26233},{"name":"KU기술혁신관","category":"admin","period":"2025-10","kwh":26800},{"name":"KU기술혁신관","category":"admin","period":"2025-11","kwh":36416},{"name":"KU기술혁신관","category":"admin","period":"2025-12","kwh":36900},{"name":"KU기술혁신관","category":"admin","period":"2026-01","kwh":39600},{"name":"KU기술혁신관","category":"admin","period":"2026-02","kwh":31500},{"name":"KU기술혁신관","category":"admin","period":"2026-03","kwh":31975},{"name":"KU기술혁신관","category":"admin","period":"2026-04","kwh":34800},{"name":"KU기술혁신관","category":"admin","period":"2026-05","kwh":39600},{"name":"KU기술혁신관","category":"admin","period":"2026-06","kwh":null},{"name":"KU기술혁신관","category":"admin","period":"2026-07","kwh":38400},{"name":"KU기술혁신관","category":"admin","period":"2026-08","kwh":37200},{"name":"생명과학관","category":"study","period":"2025-01","kwh":121500},{"name":"생명과학관","category":"study","period":"2025-02","kwh":118500},{"name":"생명과학관","category":"study","period":"2025-03","kwh":115000},{"name":"생명과학관","category":"study","period":"2025-04","kwh":109500},{"name":"생명과학관","category":"study","period":"2025-05","kwh":115500},{"name":"생명과학관","category":"study","period":"2025-06","kwh":120500},{"name":"생명과학관","category":"study","period":"2025-07","kwh":150500},{"name":"생명과학관","category":"study","period":"2025-08","kwh":150023},{"name":"생명과학관","category":"study","period":"2025-09","kwh":141687},{"name":"생명과학관","category":"study","period":"2025-10","kwh":122220},{"name":"생명과학관","category":"study","period":"2025-11","kwh":136134},{"name":"생명과학관","category":"study","period":"2025-12","kwh":118700},{"name":"생명과학관","category":"study","period":"2026-01","kwh":139100},{"name":"생명과학관","category":"study","period":"2026-02","kwh":107300},{"name":"생명과학관","category":"study","period":"2026-03","kwh":126000},{"name":"생명과학관","category":"study","period":"2026-04","kwh":117000},{"name":"생명과학관","category":"study","period":"2026-05","kwh":125500},{"name":"생명과학관","category":"study","period":"2026-06","kwh":null},{"name":"생명과학관","category":"study","period":"2026-07","kwh":162500},{"name":"생명과학관","category":"study","period":"2026-08","kwh":157000},{"name":"산학협동관","category":"admin","period":"2025-01","kwh":122165},{"name":"산학협동관","category":"admin","period":"2025-02","kwh":122400},{"name":"산학협동관","category":"admin","period":"2025-03","kwh":114400},{"name":"산학협동관","category":"admin","period":"2025-04","kwh":120000},{"name":"산학협동관","category":"admin","period":"2025-05","kwh":104000},{"name":"산학협동관","category":"admin","period":"2025-06","kwh":160000},{"name":"산학협동관","category":"admin","period":"2025-07","kwh":120000},{"name":"산학협동관","category":"admin","period":"2025-08","kwh":133892},{"name":"산학협동관","category":"admin","period":"2025-09","kwh":156689},{"name":"산학협동관","category":"admin","period":"2025-10","kwh":119048},{"name":"산학협동관","category":"admin","period":"2025-11","kwh":108963},{"name":"산학협동관","category":"admin","period":"2025-12","kwh":130060},{"name":"산학협동관","category":"admin","period":"2026-01","kwh":154330},{"name":"산학협동관","category":"admin","period":"2026-02","kwh":121000},{"name":"산학협동관","category":"admin","period":"2026-03","kwh":139200},{"name":"산학협동관","category":"admin","period":"2026-04","kwh":123400},{"name":"산학협동관","category":"admin","period":"2026-05","kwh":105600},{"name":"산학협동관","category":"admin","period":"2026-06","kwh":null},{"name":"산학협동관","category":"admin","period":"2026-07","kwh":165200},{"name":"산학협동관","category":"admin","period":"2026-08","kwh":165200},{"name":"상허연구관","category":"study","period":"2025-01","kwh":46800},{"name":"상허연구관","category":"study","period":"2025-02","kwh":45600},{"name":"상허연구관","category":"study","period":"2025-03","kwh":52800},{"name":"상허연구관","category":"study","period":"2025-04","kwh":49200},{"name":"상허연구관","category":"study","period":"2025-05","kwh":53400},{"name":"상허연구관","category":"study","period":"2025-06","kwh":51600},{"name":"상허연구관","category":"study","period":"2025-07","kwh":48000},{"name":"상허연구관","category":"study","period":"2025-08","kwh":40192},{"name":"상허연구관","category":"study","period":"2025-09","kwh":61277},{"name":"상허연구관","category":"study","period":"2025-10","kwh":41456},{"name":"상허연구관","category":"study","period":"2025-11","kwh":55276},{"name":"상허연구관","category":"study","period":"2025-12","kwh":52370},{"name":"상허연구관","category":"study","period":"2026-01","kwh":51200},{"name":"상허연구관","category":"study","period":"2026-02","kwh":44800},{"name":"상허연구관","category":"study","period":"2026-03","kwh":55200},{"name":"상허연구관","category":"study","period":"2026-04","kwh":51600},{"name":"상허연구관","category":"study","period":"2026-05","kwh":56400},{"name":"상허연구관","category":"study","period":"2026-06","kwh":null},{"name":"상허연구관","category":"study","period":"2026-07","kwh":46300},{"name":"상허연구관","category":"study","period":"2026-08","kwh":45600},{"name":"KULHOUSE","category":"living","period":"2025-01","kwh":691945},{"name":"KULHOUSE","category":"living","period":"2025-02","kwh":655954},{"name":"KULHOUSE","category":"living","period":"2025-03","kwh":551943},{"name":"KULHOUSE","category":"living","period":"2025-04","kwh":333945},{"name":"KULHOUSE","category":"living","period":"2025-05","kwh":320857},{"name":"KULHOUSE","category":"living","period":"2025-06","kwh":469985},{"name":"KULHOUSE","category":"living","period":"2025-07","kwh":528129},{"name":"KULHOUSE","category":"living","period":"2025-08","kwh":491880},{"name":"KULHOUSE","category":"living","period":"2025-09","kwh":500365},{"name":"KULHOUSE","category":"living","period":"2025-10","kwh":443422},{"name":"KULHOUSE","category":"living","period":"2025-11","kwh":452325},{"name":"KULHOUSE","category":"living","period":"2025-12","kwh":761891},{"name":"KULHOUSE","category":"living","period":"2026-01","kwh":782041},{"name":"KULHOUSE","category":"living","period":"2026-02","kwh":584172},{"name":"KULHOUSE","category":"living","period":"2026-03","kwh":554581},{"name":"KULHOUSE","category":"living","period":"2026-04","kwh":327151},{"name":"KULHOUSE","category":"living","period":"2026-05","kwh":353881},{"name":"KULHOUSE","category":"living","period":"2026-06","kwh":null},{"name":"KULHOUSE","category":"living","period":"2026-07","kwh":482287.1},{"name":"KULHOUSE","category":"living","period":"2026-08","kwh":452842},{"name":"예술디자인대학","category":"study","period":"2025-01","kwh":60000},{"name":"예술디자인대학","category":"study","period":"2025-02","kwh":52800},{"name":"예술디자인대학","category":"study","period":"2025-03","kwh":67200},{"name":"예술디자인대학","category":"study","period":"2025-04","kwh":64800},{"name":"예술디자인대학","category":"study","period":"2025-05","kwh":57800},{"name":"예술디자인대학","category":"study","period":"2025-06","kwh":69600},{"name":"예술디자인대학","category":"study","period":"2025-07","kwh":55200},{"name":"예술디자인대학","category":"study","period":"2025-08","kwh":46380},{"name":"예술디자인대학","category":"study","period":"2025-09","kwh":69534},{"name":"예술디자인대학","category":"study","period":"2025-10","kwh":60000},{"name":"예술디자인대학","category":"study","period":"2025-11","kwh":83428},{"name":"예술디자인대학","category":"study","period":"2025-12","kwh":83740},{"name":"예술디자인대학","category":"study","period":"2026-01","kwh":65408},{"name":"예술디자인대학","category":"study","period":"2026-02","kwh":50800},{"name":"예술디자인대학","category":"study","period":"2026-03","kwh":74400},{"name":"예술디자인대학","category":"study","period":"2026-04","kwh":62400},{"name":"예술디자인대학","category":"study","period":"2026-05","kwh":62000},{"name":"예술디자인대학","category":"study","period":"2026-06","kwh":null},{"name":"예술디자인대학","category":"study","period":"2026-07","kwh":52805},{"name":"예술디자인대학","category":"study","period":"2026-08","kwh":62400},{"name":"의학생명과학관","category":"study","period":"2025-01","kwh":215136},{"name":"의학생명과학관","category":"study","period":"2025-02","kwh":180792},{"name":"의학생명과학관","category":"study","period":"2025-03","kwh":213606},{"name":"의학생명과학관","category":"study","period":"2025-04","kwh":225612},{"name":"의학생명과학관","category":"study","period":"2025-05","kwh":279270},{"name":"의학생명과학관","category":"study","period":"2025-06","kwh":346170},{"name":"의학생명과학관","category":"study","period":"2025-07","kwh":432134},{"name":"의학생명과학관","category":"study","period":"2025-08","kwh":452592},{"name":"의학생명과학관","category":"study","period":"2025-09","kwh":341694},{"name":"의학생명과학관","category":"study","period":"2025-10","kwh":250650},{"name":"의학생명과학관","category":"study","period":"2025-11","kwh":169470},{"name":"의학생명과학관","category":"study","period":"2025-12","kwh":176832},{"name":"의학생명과학관","category":"study","period":"2026-01","kwh":186516},{"name":"의학생명과학관","category":"study","period":"2026-02","kwh":163026},{"name":"의학생명과학관","category":"study","period":"2026-03","kwh":187272},{"name":"의학생명과학관","category":"study","period":"2026-04","kwh":197550},{"name":"의학생명과학관","category":"study","period":"2026-05","kwh":284136},{"name":"의학생명과학관","category":"study","period":"2026-06","kwh":null},{"name":"의학생명과학관","category":"study","period":"2026-07","kwh":382698},{"name":"의학생명과학관","category":"study","period":"2026-08","kwh":397062},{"name":"동물생명과학관","category":"study","period":"2025-01","kwh":103200},{"name":"동물생명과학관","category":"study","period":"2025-02","kwh":96000},{"name":"동물생명과학관","category":"study","period":"2025-03","kwh":93200},{"name":"동물생명과학관","category":"study","period":"2025-04","kwh":100800},{"name":"동물생명과학관","category":"study","period":"2025-05","kwh":95600},{"name":"동물생명과학관","category":"study","period":"2025-06","kwh":103200},{"name":"동물생명과학관","category":"study","period":"2025-07","kwh":112800},{"name":"동물생명과학관","category":"study","period":"2025-08","kwh":94270},{"name":"동물생명과학관","category":"study","period":"2025-09","kwh":113103},{"name":"동물생명과학관","category":"study","period":"2025-10","kwh":97477},{"name":"동물생명과학관","category":"study","period":"2025-11","kwh":99536},{"name":"동물생명과학관","category":"study","period":"2025-12","kwh":116740},{"name":"동물생명과학관","category":"study","period":"2026-01","kwh":112800},{"name":"동물생명과학관","category":"study","period":"2026-02","kwh":94000},{"name":"동물생명과학관","category":"study","period":"2026-03","kwh":100350},{"name":"동물생명과학관","category":"study","period":"2026-04","kwh":103200},{"name":"동물생명과학관","category":"study","period":"2026-05","kwh":103600},{"name":"동물생명과학관","category":"study","period":"2026-06","kwh":null},{"name":"동물생명과학관","category":"study","period":"2026-07","kwh":112800},{"name":"동물생명과학관","category":"study","period":"2026-08","kwh":112800},{"name":"부동산학관","category":"study","period":"2025-01","kwh":22800},{"name":"부동산학관","category":"study","period":"2025-02","kwh":19950},{"name":"부동산학관","category":"study","period":"2025-03","kwh":22050},{"name":"부동산학관","category":"study","period":"2025-04","kwh":21750},{"name":"부동산학관","category":"study","period":"2025-05","kwh":24300},{"name":"부동산학관","category":"study","period":"2025-06","kwh":27000},{"name":"부동산학관","category":"study","period":"2025-07","kwh":25553},{"name":"부동산학관","category":"study","period":"2025-08","kwh":19500},{"name":"부동산학관","category":"study","period":"2025-09","kwh":30886},{"name":"부동산학관","category":"study","period":"2025-10","kwh":21366},{"name":"부동산학관","category":"study","period":"2025-11","kwh":40715},{"name":"부동산학관","category":"study","period":"2025-12","kwh":23090},{"name":"부동산학관","category":"study","period":"2026-01","kwh":24720},{"name":"부동산학관","category":"study","period":"2026-02","kwh":20100},{"name":"부동산학관","category":"study","period":"2026-03","kwh":24926},{"name":"부동산학관","category":"study","period":"2026-04","kwh":21900},{"name":"부동산학관","category":"study","period":"2026-05","kwh":24750},{"name":"부동산학관","category":"study","period":"2026-06","kwh":null},{"name":"부동산학관","category":"study","period":"2026-07","kwh":25650},{"name":"부동산학관","category":"study","period":"2026-08","kwh":28200},{"name":"신공학관","category":"study","period":"2025-01","kwh":276000},{"name":"신공학관","category":"study","period":"2025-02","kwh":246000},{"name":"신공학관","category":"study","period":"2025-03","kwh":276000},{"name":"신공학관","category":"study","period":"2025-04","kwh":252000},{"name":"신공학관","category":"study","period":"2025-05","kwh":298994},{"name":"신공학관","category":"study","period":"2025-06","kwh":315000},{"name":"신공학관","category":"study","period":"2025-07","kwh":387000},{"name":"신공학관","category":"study","period":"2025-08","kwh":301900},{"name":"신공학관","category":"study","period":"2025-09","kwh":373822},{"name":"신공학관","category":"study","period":"2025-10","kwh":301020},{"name":"신공학관","category":"study","period":"2025-11","kwh":262235},{"name":"신공학관","category":"study","period":"2025-12","kwh":276900},{"name":"신공학관","category":"study","period":"2026-01","kwh":328000},{"name":"신공학관","category":"study","period":"2026-02","kwh":215000},{"name":"신공학관","category":"study","period":"2026-03","kwh":273000},{"name":"신공학관","category":"study","period":"2026-04","kwh":263000},{"name":"신공학관","category":"study","period":"2026-05","kwh":300000},{"name":"신공학관","category":"study","period":"2026-06","kwh":null},{"name":"신공학관","category":"study","period":"2026-07","kwh":402000},{"name":"신공학관","category":"study","period":"2026-08","kwh":405000}];
+
+        async function loadData() {
+            const rows = EMBEDDED_USAGE;
+
+            const byName = new Map();
+            rows.forEach(r => {
+                if (!byName.has(r.name)) {
+                    const info = CATEGORY_INFO[r.category] || { desc: r.category, solution: "에너지 절약" };
+                    byName.set(r.name, {
+                        name: r.name,
+                        cat: r.category,
+                        desc: info.desc,
+                        solution: info.solution,
+                        winFactor: `적극적인 ${info.solution} 캠페인 실천`,
+                        loseFactor: `전년 대비 사용량 증가, ${info.solution} 필요`,
+                        u26: Array(12).fill(null),        // 올해(period.year) 월별 값
+                        history25: Array(12).fill(null)   // 기준 연도(period.baseYear) 월별 값
+                    });
+                }
+                const b = byName.get(r.name);
+                const [year, month] = String(r.period).split('-').map(Number);
+                const value = (r.kwh === null || r.kwh === undefined) ? null : Number(r.kwh);
+                if (year === period.year) b.u26[month - 1] = value;
+                else if (year === period.baseYear) b.history25[month - 1] = value;
+            });
+
+            buildingDB = [...byName.values()];
+            TARGET_BUILDINGS = buildingDB.map(b => b.name);
+
+            // 값이 있는 가장 마지막 달을 기준 월로 삼는다 (NULL 인 달은 건너뜀)
+            let last = -1;
+            buildingDB.forEach(b => b.u26.forEach((v, i) => { if (v != null && i > last) last = i; }));
+            setCurrentMonth(last >= 0 ? last : 0);
+        }
 
         // --- Utility Functions ---
         function normalizeBuildingName(v) {
@@ -754,9 +782,9 @@
             const container = document.getElementById('campusMonthSelectors');
             if(!container) return;
             
-            let html = `<button onclick="window.updateCampusTotal('YTD')" id="btnCampusYTD" class="px-4 py-1.5 rounded-full text-sm font-bold transition-colors border">누적(1~${currentMonthIndex + 1}월)</button>`;
+            let html = `<button onclick="window.updateCampusTotal('YTD')" id="btnCampusYTD" class="px-4 py-1.5 rounded-full text-sm font-bold transition-colors border">누적(1~${period.month}월)</button>`;
             
-            for(let i = currentMonthIndex; i >= 0; i--) {
+            for(let i = period.monthIndex; i >= 0; i--) {
                 html += `<button onclick="window.updateCampusTotal(${i})" id="btnCampus${i}" class="px-4 py-1.5 rounded-full text-sm font-bold transition-colors border">${i + 1}월</button>`;
             }
             
@@ -784,7 +812,7 @@
 
             buildingDB.forEach(b => {
                 if (mode === 'YTD') {
-                    for(let i = 0; i <= currentMonthIndex; i++) {
+                    for(let i = 0; i <= period.monthIndex; i++) {
                         const hist = b.history25[i];
                         const curr = b.u26[i];
                         if (hist != null && curr != null && hist > 0) {
@@ -807,7 +835,7 @@
             const campusTitle = document.getElementById('campusTotalTitle');
             const campusDesc = document.getElementById('campusTotalDesc');
 
-            let periodText = mode === 'YTD' ? `1~${currentMonthIndex + 1}월 누적` : `${mode + 1}월`;
+            let periodText = mode === 'YTD' ? `1~${period.month}월 누적` : `${mode + 1}월`;
 
             if (validCount > 0 && total25 > 0) {
                 const totalDiff = total26 - total25;
@@ -828,8 +856,8 @@
                     campusDesc.innerHTML = `<span class="text-red-300 font-bold">약 ${costDiffText}</span> (아메리카노 ${coffeeCups.toLocaleString()}잔)을 <span class="font-bold">추가 소비</span>했습니다. 😭`;
                 }
             } else {
-                campusTitle.innerHTML = `${periodText} 데이터를 분석 중입니다...`;
-                campusDesc.innerHTML = `전력 데이터가 충분하지 않습니다.`;
+                campusTitle.innerHTML = `${periodText} 비교 불가`;
+                campusDesc.innerHTML = `${periodText} 사용량 또는 ${period.baseYear}년 기준값이 아직 없습니다.`;
             }
         }
 
@@ -837,19 +865,20 @@
             const grid = document.getElementById('buildingsGrid');
             grid.innerHTML = '';
             data.forEach((b) => {
-                const historyVal = b.history25[currentMonthIndex]; 
-                const u26_val = b.uCurr; 
-                const diff = u26_val - historyVal;
-                
-                const coffeeCups = Math.floor((Math.abs(diff) * 120) / 2000);
-                const co2 = (diff * 0.424).toFixed(1);
-                const coffeeTag = diff > 0 ? '초과 낭비!' : (diff < 0 ? '세이브!' : '');
-                const co2Text = `${diff > 0 ? '+' : ''}${co2}`;
-                
-                // 💡 Grid의 증감률 표기를 소수점 첫째자리(.toFixed(1))로 강제 포맷팅하여 통일합니다.
-                const displayGrowth = b.growth.toFixed(1);
-                const growthColor = b.growth > 0 ? 'text-red-500' : 'text-emerald-500';
-                const growthSign = b.growth > 0 ? '+' : '';
+                const historyVal = b.history25[period.monthIndex];
+                const u26_val = b.uCurr;
+                const comparable = historyVal != null && u26_val != null;
+                const diff = comparable ? u26_val - historyVal : null;
+
+                const coffeeCups = comparable ? Math.floor((Math.abs(diff) * 120) / 2000) : 0;
+                const co2 = comparable ? (diff * 0.424).toFixed(1) : null;
+                const coffeeTag = comparable ? (diff > 0 ? '초과 낭비!' : (diff < 0 ? '세이브!' : '')) : '';
+                const co2Text = comparable ? `${diff > 0 ? '+' : ''}${co2}` : '-';
+
+                const growthText = formatGrowth(b.growth);
+                const growthColor = b.growth == null ? 'text-slate-400'
+                                  : (b.growth > 0 ? 'text-red-500' : 'text-emerald-500');
+                const fmt = v => v == null ? '데이터 없음' : v.toLocaleString();
                 
                 const div = document.createElement('div');
                 div.className = "bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm card-hover flex flex-col cursor-pointer group";
@@ -861,16 +890,20 @@
                             <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-mint group-hover:text-white transition"><i class="fa-solid ${getIcon(b.name)}"></i></div>
                             <div><h3 class="font-bold text-slate-900 group-hover:text-mint transition text-wrap-anywhere">${b.name}</h3><span class="text-xs text-slate-400 font-medium uppercase">${b.cat}</span></div>
                         </div>
-                        <div class="text-lg font-bold ${growthColor}">${growthSign}${displayGrowth}%</div>
+                        <div class="text-lg font-bold ${growthColor}">${growthText}</div>
                     </div>
                     <div class="bg-slate-50 rounded-lg p-3 mb-4 text-sm font-sans">
-                        <div class="flex justify-between"><span>25년 ${displayMonth}</span><span class="font-bold text-slate-600 font-sans">${historyVal.toLocaleString()}</span></div>
-                        <div class="flex justify-between text-mint mt-1"><span>26년 ${displayMonth}</span><span class="font-bold font-sans">${u26_val.toLocaleString()}</span></div>
+                        <div class="flex justify-between"><span>${period.baseYy}년 ${period.label}</span><span class="font-bold text-slate-600 font-sans">${fmt(historyVal)}</span></div>
+                        <div class="flex justify-between text-mint mt-1"><span>${period.yy}년 ${period.label}</span><span class="font-bold font-sans">${fmt(u26_val)}</span></div>
                     </div>
+                    ${comparable ? `
                     <div class="mb-4 bg-orange-50 p-3 rounded-lg border border-orange-100 text-xs text-orange-800 leading-tight flex flex-col gap-1">
                         <div class="flex items-center gap-2 font-bold"><i class="fa-solid fa-mug-hot"></i> 증감분 = 아메리카노 ${coffeeCups.toLocaleString()}잔 값! ${coffeeTag}</div>
                         <div class="flex items-center gap-2 text-slate-500"><i class="fa-solid fa-cloud"></i> 탄소 증감분: ${co2Text} kg-CO2</div>
-                    </div>
+                    </div>` : `
+                    <div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-500 leading-tight">
+                        <i class="fa-solid fa-circle-info"></i> ${period.label} 사용량 또는 ${period.baseYear}년 기준값이 없어 비교할 수 없습니다.
+                    </div>`}
                     <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between items-center">
                         <span class="text-xs text-slate-400 font-medium group-hover:text-mint transition">상세 분석 &rarr;</span>
                         <button onclick="window.goToCampaign(event)" class="text-xs bg-mint text-white px-2.5 sm:px-3 py-1 rounded-full font-bold hover:bg-teal-600 transition shadow whitespace-nowrap">⚡ 코인 캠페인 참여</button>
@@ -882,27 +915,30 @@
 
         function renderBattleSide(side, bSelf, bOpponent) {
             // 💡 Battle 표기도 .toFixed(1)를 사용하여 일관성 유지
-            const growthSelf = parseFloat(bSelf.growth);
-            const growthOpp = parseFloat(bOpponent.growth);
-            const isWin = growthSelf < growthOpp;
+            const growthSelf = bSelf.growth;
+            const growthOpp = bOpponent.growth;
+            const comparable = growthSelf != null && growthOpp != null;
+            const isWin = comparable && growthSelf < growthOpp;
             
             document.getElementById(`icon${side}`).className = `fa-solid ${getIcon(bSelf.name)}`;
             const growthElem = document.getElementById(`growth${side}`);
-            growthElem.innerText = `${growthSelf > 0 ? '+' : ''}${growthSelf.toFixed(1)}%`;
-            growthElem.className = `text-2xl font-bold ${isWin ? 'text-mint' : 'text-red-400'}`;
+            growthElem.innerText = formatGrowth(growthSelf);
+            growthElem.className = `text-2xl font-bold ${!comparable ? 'text-slate-400' : (isWin ? 'text-mint' : 'text-red-400')}`;
             
-            document.getElementById(`bar${side}`).style.width = isWin ? '70%' : '30%';
+            document.getElementById(`bar${side}`).style.width = !comparable ? '50%' : (isWin ? '70%' : '30%');
             document.getElementById(`bar${side}`).className = `battle-bar-fill h-full ${isWin ? 'bg-mint' : 'bg-blue-500'}`;
             
             const badge = document.getElementById(`badge${side}`);
             if(badge) {
-                badge.style.display = isWin ? "inline-block" : "none";
+                badge.style.display = (comparable && isWin) ? "inline-block" : "none";
                 badge.innerText = isWin ? "WINNER 👑" : "";
             }
             
             document.getElementById(`battleCard${side}`).className = `flex-1 bg-slate-800 rounded-2xl p-6 border-2 flex flex-col transition-all duration-300 ${isWin ? 'border-teal-500 shadow-[0_0_20px_rgba(45,212,191,0.2)]' : 'border-slate-700'}`;
             document.getElementById(`iconBox${side}`).className = `w-12 h-12 rounded-lg flex items-center justify-center text-2xl transition-colors duration-300 ${isWin ? 'bg-mint text-slate-900' : 'bg-blue-600'}`;
-            document.getElementById(`reason${side}`).innerHTML = isWin ? `<span class="font-bold text-mint mb-1 block">승리 요인:</span>${bSelf.winFactor}` : `<span class="font-bold text-blue-400 mb-1 block">패배 원인:</span>${bSelf.loseFactor}`;
+            document.getElementById(`reason${side}`).innerHTML = !comparable
+                ? `<span class="font-bold text-slate-400 mb-1 block">비교 불가:</span>${period.label} 기준 데이터가 없어 승패를 가릴 수 없습니다.`
+                : (isWin ? `<span class="font-bold text-mint mb-1 block">승리 요인:</span>${bSelf.winFactor}` : `<span class="font-bold text-blue-400 mb-1 block">패배 원인:</span>${bSelf.loseFactor}`);
         }
 
         function updateBattle() {
@@ -914,28 +950,40 @@
         }
 
         function updateBestWorst() {
-            const sorted = [...buildingDB].sort((a,b)=>a.growth - b.growth);
+            if(!document.getElementById('bestBuildingName')) return;
+
+            // 비교 불가(null)인 건물은 순위에서 제외한다
+            const sorted = buildingDB.filter(b => b.growth != null).sort((a,b)=>a.growth - b.growth);
+
+            if (sorted.length === 0) {
+                document.getElementById('bestBuildingName').innerText = '-';
+                document.getElementById('bestBuildingDesc').innerText = `${period.label} 비교 가능한 건물이 없습니다`;
+                document.getElementById('worstBuildingName').innerText = '-';
+                document.getElementById('worstBuildingDesc').innerText = `${period.label} 비교 가능한 건물이 없습니다`;
+                return;
+            }
+
             const best = sorted[0];
             const worst = sorted[sorted.length-1];
-            
-            if(document.getElementById('bestBuildingName')) {
-                document.getElementById('bestBuildingName').innerText = best.name;
-                document.getElementById('bestBuildingDesc').innerText = `${displayMonth} 증감률 ${best.growth.toFixed(1)}% (최저)`;
-                document.getElementById('worstBuildingName').innerText = worst.name;
-                document.getElementById('worstBuildingDesc').innerText = `${displayMonth} 증감률 ${worst.growth > 0 ? '+' : ''}${worst.growth.toFixed(1)}% (최고)`;
-            }
+            document.getElementById('bestBuildingName').innerText = best.name;
+            document.getElementById('bestBuildingDesc').innerText = `${period.label} 증감률 ${formatGrowth(best.growth)} (최저)`;
+            document.getElementById('worstBuildingName').innerText = worst.name;
+            document.getElementById('worstBuildingDesc').innerText = `${period.label} 증감률 ${formatGrowth(worst.growth)} (최고)`;
         }
 
+        // 증감률. 올해 값이나 기준값이 없으면 null(비교 불가)을 돌려준다.
+        // 0을 돌려주면 "변화 없음"으로 오해되므로 절대 0으로 채우지 않는다.
         function getGrowthForMonth(b, monthIdx) {
-            // 💡 현재 월(5월)에 대한 순위를 요청할 경우, 직접 하드코딩해주신 b.growth 값을 최우선으로 사용하여 100% 동기화합니다.
-            if (monthIdx === currentMonthIndex && typeof b.growth === 'number') {
-                return b.growth;
-            }
-            
-            let currentVal = b.u26[monthIdx];
-            let historyVal = b.history25[monthIdx];
-            if (currentVal == null || historyVal == null || historyVal === 0) return 0;
+            if (monthIdx < 0 || monthIdx > 11) return null;
+            const currentVal = b.u26[monthIdx];
+            const historyVal = b.history25[monthIdx];
+            if (currentVal == null || historyVal == null || historyVal <= 0) return null;
             return parseFloat((((currentVal - historyVal) / historyVal) * 100).toFixed(1));
+        }
+
+        function formatGrowth(g) {
+            if (g == null) return '비교 불가';
+            return `${g > 0 ? '+' : ''}${g.toFixed(1)}%`;
         }
 
         function showRanking(type, isToggle = false) {
@@ -944,9 +992,9 @@
                 isRankingExpanded = false;
             }
             
-            let targetMonthIdx = currentMonthIndex; 
-            if (currentRankingType === 'prev') targetMonthIdx = currentMonthIndex - 1; 
-            if (currentRankingType === 'prev2') targetMonthIdx = currentMonthIndex - 2; 
+            let targetMonthIdx = period.monthIndex;
+            if (currentRankingType === 'prev') targetMonthIdx = period.monthIndex - 1;
+            if (currentRankingType === 'prev2') targetMonthIdx = period.monthIndex - 2;
             
             const btnCurrent = document.getElementById('rankBtnCurrent');
             const btnPrev = document.getElementById('rankBtnPrev');
@@ -959,16 +1007,17 @@
             if (btnPrev) btnPrev.className = currentRankingType === 'prev' ? activeClass : inactiveClass;
             if (btnPrev2) btnPrev2.className = currentRankingType === 'prev2' ? activeClass : inactiveClass;
 
-            const rankingData = buildingDB.map(b => {
-                return {
-                    name: b.name,
-                    growth: getGrowthForMonth(b, targetMonthIdx)
-                };
-            }).sort((a, b) => a.growth - b.growth);
+            // 비교 불가(null)인 건물은 순위에서 빼고, 몇 개가 빠졌는지 아래에 표시한다
+            const allData = buildingDB.map(b => ({ name: b.name, growth: getGrowthForMonth(b, targetMonthIdx) }));
+            const rankingData = allData.filter(d => d.growth != null).sort((a, b) => a.growth - b.growth);
+            const excluded = allData.length - rankingData.length;
 
             const displayData = isRankingExpanded ? rankingData : rankingData.slice(0, 10);
 
             let html = '';
+            if (rankingData.length === 0) {
+                html = `<tr><td colspan="3" class="px-4 py-6 text-center text-slate-400">${targetMonthIdx + 1}월은 비교할 수 있는 데이터가 없습니다.</td></tr>`;
+            }
             displayData.forEach((data, index) => {
                 let rankIcon = `${index + 1}`;
                 let textClass = 'text-slate-300';
@@ -978,7 +1027,7 @@
                 else if (index === 2) { rankIcon = '🥉 3'; textClass = 'text-amber-600 font-bold'; }
 
                 // 💡 Ranking의 퍼센트 텍스트도 무조건 .toFixed(1) 포맷팅을 거치게 하여 Grid와 오차가 생기지 않도록 함
-                let growthText = data.growth > 0 ? `+${data.growth.toFixed(1)}%` : `${data.growth.toFixed(1)}%`;
+                let growthText = formatGrowth(data.growth);
                 let growthColor = data.growth > 0 ? 'text-red-400' : 'text-mint';
 
                 html += `
@@ -989,6 +1038,9 @@
                     </tr>
                 `;
             });
+            if (excluded > 0 && rankingData.length > 0) {
+                html += `<tr><td colspan="3" class="px-4 py-3 text-center text-xs text-slate-500">데이터가 없어 제외된 건물 ${excluded}개</td></tr>`;
+            }
             document.getElementById('rankingTableBody').innerHTML = html;
             
             const btnContainer = document.getElementById('rankingViewMoreContainer');
@@ -1005,19 +1057,25 @@
         }
 
         function refreshDashboard() {
-            // 버튼 텍스트 동적 업데이트
-            document.getElementById('rankBtnCurrent').innerText = `이번 달 (${currentMonthIndex + 1}월)`;
-            document.getElementById('rankBtnPrev').innerText = `${currentMonthIndex}월`;
-            document.getElementById('rankBtnPrev2').innerText = `${currentMonthIndex - 1}월`;
+            // 월/연도가 들어가는 모든 텍스트를 period 기준으로 다시 쓴다
+            const setText = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
+
+            setText('rankBtnCurrent', `이번 달 (${period.label})`);
+            setText('rankBtnPrev',  period.monthIndex - 1 >= 0 ? `${period.monthIndex}월` : '-');
+            setText('rankBtnPrev2', period.monthIndex - 2 >= 0 ? `${period.monthIndex - 1}월` : '-');
 
             renderCampusMonthSelectors(); // 캠퍼스 오버뷰 영역 버튼 및 계산 수행
             renderGrid(buildingDB);
             updateBattle();
             updateBestWorst();
             showRanking('current');
-            document.getElementById('currentMonthDisplay').innerText = displayMonth;
-            document.getElementById('nextMonthName').innerText = nextMonth;
-            document.getElementById('battleMonthText').innerText = `2026.${(currentMonthIndex+1).toString().padStart(2,'0')} 기준 라이벌 매치`;
+
+            setText('currentYearDisplay', `${period.year}년`);
+            setText('currentMonthDisplay', period.label);
+            setText('nextMonthName', period.nextLabel);
+            setText('longTabLabel', `${period.baseYear} 연간 패턴`);
+            setText('battleMonthText', `${period.year}.${String(period.month).padStart(2,'0')} 기준 라이벌 매치`);
+            setText('dataSourceRange', `Data Source: Campus Facility Management Team (${period.baseYear} Jan-${period.year} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][period.monthIndex]})`);
         }
 
         // --- Event Handlers ---
@@ -1058,16 +1116,19 @@
             
             if(isShort) {
                 // 현재 설정된 월 기준으로 동적 동작
-                const histCurr = window.selectedB.history25[currentMonthIndex]; 
-                const histNext = window.selectedB.history25[currentMonthIndex + 1]; 
-                const currVal = window.selectedB.uCurr;       
-                
-                const growthRate = window.selectedB.growth / 100;
-                const predNext = Math.floor((histNext || 0) * (1 + growthRate)) || 0; 
+                const histCurr = window.selectedB.history25[period.monthIndex];
+                const histNext = window.selectedB.history25[period.nextMonthIndex];
+                const currVal = window.selectedB.uCurr;
+                const growth = window.selectedB.growth;
+
+                // 증감률이나 기준값이 없으면 예측을 만들지 않는다
+                const canPredict = growth != null && histNext != null;
+                const predNext = canPredict ? Math.floor(histNext * (1 + growth / 100)) : null;
 
                 const dataVals = [histCurr, currVal, histNext, predNext];
-                const minData = Math.min(...dataVals);
-                const maxData = Math.max(...dataVals);
+                const known = dataVals.filter(v => v != null);
+                const minData = known.length ? Math.min(...known) : 0;
+                const maxData = known.length ? Math.max(...known) : 0;
                 
                 let yMin = 0;
                 if (minData > 0 && maxData > minData) {
@@ -1079,7 +1140,7 @@
                 window.chartInstance = new Chart(ctx, { 
                     type:'bar', 
                     data:{
-                        labels: [`25년 ${displayMonth}`, `26년 ${displayMonth}`, `25년 ${nextMonth}`, `26년 ${nextMonth}(예측)`],
+                        labels: [`${period.baseYy}년 ${period.label}`, `${period.yy}년 ${period.label}`, `${period.baseYy}년 ${period.nextLabel}`, `${period.yy}년 ${period.nextLabel}(예측)`],
                         datasets:[{
                             label:'전력 사용량 (kWh)',
                             data: dataVals,
@@ -1134,23 +1195,22 @@
                     }]
                 });
                 
-                document.getElementById('modalPredictionShort').innerHTML = `<strong>[전년 대비 추세]</strong> 작년 ${displayMonth} 대비 올해 증감률(${window.selectedB.growth.toFixed(1)}%)을 반영할 때, 2026년 ${nextMonth} 예상치는 <strong>${predNext.toLocaleString()} kWh</strong>입니다.<br><span class="text-xs text-slate-500 mt-2 inline-block"><i class="fa-solid fa-circle-info"></i> 막대의 값 차이를 명확히 보기 위해 그래프 하단이 생략(물결선) 되었습니다.</span>`;
+                document.getElementById('modalPredictionShort').innerHTML = canPredict
+                    ? `<strong>[전년 대비 추세]</strong> 작년 ${period.label} 대비 올해 증감률(${formatGrowth(growth)})을 반영할 때, ${period.year}년 ${period.nextLabel} 예상치는 <strong>${predNext.toLocaleString()} kWh</strong>입니다.<br><span class="text-xs text-slate-500 mt-2 inline-block"><i class="fa-solid fa-circle-info"></i> 막대의 값 차이를 명확히 보기 위해 그래프 하단이 생략(물결선) 되었습니다.</span>`
+                    : `<strong>[예측 불가]</strong> ${period.label} 증감률 또는 ${period.baseYear}년 ${period.nextLabel} 기준값이 없어 ${period.year}년 ${period.nextLabel} 예측을 계산할 수 없습니다.`;
             } else {
-                const data26 = Array(12).fill(null);
-                // 현재 월까지만 동적으로 라인을 이어줍니다.
-                for (let i = 0; i <= currentMonthIndex; i++) {
-                    data26[i] = window.selectedB.u26[i]; 
-                }
+                // 값이 없는 달(NULL)은 그대로 비워 두면 spanGaps:false 가 선을 끊어 준다
+                const data26 = window.selectedB.u26.slice();
 
                 window.chartInstance = new Chart(ctx, { type:'line', data:{
                     labels:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
                     datasets:[
-                        {label:'2025년 실측', data:window.selectedB.history25, borderColor:'#cbd5e1', borderDash:[5,5], fill:false, tension:0.4},
-                        {label:'2026년 실측', data:data26, borderColor:'#2dd4bf', backgroundColor:'#2dd4bf', pointRadius:5, fill:false, spanGaps:false, tension:0.4}
+                        {label:`${period.baseYear}년 실측`, data:window.selectedB.history25, borderColor:'#cbd5e1', borderDash:[5,5], fill:false, spanGaps:false, tension:0.4},
+                        {label:`${period.year}년 실측`, data:data26, borderColor:'#2dd4bf', backgroundColor:'#2dd4bf', pointRadius:5, fill:false, spanGaps:false, tension:0.4}
                     ]
                 }, options:{ responsive:true, maintainAspectRatio:false }});
                 
-                document.getElementById('modalAnalysisLong').innerHTML = `작년(2025)의 연간 패턴을 비교하여 건물의 계절적 특성을 분석합니다. 2026년은 데이터가 존재하는 월의 실측값이 월별로 이어져 표시됩니다.`;
+                document.getElementById('modalAnalysisLong').innerHTML = `작년(${period.baseYear})의 연간 패턴을 비교하여 건물의 계절적 특성을 분석합니다. 값이 없는 달은 선이 끊겨서 표시됩니다.`;
             }
         }
 
@@ -1224,123 +1284,63 @@
             }, 1000);
         }
 
+        // 관리자 확인은 서버(/api)에서 한다. 브라우저에서 하는 검사는 가림막일 뿐이다.
+        // 관리자 전용 데이터도 인증된 요청에만 서버가 내려준다.
         function adminLogin() {
-            const p = prompt("관리자 비밀번호:");
-            if(p==="4610") document.getElementById('excelInput').click();
-            else if(p!==null) alert("비밀번호 불일치");
+            alert("관리자 기능은 서버 인증이 붙기 전까지 사용할 수 없습니다.");
         }
         
+        // 내 신청 기록 보기. 구독 범위가 본인 uid 로 제한돼 있어 여기 담기는 건 본인 기록뿐이다.
+        // 전체 명단이 필요한 관리자 화면은 서버 인증을 거친 전용 엔드포인트로 가야 한다.
         function viewApplicants() {
-            const p = prompt("관리자 비밀번호:");
-            if(p==="4610") {
-                if(!window.applicants || window.applicants.length===0) {
-                    alert("클라우드에 저장된 신청자가 없습니다.");
-                } else {
-                    const grouped = {};
-                    window.applicants.forEach(a => {
-                        let m = "기타(월 미상)";
-                        if (a.timestamp) {
-                            m = (new Date(a.timestamp).getMonth() + 1) + "월";
-                        } else if (a.campaignMonth) {
-                            m = a.campaignMonth; 
-                        }
-                        if (!grouped[m]) grouped[m] = [];
-                        grouped[m].push(a);
-                    });
-                    
-                    const sortedKeys = Object.keys(grouped).sort((a,b) => parseInt(a) - parseInt(b));
-                    
-                    let msg = "";
-                    for (const m of sortedKeys) {
-                        msg += `=== ${m} 신청명단 ===\n`;
-                        grouped[m].forEach((a, i) => {
-                            msg += `${i+1}. [${m} 신청자] ${a.building} - ${a.name} (${a.major}, ${a.id}, ${a.phone})\n`;
-                        });
-                        msg += "\n";
-                    }
-                    alert(msg.trim());
-                }
-            } else if(p!==null) alert("비밀번호 불일치");
+            if (!window.applicants || window.applicants.length === 0) {
+                alert("표시할 신청 기록이 없습니다.");
+                return;
+            }
+            const msg = window.applicants
+                .map((a, i) => `${i + 1}. ${a.campaignMonth ?? ''} ${a.building ?? ''}`.trim())
+                .join("\n");
+            alert(`내 신청 기록\n\n${msg}`);
         }
 
+        // 엑셀 업로드는 DB 도입과 함께 중단했다.
+        // 이유: (1) 브라우저 메모리에만 반영돼 새로고침하면 사라졌고,
+        //       (2) 건물명을 부분 일치로 찾아 신공학관 값이 공학관에 들어가는 등 값이 섞였다.
+        // 이제 월별 엑셀은 서버에서 DB로 넣고, 화면은 /api/usage 로 읽는다.
         async function handleFileUpload(event) {
-            try {
-                const file = event?.target?.files?.[0];
-                if (!file) return;
-
-                const monthFromName = parseMonthFromFilename(file.name);
-                const month = monthFromName ?? 5; // 인식 실패 시 기본값을 5월로 둡니다.
-                const monthIndex = month - 1;
-
-                const buf = await file.arrayBuffer();
-                const wb = XLSX.read(buf, { type: 'array' });
-                
-                const targetSheetName = wb.SheetNames.find(name => name.includes("전기사용량")) || wb.SheetNames[0];
-                const ws = wb.Sheets[targetSheetName];
-                
-                if (!ws) {
-                    alert("엑셀 시트를 찾지 못했습니다.");
-                    return;
-                }
-
-                const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true });
-                const usageMap = extractMonthlyUsageFromSheetAoA(aoa, TARGET_BUILDINGS, month);
-
-                let updated = 0;
-                buildingDB.forEach(b => {
-                    const v = usageMap.get(b.name);
-                    if (typeof v === 'number' && Number.isFinite(v)) {
-                        if (!Array.isArray(b.u26)) b.u26 = Array(12).fill(null);
-                        b.u26[monthIndex] = v; 
-                        
-                        if (monthIndex === 0) b.u26_jan = v;
-                        if (monthIndex === 1) b.u26_feb = v;
-                        if (monthIndex === 2) b.u26_mar = v;
-                        if (monthIndex === 3) b.u26_apr = v;
-                        if (monthIndex === 4) b.u26_may = v;
-                        
-                        let hasCurrentData = b.u26[monthIndex] !== null;
-                        let tMonth = hasCurrentData ? monthIndex : (b.u26[1] !== null ? 1 : 0);
-                        b.uCurr = b.u26[tMonth] ?? 0;
-                        let historyVal = b.history25[tMonth];
-                        
-                        if (hasCurrentData && historyVal > 0) {
-                            b.growth = parseFloat((((b.uCurr - historyVal) / historyVal) * 100).toFixed(1));
-                        }
-                        
-                        updated++;
-                    }
-                });
-
-                setCurrentMonth(monthIndex);
-                refreshDashboard();
-                alert(`관리자: 2026년 ${month}월 전력사용량 업데이트 완료 (${updated}/${TARGET_BUILDINGS.length}개 반영)`);
-            } catch (err) {
-                console.error(err);
-                alert("업데이트 중 오류가 발생했습니다. (엑셀 형식/건물명/값 칼럼을 확인해주세요.)");
-            } finally {
-                if (event?.target) event.target.value = "";
-            }
+            if (event?.target) event.target.value = "";
+            alert("엑셀 업로드는 더 이상 이 화면에서 처리하지 않습니다.\n\n월별 데이터는 서버에서 DB에 반영한 뒤, 이 페이지가 자동으로 읽어옵니다.");
         }
 
         function setCurrentMonth(monthIndex) {
-            currentMonthIndex = Math.max(0, Math.min(11, monthIndex));
-            displayMonth = `${currentMonthIndex + 1}월`;
-            nextMonth = currentMonthIndex < 11 ? `${currentMonthIndex + 2}월` : `12월`;
+            period.monthIndex = Math.max(0, Math.min(11, monthIndex));
             buildingDB.forEach(b => {
-                const v = b.u26?.[currentMonthIndex];
-                b.uCurr = (typeof v === 'number' && Number.isFinite(v)) ? v : 0;
+                b.uCurr = b.u26[period.monthIndex];              // 값이 없으면 null
+                b.growth = getGrowthForMonth(b, period.monthIndex); // 비교 불가면 null
             });
         }
 
         // --- DOMContentLoaded Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            initBattleDropdowns();
-            populateDropdown();
-            populateAISelect();
-            updateBestWorst();
-            refreshDashboard();
+        document.addEventListener('DOMContentLoaded', async () => {
             switchPage('dashboard');
+            try {
+                await loadData();          // DB에서 값을 받고 기준 월을 정한다
+                initBattleDropdowns();
+                populateDropdown();
+                populateAISelect();
+                updateBestWorst();
+                refreshDashboard();
+            } catch (err) {
+                console.error(err);
+                const grid = document.getElementById('buildingsGrid');
+                if (grid) {
+                    grid.innerHTML = `<div class="col-span-full bg-red-50 border border-red-200 text-red-700 rounded-xl p-6 text-sm">
+                        <p class="font-bold mb-1">데이터를 불러오지 못했습니다.</p>
+                        <p>${err.message}</p>
+                        <p class="mt-2 text-red-500">서버(vercel dev)와 MySQL이 켜져 있는지 확인해주세요.</p>
+                    </div>`;
+                }
+            }
             
             // 전역 이벤트 리스너 등록 (onclick 대신 JS로 안전하게 바인딩)
             window.switchPage = switchPage;
